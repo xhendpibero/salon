@@ -35,7 +35,7 @@ class Order extends Component {
         <div className={classes.root}>
           <Button
             className={classes.importButton}
-            style={{ marginBottom: 25 }}
+            style={{ marginBottom: 40 }}
             size="small"
             onClick={() => history.push({ pathname: '/orders' })}
           >
@@ -46,11 +46,7 @@ class Order extends Component {
             container
             spacing={4}
           >
-            <Grid
-              item
-            >
-              <OrdersDetails />
-            </Grid>
+            <OrdersDetails />
           </Grid>
         </div>
       </DashboardLayout>

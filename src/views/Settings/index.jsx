@@ -27,7 +27,7 @@ class Settings extends Component {
     const { classes } = this.props;
 
     return (
-      <DashboardLayout title="Settings">
+      <DashboardLayout title="Pengaturan">
         <div className={classes.root}>
           <Grid
             container

@@ -27,10 +27,6 @@ import {
   People as People2Icon,
   Shop as ShopIcon,
   ShoppingBasketOutlined as ShoppingBasketIcon,
-  LockOpenOutlined as LockOpenIcon,
-  TextFields as TextFieldsIcon,
-  ImageOutlined as ImageIcon,
-  InfoOutlined as InfoIcon,
   AccountBoxOutlined as AccountBoxIcon,
   SettingsOutlined as SettingsIcon
 } from '@material-ui/icons';
@@ -41,6 +37,7 @@ import styles from './styles';
 class Sidebar extends Component {
   render() {
     const { classes, className } = this.props;
+    const role = localStorage.getItem("role") === "admin";
 
     const rootClassName = classNames(classes.root, className);
 
@@ -62,7 +59,7 @@ class Sidebar extends Component {
         <div className={classes.profile}>
           <Link to="/account">
             <Avatar
-              alt="Super Admin"
+              alt="Admin"
               className={classes.avatar}
               src="/images/avatars/avatar_1.png"
             />
@@ -71,13 +68,13 @@ class Sidebar extends Component {
             className={classes.nameText}
             variant="h6"
           >
-            Developer
+            {role ? "Developer" : "Celine"}
           </Typography>
           <Typography
             className={classes.bioText}
             variant="caption"
           >
-            Super Admin
+            {role ? "Admin" : "User"}
           </Typography>
         </div>
         <Divider className={classes.profileDivider} />
@@ -85,6 +82,7 @@ class Sidebar extends Component {
           component="div"
           disablePadding
         >
+
           <ListItem
             activeClassName={classes.activeListItem}
             className={classes.listItem}
@@ -96,9 +94,10 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText
               classes={{ primary: classes.listItemText }}
-              primary="Dashboard"
+              primary="Celine Salon"
             />
           </ListItem>
+
           <ListItem
             activeClassName={classes.activeListItem}
             className={classes.listItem}
@@ -110,37 +109,42 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText
               classes={{ primary: classes.listItemText }}
-              primary="Orders"
+              primary="Pesanan"
             />
           </ListItem>
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/customers"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <People2Icon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Customers"
-            />
-          </ListItem>
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/users"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Employees"
-            />
-          </ListItem>
+          {role && (
+            <>
+              <ListItem
+                activeClassName={classes.activeListItem}
+                className={classes.listItem}
+                component={NavLink}
+                to="/customers"
+              >
+                <ListItemIcon className={classes.listItemIcon}>
+                  <People2Icon />
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.listItemText }}
+                  primary="Pelanggan"
+                />
+              </ListItem>
+
+              <ListItem
+                activeClassName={classes.activeListItem}
+                className={classes.listItem}
+                component={NavLink}
+                to="/users"
+              >
+                <ListItemIcon className={classes.listItemIcon}>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.listItemText }}
+                  primary="Pegawai"
+                />
+              </ListItem>
+            </>
+          )}
           <ListItem
             activeClassName={classes.activeListItem}
             className={classes.listItem}
@@ -152,51 +156,10 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText
               classes={{ primary: classes.listItemText }}
-              primary="Services"
+              primary="Layanan"
             />
           </ListItem>
-          {/* <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/sign-in"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <LockOpenIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Authentication"
-            />
-          </ListItem>
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/typography"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <TextFieldsIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Typography"
-            />
-          </ListItem>
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/icons"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <ImageIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Icons and Images"
-            />
-          </ListItem> */}
+
         </List>
         <Divider className={classes.listDivider} />
         <List
@@ -204,7 +167,7 @@ class Sidebar extends Component {
           disablePadding
           subheader={
             <ListSubheader className={classes.listSubheader}>
-              Profile
+              Profil
             </ListSubheader>
           }
         >
@@ -219,7 +182,7 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText
               classes={{ primary: classes.listItemText }}
-              primary="Account"
+              primary="Akun"
             />
           </ListItem>
           <ListItem
@@ -233,7 +196,7 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText
               classes={{ primary: classes.listItemText }}
-              primary="Settings"
+              primary="Pengaturan"
             />
           </ListItem>
           {/* <ListItem

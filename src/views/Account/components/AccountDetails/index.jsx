@@ -40,9 +40,9 @@ const states = [
 class Employee extends Component {
   state = {
     fullName: 'Developer',
-    email: 'contact@devias.io',
-    phone: '',
-    alamat: '',
+    email: 'admin@gmail.com',
+    phone: '089602582832',
+    alamat: 'Jl. Haji Ocen, Bekasi',
   };
 
   handleChange = (e, name) => {
@@ -53,7 +53,7 @@ class Employee extends Component {
 
   render() {
     const { classes, className, ...rest } = this.props;
-    const { firstName, phone, address, email } = this.state;
+    const { fullName, phone, address, email } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -64,8 +64,8 @@ class Employee extends Component {
       >
         <PortletHeader>
           <PortletLabel
-            subtitle="The information can be edited"
-            title="Profile"
+            subtitle="Silahkan isi informasi dibawah ini"
+            title="Profil"
           />
         </PortletHeader>
         <PortletContent noPadding>
@@ -77,17 +77,17 @@ class Employee extends Component {
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "fullName")}
-                label="Full Name"
+                label="Nama Lengkap"
                 margin="dense"
                 required
-                value={firstName}
+                value={fullName}
                 variant="outlined"
               />
             </div>
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                label="Email Address"
+                label="Email"
                 margin="dense"
                 disabled
                 value={email}
@@ -96,7 +96,7 @@ class Employee extends Component {
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "phone")}
-                label="Phone Number"
+                label="Nomor HP"
                 margin="dense"
                 type="number"
                 value={phone}
@@ -107,7 +107,7 @@ class Employee extends Component {
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "address")}
-                label="Address"
+                label="Alamat"
                 margin="dense"
                 value={address}
                 variant="outlined"
@@ -120,7 +120,7 @@ class Employee extends Component {
             color="primary"
             variant="contained"
           >
-            Save details
+            Simpan
           </Button>
         </PortletFooter>
       </Portlet>

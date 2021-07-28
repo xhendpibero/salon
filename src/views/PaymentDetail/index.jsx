@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 
-// Externals
-import PropTypes from 'prop-types';
-
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
@@ -18,7 +15,7 @@ import {
 import { Dashboard as DashboardLayout } from 'layouts';
 
 // Custom components
-import { ProductPicture, ProductDetails } from './components';
+import { OrdersDetails } from './components';
 
 // Component styles
 const styles = theme => ({
@@ -31,11 +28,10 @@ class Order extends Component {
   state = { tabIndex: 0 };
 
   render() {
-    const { classes, location, history } = this.props;
-    const title = location.search ? "Edit" : "Tambah";
+    const { classes, history } = this.props;
 
     return (
-      <DashboardLayout title={title + " Pesanan"}>
+      <DashboardLayout title={"Rincian Pesanan"}>
         <div className={classes.root}>
           <Button
             className={classes.importButton}
@@ -50,35 +46,12 @@ class Order extends Component {
             container
             spacing={4}
           >
-            <Grid
-              item
-              lg={4}
-              md={6}
-              xl={4}
-              xs={12}
-            >
-              <ProductPicture />
-            </Grid>
-            <Grid
-              item
-              lg={8}
-              md={6}
-              xl={8}
-              xs={12}
-            >
-              <ProductDetails />
-            </Grid>
+            <OrdersDetails />
           </Grid>
         </div>
       </DashboardLayout>
     );
   }
 }
-
-Order.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(Order);

@@ -17,9 +17,33 @@ import { Portlet, PortletContent, PortletFooter } from 'components';
 import styles from './styles';
 
 class EmployeePicture extends Component {
+
+  state = {
+    selectedFile: '',
+  }
+
+  handleUploadClick = event => {
+    console.log();
+    var file = event.target.files[0];
+    const reader = new FileReader();
+    var url = reader.readAsDataURL(file);
+
+    reader.onloadend = function (e) {
+      this.setState({
+        selectedFile: [reader.result]
+      });
+    }.bind(this);
+    console.log(url); // Would see a path?
+
+    this.setState({
+      selectedFile: event.target.files[0],
+    });
+  };
+
+
   render() {
     const { classes, className, ...rest } = this.props;
-
+    const { selectedFile } = this.state;
     const rootClassName = classNames(classes.root, className);
 
     return (
@@ -30,13 +54,13 @@ class EmployeePicture extends Component {
         <PortletContent>
           <div className={classes.details}>
             <div className={classes.info}>
-              <Typography variant="h4">Image Employee</Typography>
+              <Typography variant="h4">Foto Karyawan</Typography>
             </div>
           </div>
           <Avatar
             variant="square"
             className={classes.avatar}
-            src="/images/avatars/avatar_1.png"
+            src={selectedFile ? selectedFile : "/images/avatars/avatar_1.png"}
           />
         </PortletContent>
         <PortletFooter>
@@ -45,9 +69,9 @@ class EmployeePicture extends Component {
             color="primary"
             variant="text"
           >
-            Upload picture
+            Unggah Foto
           </Button>
-          <Button variant="text">Remove picture</Button>
+          <Button variant="text">Hapus foto</Button>
         </PortletFooter>
       </Portlet>
     );

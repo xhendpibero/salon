@@ -10,17 +10,23 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core';
 
 // Material components
-import { Button } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 
 // Shared components
 import { DisplayMode, SearchInput } from 'components';
 
 // Component styles
+import {
+  Delete as DeleteIcon,
+  VisibilityOff
+} from '@material-ui/icons';
+
 import styles from './styles';
 
 class ProductsToolbar extends Component {
   render() {
-    const { classes, className, history } = this.props;
+    const { classes, className, selected, history } = this.props;
+    const role = localStorage.getItem("role") === "admin";
 
     const rootClassName = classNames(classes.root, className);
 
@@ -39,17 +45,37 @@ class ProductsToolbar extends Component {
         <div className={classes.row}>
           <SearchInput
             className={classes.searchInput}
-            placeholder="Search service"
+            placeholder="Cari layanan"
           />
           <span className={classes.spacer} />
-          <Button
-            color="primary"
-            size="small"
-            variant="outlined"
-            onClick={() => history.push({ pathname: '/products/service', state: { detail: 'Create' } })}
-          >
-            Add
-          </Button>
+          {selected && selected.length > 0 && (
+            <>
+              <IconButton
+                className={classes.hideButton}
+                onClick={this.handleDeleteUsers}
+              >
+                <VisibilityOff />
+              </IconButton>
+
+              <IconButton
+                className={classes.deleteButton}
+                onClick={this.handleDeleteUsers}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </>
+          )}
+
+          {role && (
+            <Button
+              color="primary"
+              size="small"
+              variant="outlined"
+              onClick={() => history.push({ pathname: '/products/service', state: { detail: 'Buat' } })}
+            >
+              Tambah
+            </Button>
+          )}
           {/* <span className={classes.spacer} /> */}
           {/* <DisplayMode mode="grid" /> */}
         </div>

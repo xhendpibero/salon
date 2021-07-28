@@ -38,6 +38,16 @@ export default theme => ({
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit * 2
   },
+  description2: {
+    lineHeight: '16px',
+    height: theme.spacing.unit * 4,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    color: theme.palette.text.secondary,
+    textAlign: 'center',
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit * 2
+  },
   stats: {
     display: 'flex',
     alignItems: 'center',

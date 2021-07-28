@@ -109,20 +109,21 @@ class OrdersList extends Component {
 
   render() {
     const { classes, history } = this.props;
+    const role = localStorage.getItem("role") === "admin";
 
     return (
-      <DashboardLayout title="Orders">
+      <DashboardLayout title="Pesanan">
         <div className={classes.root}>
           <Toolbar
-            placeholder="Search order"
-            buttonAdd={"New Entry"}
+            placeholder="Cari pesanan"
+            buttonAdd={role ? null : "Buat pesanan baru"}
             selectedUsers={[]}
             onChange={(e) => console.log(e.target.value)}
             onClick={() => history.push({ pathname: '/orders/add' })}
           />
           <div className={classes.content}>{this.renders()}</div>
           <div className={classes.pagination}>
-            <Typography variant="caption">1-6 of 20</Typography>
+            <Typography variant="caption">1-6 dari 20</Typography>
             <IconButton>
               <ChevronLeftIcon />
             </IconButton>

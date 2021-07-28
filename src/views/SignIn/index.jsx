@@ -97,11 +97,12 @@ class SignIn extends Component {
 
       if (await signIn(values.email, values.password)) {
         localStorage.setItem('isAuthenticated', true);
+        localStorage.setItem('role', values.email === "admin@gmail.com" ? "admin" : "user");
         history.push('/dashboard');
       } else {
         this.setState({
           isLoading: false,
-          submitError: "Email/Password Wrong"
+          submitError: "Email/Kata Sandi Salah"
         });
       }
     } catch (error) {
@@ -177,7 +178,7 @@ class SignIn extends Component {
                     className={classes.title}
                     variant="h2"
                   >
-                    Sign in
+                    Masuk
                   </Typography>
                   {/* <Typography
                     className={classes.subtitle}
@@ -213,7 +214,7 @@ class SignIn extends Component {
                   <div className={classes.fields}>
                     <TextField
                       className={classes.textField}
-                      label="Email address"
+                      label="Alamat Email"
                       name="email"
                       onChange={event =>
                         this.handleFieldChange('email', event.target.value)
@@ -232,7 +233,7 @@ class SignIn extends Component {
                     )}
                     <TextField
                       className={classes.textField}
-                      label="Password"
+                      label="Kata Sandi"
                       name="password"
                       onChange={event =>
                         this.handleFieldChange('password', event.target.value)
@@ -269,19 +270,19 @@ class SignIn extends Component {
                       size="large"
                       variant="contained"
                     >
-                      Sign in now
+                      Masuk Sekarang!
                     </Button>
                   )}
                   <Typography
                     className={classes.signUp}
                     variant="body1"
                   >
-                    Don't have an account?{' '}
+                    Buat akun Celine Salon mu untuk mendapatkan kemudahan dalam Pemesanan{' '}
                     <Link
                       className={classes.signUpUrl}
                       to="/sign-up"
                     >
-                      Sign up
+                      Daftar
                     </Link>
                   </Typography>
                 </form>

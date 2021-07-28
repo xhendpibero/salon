@@ -39,9 +39,9 @@ import {
 import styles from './styles';
 
 const statusColors = {
-  delivered: 'success',
-  pending: 'info',
-  refund: 'danger'
+  "Pesanan berhasil": 'success',
+  "Perlu konfirmasi": 'info',
+  "Pesanan batal": 'danger'
 };
 
 class OrdersTable extends Component {
@@ -92,6 +92,7 @@ class OrdersTable extends Component {
   render() {
     const { classes, className } = this.props;
     const { isLoading, orders, ordersTotal } = this.state;
+    const role = localStorage.getItem("role") === "admin";
 
     const rootClassName = classNames(classes.root, className);
     const showOrders = !isLoading && orders.length > 0;
@@ -103,16 +104,18 @@ class OrdersTable extends Component {
             subtitle={`${ordersTotal} in total`}
             title="Pesanan Terbaru"
           />
-          <PortletToolbar>
-            <Button
-              className={classes.newEntryButton}
-              color="primary"
-              size="small"
-              variant="outlined"
-            >
-              New entry
-            </Button>
-          </PortletToolbar>
+          {!role && (
+            <PortletToolbar>
+              <Button
+                className={classes.newEntryButton}
+                color="primary"
+                size="small"
+                variant="outlined"
+              >
+                Buat pesanan baru
+              </Button>
+            </PortletToolbar>
+          )}
         </PortletHeader>
         <PerfectScrollbar>
           <PortletContent
@@ -128,8 +131,8 @@ class OrdersTable extends Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Order ID</TableCell>
-                    <TableCell align="left">Customer</TableCell>
+                    <TableCell>ID</TableCell>
+                    <TableCell align="left">Pelanggan</TableCell>
                     <TableCell
                       align="left"
                       sortDirection="desc"
@@ -142,7 +145,7 @@ class OrdersTable extends Component {
                           active
                           direction="desc"
                         >
-                          Date
+                          Tanggal Pemesanan
                         </TableSortLabel>
                       </Tooltip>
                     </TableCell>

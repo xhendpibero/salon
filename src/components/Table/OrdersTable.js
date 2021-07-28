@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 // Externals
 import classNames from 'classnames';
@@ -20,7 +21,7 @@ import {
     TableRow,
     Tooltip,
     TableSortLabel,
-    Link,
+    Typography,
 } from '@material-ui/core';
 
 // Shared services
@@ -40,15 +41,16 @@ import {
 import styles from './styles';
 
 const statusColors = {
-    delivered: 'success',
-    pending: 'info',
-    refund: 'danger'
+    "Pesanan berhasil": 'success',
+    "Perlu konfirmasi": 'info',
+    "Pesanan batal": 'danger'
 };
 
 class OrdersTable extends Component {
 
     render() {
         const { classes, className, isLoading, orders, ordersTotal } = this.props;
+        const role = localStorage.getItem("role") === "admin";
 
         const rootClassName = classNames(classes.root, className);
         const showOrders = !isLoading && orders.length > 0;
@@ -69,8 +71,8 @@ class OrdersTable extends Component {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Order ID</TableCell>
-                                        <TableCell align="left">Customer</TableCell>
+                                        <TableCell>ID</TableCell>
+                                        <TableCell align="left">Pemesan</TableCell>
                                         <TableCell
                                             align="left"
                                             sortDirection="desc"
@@ -83,11 +85,14 @@ class OrdersTable extends Component {
                                                     active
                                                     direction="desc"
                                                 >
-                                                    Date
+                                                    Tanggal Pemesanan
                                                 </TableSortLabel>
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell align="left">Status</TableCell>
+                                        {role && (
+                                            <TableCell align="left">Aksi</TableCell>
+                                        )}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -98,9 +103,16 @@ class OrdersTable extends Component {
                                             key={order.id}
                                         >
                                             <TableCell>
-                                                <Link to="users/employee?id=1">
-                                                    {order.id}
-                                                </Link>
+                                                <div className={classes.tableCellInner}>
+                                                    <Link to="orders/detail?id=1">
+                                                        <Typography
+                                                            className={classes.nameText}
+                                                            variant="body1"
+                                                        >
+                                                            {order.id}
+                                                        </Typography>
+                                                    </Link>
+                                                </div>
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
                                                 {order.customer.name}
@@ -118,6 +130,28 @@ class OrdersTable extends Component {
                                                     {order.status}
                                                 </div>
                                             </TableCell>
+                                            {role && (
+                                                <TableCell align="left">
+                                                    {order.status === "Perlu konfirmasi" && (
+                                                        <>
+                                                            <Button
+                                                                color="primary"
+                                                                variant="contained"
+                                                                style={{ marginRight: 10 }}
+                                                            >
+                                                                Konfirmasi
+                                                            </Button>
+                                                            <Button
+                                                                color="secondary"
+                                                                variant="contained"
+                                                            >
+                                                                Batalkan
+                                                            </Button>
+                                                        </>
+
+                                                    )}
+                                                </TableCell>
+                                            )}
                                         </TableRow>
                                     ))}
                                 </TableBody>

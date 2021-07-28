@@ -66,8 +66,8 @@ class Employee extends Component {
       >
         <PortletHeader>
           <PortletLabel
-            subtitle="The information can be edited"
-            title="Profile Employee"
+            subtitle="Silahkan isi informasi dibawah ini"
+            title="Profil Karyawan"
           />
         </PortletHeader>
         <PortletContent noPadding>
@@ -78,7 +78,7 @@ class Employee extends Component {
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                label="Full Name"
+                label="Nama Panjang"
                 margin="dense"
                 required
                 value={firstName}
@@ -88,7 +88,7 @@ class Employee extends Component {
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                label="Phone Number"
+                label="Nomor Hp"
                 margin="dense"
                 type="number"
                 value={phone}
@@ -98,7 +98,7 @@ class Employee extends Component {
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                label="Address"
+                label="Alamat"
                 margin="dense"
                 required
                 value={country}
@@ -112,7 +112,7 @@ class Employee extends Component {
             color="primary"
             variant="contained"
           >
-            Save details
+            Simpan
           </Button>
         </PortletFooter>
       </Portlet>

@@ -5,7 +5,7 @@ export default [
     customer: 'DEV705225',
     products: ['DEV738089'],
     createdAt: 1555016400000,
-    status: 'pending'
+    status: 'Perlu konfirmasi'
   },
   {
     id: 'DEV898812',
@@ -13,7 +13,7 @@ export default [
     customer: 'DEV696649',
     products: ['DEV774585'],
     createdAt: 1555016400000,
-    status: 'delivered'
+    status: 'Pesanan berhasil'
   },
   {
     id: 'DEV793788',
@@ -21,7 +21,7 @@ export default [
     customer: 'DEV702967',
     products: ['DEV654476'],
     createdAt: 1554930000000,
-    status: 'refund'
+    status: 'Pesanan batal'
   },
   {
     id: 'DEV841788',
@@ -29,7 +29,7 @@ export default [
     customer: 'DEV663348',
     products: ['DEV654476', 'DEV773559'],
     createdAt: 1554757200000,
-    status: 'pending'
+    status: 'Perlu konfirmasi'
   },
   {
     id: 'DEV552540',
@@ -37,7 +37,7 @@ export default [
     customer: 'DEV728981',
     products: ['DEV738089'],
     createdAt: 1554670800000,
-    status: 'delivered'
+    status: 'Pesanan berhasil'
   },
   {
     id: 'DEV783653',
@@ -45,7 +45,7 @@ export default [
     customer: 'DEV883167',
     products: ['DEV773559'],
     createdAt: 1554325200000,
-    status: 'delivered'
+    status: 'Pesanan berhasil'
   },
   {
     id: 'DEV593146',
@@ -53,7 +53,7 @@ export default [
     customer: 'DEV883167',
     products: ['DEV795381'],
     createdAt: 1554325200000,
-    status: 'refund'
+    status: 'Pesanan batal'
   },
   {
     id: 'DEV593146',
@@ -61,7 +61,7 @@ export default [
     customer: 'DEV883167',
     products: ['DEV795381'],
     createdAt: 1554325200000,
-    status: 'refund'
+    status: 'Pesanan batal'
   },
   {
     id: 'DEV593146',
@@ -69,6 +69,6 @@ export default [
     customer: 'DEV883167',
     products: ['DEV795381'],
     createdAt: 1554325200000,
-    status: 'refund'
+    status: 'Pesanan batal'
   }
 ];

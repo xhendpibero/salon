@@ -62,7 +62,7 @@ class Account extends Component {
       >
         <PortletHeader>
           <PortletLabel
-            subtitle="The information can be edited"
+            subtitle="Silahkan isi informasi dibawah ini"
             title="Service"
           />
         </PortletHeader>
@@ -99,7 +99,7 @@ class Account extends Component {
             color="primary"
             variant="contained"
           >
-            Save details
+            Simpan
           </Button>
         </PortletFooter>
       </Portlet>

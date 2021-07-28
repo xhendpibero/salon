@@ -102,19 +102,9 @@ class UsersTable extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell align="left">
-                    <Checkbox
-                      checked={selectedUsers.length === users.length}
-                      color="primary"
-                      indeterminate={
-                        selectedUsers.length > 0 &&
-                        selectedUsers.length < users.length
-                      }
-                      onChange={this.handleSelectAll}
-                    />
                     Name
                   </TableCell>
-                  <TableCell align="left">ID</TableCell>
-                  <TableCell align="left">State</TableCell>
+                  <TableCell align="left">Email</TableCell>
                   <TableCell align="left">Phone</TableCell>
                   <TableCell align="left">Registration date</TableCell>
                 </TableRow>
@@ -138,39 +128,19 @@ class UsersTable extends Component {
                       className={classes.tableRow}
                       hover
                       key={user.id}
-                      selected={selectedUsers.indexOf(user.id) !== -1}
                     >
                       <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
-                          <Checkbox
-                            checked={selectedUsers.indexOf(user.id) !== -1}
-                            color="primary"
-                            onChange={event =>
-                              this.handleSelectOne(event, user.id)
-                            }
-                            value="true"
-                          />
-                          <Avatar
-                            className={classes.avatar}
-                            src={user.avatarUrl}
+                          <Typography
+                            className={classes.nameText}
+                            variant="body1"
                           >
-                            {getInitials(user.name)}
-                          </Avatar>
-                          <Link to="users/employee?id=1">
-                            <Typography
-                              className={classes.nameText}
-                              variant="body1"
-                            >
-                              {user.name}
-                            </Typography>
-                          </Link>
+                            {user.name}
+                          </Typography>
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {user.id}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {user.address.state}
+                        user-{user.id}@gmail.com
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {user.phone}

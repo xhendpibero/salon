@@ -111,10 +111,10 @@ class ProductsTable extends Component {
                       }
                       onChange={this.handleSelectAll}
                     />
-                    Service Name
+                    Nama Layanan
                   </TableCell>
-                  <TableCell align="left">ID</TableCell>
-                  <TableCell align="left">Price</TableCell>
+                  <TableCell align="left">Deskripsi</TableCell>
+                  <TableCell align="left">Harga</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -157,7 +157,7 @@ class ProductsTable extends Component {
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {product.id}
+                        {product.description}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {product.price}

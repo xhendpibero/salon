@@ -89,33 +89,18 @@ class Account extends Component {
     productsTotal: 0,
     users: [],
     usersTotal: 0,
-    selectedProducts: [],
-    selectedUsers: "",
-    selectedTimes: 0,
+    selectedProducts: ["DEV795381", "DEV774585"],
+    selectedUsers: "DEV702967",
+    selectedTimes: 13,
     error: null,
-    date: "",
+    date: new Date("Fri Jul 16 2021"),
     password: "",
-    passwordConfirm: "",
     name: "",
+    address: "",
     email: "",
     checkedB: false,
-    tab: 1,
+    tab: 0,
     bank: 0,
-    buyer: 0,
-    buyerList: [
-      {
-        name: "Celine",
-        value: 0,
-      },
-      {
-        name: "Ibu Celine",
-        value: 1,
-      },
-      {
-        name: "Kaka Nurul",
-        value: 2,
-      },
-    ],
     bankList: [
       {
         name: "BCA",
@@ -236,7 +221,7 @@ class Account extends Component {
 
   handleSubmit = () => {
     const { history } = this.props;
-    history.push({ pathname: '/orders/payment/' });
+    history.push({ pathname: '/orders/payment/proof' });
   }
 
   render() {
@@ -255,9 +240,8 @@ class Account extends Component {
       checkedB,
       tab,
       bank,
-      buyer,
-      buyerList,
       bankList,
+      address,
     } = this.state;
     var today = new Date(date);
     var dd = today.getDate();
@@ -333,9 +317,9 @@ class Account extends Component {
               native
             >
               <option aria-label="None" value="" />
-              <option value={0}>Celine</option>
-              <option value={1}>Ibu Celine</option>
-              <option value={2}>Kaka Nurul</option>
+              <option value={0}>BCA</option>
+              <option value={1}>BRI</option>
+              <option value={2}>BTPN</option>
             </Select>
           </FormControl>
         </div>
@@ -368,35 +352,6 @@ class Account extends Component {
             container
             spacing={2}
           >
-
-            <Grid
-              item
-              md={4}
-              xs={12}
-            >
-
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
-                <Select
-                  labelId="demo-controlled-open-select-label"
-                  id="demo-controlled-open-select"
-                  value={buyer}
-                  onChange={e => this.handleChange(e, "buyer")}
-                  inputProps={{
-                    name: 'buyer',
-                    id: 'bank-simple',
-                  }}
-                  native
-                >
-                  <option aria-label="None" value="" />
-                  <option value={0}>Celine</option>
-                  <option value={1}>Ibu Celine</option>
-                  <option value={2}>Kaka Nurul</option>
-                </Select>
-
-              </FormControl>
-            </Grid>
-
             <Grid
               item
               md={4}
@@ -420,49 +375,30 @@ class Account extends Component {
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "email")}
-                label="Email"
+                label="Nomor Rek"
                 margin="dense"
                 required
                 value={email}
                 variant="outlined"
-                type="email"
+                type="text"
               />
             </Grid>
             <Grid
               item
-              md={6}
               xs={12}
             >
               <TextField
                 className={classes.textField}
-                label="Kata Sandi"
-                name="password"
+                label="Nominal"
+                name="address"
+                helperText="DP 10% dari total harga"
                 margin="dense"
                 required
                 onChange={event =>
-                  this.handleChange(event.target.value, 'password')
+                  this.handleChange(event.target.value, 'address')
                 }
-                type="password"
-                value={password}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                label="Konfirmasi Kata Sandi"
-                name="passwordConfirm"
-                margin="dense"
-                required
-                onChange={event =>
-                  this.handleChange(event.target.value, 'passwordConfirm')
-                }
-                type="password"
-                value={passwordConfirm}
+                type="text"
+                value={address}
                 variant="outlined"
               />
             </Grid>
@@ -470,268 +406,6 @@ class Account extends Component {
         </div>
 
       </>),
-      (<>
-
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Pilih Layanan
-          </Typography>
-        </div>
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={2}
-          >
-            {products.map((product, index) => (
-              <Grid
-                item
-                key={product.id}
-                lg={4}
-                md={6}
-                xs={12}
-                onClick={() => this.handleSelectOne(product.id, "selectedProducts")}
-              >
-                <ProductCard
-                  image={product.imageUrl}
-                  title={product.title}
-                  secondary={"Harga Rp " + product.price}
-                  checked={selectedProducts.indexOf(product.id) !== -1}
-                />
-              </Grid>
-            ))
-            }
-          </Grid>
-        </div>
-      </>),
-      (<>
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Data Pemesan
-          </Typography>
-        </div>
-
-        {
-          !checkedB && (
-            <div className={classes.field}>
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open1-select-label">Pemesan</InputLabel>
-                <Select
-                  labelId="demo-controlled-open1-select-label"
-                  id="demo-controlled-open1-select"
-                  value={buyer}
-                  onChange={e => this.handleChange(e, "buyer")}
-                  inputProps={{
-                    name: 'buyer',
-                    id: 'bank-simple',
-                  }}
-                  native
-                >
-                  <option aria-label="None" value="" />
-                  <option value={0}>Celine</option>
-                  <option value={1}>Ibu Celine</option>
-                  <option value={2}>Kaka Nurul</option>
-                </Select>
-
-              </FormControl>
-            </div>
-          )
-        }
-
-        <div className={classes.field}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={checkedB}
-                onChange={event =>
-                  this.handleChange(event.target.checked, 'checkedB')
-                }
-                name="checkedB"
-                color="primary"
-              />
-            }
-            label="Buat data pemesan baru"
-          />
-        </div>
-
-        {checkedB && (
-          <div className={classes.field}>
-            <Grid
-              container
-              spacing={2}
-            >
-              <Grid
-                item
-                md={4}
-                xs={12}
-              >
-                <TextField
-                  className={classes.textField}
-                  onChange={e => this.handleChange(e, "name")}
-                  label="Nama"
-                  margin="dense"
-                  required
-                  value={name}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid
-                item
-                md={8}
-                xs={12}
-              >
-                <TextField
-                  className={classes.textField}
-                  onChange={e => this.handleChange(e, "email")}
-                  label="Email"
-                  margin="dense"
-                  required
-                  value={email}
-                  variant="outlined"
-                  type="email"
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  className={classes.textField}
-                  label="Alamat"
-                  name="password"
-                  margin="dense"
-                  required
-                  onChange={event =>
-                    this.handleChange(event.target.value, 'password')
-                  }
-                  type="password"
-                  value={password}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  className={classes.textField}
-                  label="Nomor HP"
-                  name="passwordConfirm"
-                  margin="dense"
-                  required
-                  onChange={event =>
-                    this.handleChange(event.target.value, 'passwordConfirm')
-                  }
-                  type="password"
-                  value={passwordConfirm}
-                  variant="outlined"
-                />
-              </Grid>
-            </Grid>
-          </div>
-        )}
-      </>),
-      (<>
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Pilih Tanggal Booking
-          </Typography>
-        </div>
-        <div className={classes.field}>
-          <DayPicker
-            onDayClick={this.handleDayClick}
-            selectedDays={[
-              dataDate ? new Date(dataDate) : null,
-            ]}
-          />
-        </div>
-
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Pilih Jam Booking
-          </Typography>
-        </div>
-        {!date && (
-          <div className={classes.field}>
-            <Typography
-              className={classes.title}
-              variant="body1"
-            >
-              Pilih tanggal terlebih dahulu
-            </Typography>
-
-          </div>)}
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={3}
-          >
-            {Array(12).fill().map((x, i) => i + 8).map((data, index) => {
-              const time = data + 1;
-              return (
-                <Grid
-                  item
-                  key={time}
-                  lg={3}
-                  md={4}
-                  xs={6}
-                  onClick={() => date ? this.handleChange(time, "selectedTimes") : null}
-                >
-                  <BookingCard checked={selectedTimes == time} title={"Jam " + time} status={"Tersedia"} />
-                </Grid>
-              )
-            })
-            }
-          </Grid>
-        </div></>),
-      (<>
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Pilih Pegawai
-          </Typography>
-        </div>
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={3}
-          >
-            {users.map((user, index) => (
-              <Grid
-                item
-                key={user.id}
-                lg={3}
-                md={6}
-                sm={6}
-                xs={12}
-                onClick={() => this.handleChange(user.id, "selectedUsers")}
-              >
-                <ProductCard
-                  image={user.avatarUrl}
-                  title={user.name}
-                  secondary={""}
-                  checked={selectedUsers === user.id}
-                />
-              </Grid>
-            ))
-            }
-          </Grid>
-        </div></>),
     ];
 
 
@@ -753,7 +427,7 @@ class Account extends Component {
             <PortletHeader>
               <PortletLabel
                 subtitle="Silahkan isi informasi dibawah ini"
-                title="Pesanan"
+                title="Metode Pembayaran"
               />
             </PortletHeader>
             <PortletContent noPadding>
@@ -765,50 +439,14 @@ class Account extends Component {
               </form>
             </PortletContent>
             <PortletFooter className={classes.portletFooter}>
-
-              {
-                isSubmitTab ? (
-                  <>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      disabled={!isBackTab}
-                      style={{ marginRight: 10 }}
-                      onClick={() => this.handleTab(tab, false)}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      disabled={(!selectedTimes || !selectedUsers || !selectedProducts.length)}
-                      onClick={() => this.handleSubmit()}
-                    >
-                      Booking
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      disabled={!isBackTab}
-                      style={{ marginRight: 10 }}
-                      onClick={() => this.handleTab(tab, false)}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      disabled={!isNextTab}
-                      onClick={() => this.handleTab(tab, true)}
-                    >
-                      Next
-                    </Button>
-                  </>
-                )
-              }
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={(!selectedTimes || !selectedUsers || !selectedProducts.length)}
+                onClick={() => this.handleSubmit()}
+              >
+                Bayar
+              </Button>
             </PortletFooter>
           </Portlet>
 
@@ -850,15 +488,6 @@ class Account extends Component {
                             primary={product.title}
                             secondary={"Rp. " + product.price}
                           />
-                          <ListItemSecondaryAction>
-                            <IconButton
-                              edge="end"
-                              aria-label="delete"
-                              onClick={() => this.handleSelectOne(product.id, "selectedProducts")}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
                         </ListItem>
                       ))}
                     </List>
@@ -883,7 +512,6 @@ class Account extends Component {
                   Tanggal booking
                 </Typography>
                 <DayPicker
-                  onDayClick={this.handleDayClick}
                   selectedDays={[
                     dataDate ? new Date(dataDate) : null,
                   ]}
@@ -919,7 +547,7 @@ class Account extends Component {
             </PortletContent>
           </Portlet>
         </Grid>
-      </Grid>
+      </Grid >
     );
   }
 }

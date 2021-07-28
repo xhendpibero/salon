@@ -32,10 +32,10 @@ class Product extends Component {
 
   render() {
     const { classes, location, history } = this.props;
-    const title = location.search ? "Edit" : "Create";
+    const title = location.search ? "Edit" : "Tambah";
 
     return (
-      <DashboardLayout title={title + " Product"}>
+      <DashboardLayout title={title + " Layanan"}>
         <div className={classes.root}>
           <Button
             className={classes.importButton}
@@ -43,7 +43,7 @@ class Product extends Component {
             size="small"
             onClick={() => history.push({ pathname: '/products' })}
           >
-            <ArrowBack className={classes.importIcon} /> Back
+            <ArrowBack className={classes.importIcon} /> Kembali
           </Button>
 
           <Grid

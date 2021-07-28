@@ -91,6 +91,7 @@ class ProductsTable extends Component {
   render() {
     const { classes, className, products } = this.props;
     const { activeTab, selectedProducts, rowsPerPage, page } = this.state;
+    const role = localStorage.getItem("role") === "admin";
 
     const rootClassName = classNames(classes.root, className);
 
@@ -102,19 +103,21 @@ class ProductsTable extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell align="left">
-                    <Checkbox
-                      checked={selectedProducts.length === products.length}
-                      color="primary"
-                      indeterminate={
-                        selectedProducts.length > 0 &&
-                        selectedProducts.length < products.length
-                      }
-                      onChange={this.handleSelectAll}
-                    />
-                    Service Name
+                    {role && (
+                      <Checkbox
+                        checked={selectedProducts.length === products.length}
+                        color="primary"
+                        indeterminate={
+                          selectedProducts.length > 0 &&
+                          selectedProducts.length < products.length
+                        }
+                        onChange={this.handleSelectAll}
+                      />
+                    )}
+                    Nama Layanan
                   </TableCell>
-                  <TableCell align="left">ID</TableCell>
-                  <TableCell align="left">Price</TableCell>
+                  <TableCell align="left">Deskripsi</TableCell>
+                  <TableCell align="left">Harga</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -132,14 +135,16 @@ class ProductsTable extends Component {
                     >
                       <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
-                          <Checkbox
-                            checked={selectedProducts.indexOf(product.id) !== -1}
-                            color="primary"
-                            onChange={event =>
-                              this.handleSelectOne(event, product.id)
-                            }
-                            value="true"
-                          />
+                          {role && (
+                            <Checkbox
+                              checked={selectedProducts.indexOf(product.id) !== -1}
+                              color="primary"
+                              onChange={event =>
+                                this.handleSelectOne(event, product.id)
+                              }
+                              value="true"
+                            />
+                          )}
                           <Avatar
                             className={classes.avatar}
                             src={product.imageUrl}
@@ -157,7 +162,7 @@ class ProductsTable extends Component {
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {product.id}
+                        {product.description.slice(0, 20)}...
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {product.price}

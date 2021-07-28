@@ -30,7 +30,7 @@ class ProductPicture extends Component {
         <PortletContent>
           <div className={classes.details}>
             <div className={classes.info}>
-              <Typography variant="h4">Image Service</Typography>
+              <Typography variant="h4">Foto Layanan</Typography>
             </div>
           </div>
           <Avatar
@@ -45,9 +45,9 @@ class ProductPicture extends Component {
             color="primary"
             variant="text"
           >
-            Upload picture
+            Unggah Foto
           </Button>
-          <Button variant="text">Remove picture</Button>
+          <Button variant="text">Hapus Foto</Button>
         </PortletFooter>
       </Portlet>
     );

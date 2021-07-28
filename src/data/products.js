@@ -25,7 +25,7 @@ export default [
     id: 'DEV774585',
     title: 'Black Hair Coloring',
     description:
-      'Slack is a cloud-based set of team collaboration tools and services, founded by Stewart Butterfield.',
+      'Ubah warna rambutmu',
     imageUrl: '/images/products/product_3.png',
     totalDownloads: '857',
     price: '120.000',

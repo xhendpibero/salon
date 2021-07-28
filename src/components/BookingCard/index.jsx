@@ -18,7 +18,7 @@ import styles from './styles';
 
 class ProductCard extends Component {
   render() {
-    const { classes, className, checked, title, status } = this.props;
+    const { classes, className, checked, title, status, noWrap } = this.props;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -30,10 +30,10 @@ class ProductCard extends Component {
             className={classes.title}
             variant="h4"
           >
-            Jam {title}
+            {title}
           </Typography>
           <Typography
-            className={classes.description}
+            className={noWrap ? classes.description2 : classes.description}
             variant="body1"
           >
             {

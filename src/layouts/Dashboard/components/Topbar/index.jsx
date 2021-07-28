@@ -77,6 +77,7 @@ class Topbar extends Component {
     const { history } = this.props;
 
     localStorage.setItem('isAuthenticated', false);
+    localStorage.setItem('role', null);
     history.push('/sign-in');
   };
 

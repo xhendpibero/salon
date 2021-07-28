@@ -30,13 +30,13 @@ class AccountProfile extends Component {
         <PortletContent>
           <div className={classes.details}>
             <div className={classes.info}>
-              <Typography variant="h2">John Doe</Typography>
+              <Typography variant="h2">Developer</Typography>
               <Typography variant="h6">Admin</Typography>
               <Typography
                 className={classes.locationText}
                 variant="body1"
               >
-                Rm. Valcea, Romania
+                Jl. Haji Ocen, Bekasi
               </Typography>
               <Typography
                 className={classes.dateText}
@@ -57,9 +57,9 @@ class AccountProfile extends Component {
             color="primary"
             variant="text"
           >
-            Upload picture
+            Unggah Foto
           </Button>
-          <Button variant="text">Remove picture</Button>
+          <Button variant="text">Hapus Foto</Button>
         </PortletFooter>
       </Portlet>
     );

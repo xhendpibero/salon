@@ -48,7 +48,7 @@ class ProductCard extends Component {
             className={classes.description}
             variant="body1"
           >
-            Price Rp {product.price}
+            Harga Rp {product.price}
           </Typography>
         </div>
         {/* <div className={classes.stats}>

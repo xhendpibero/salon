@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 // Externals
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 // Material helpers
@@ -18,7 +17,7 @@ import styles from './styles';
 
 class ProductCard extends Component {
   render() {
-    const { classes, className, image, title, secondary, checked } = this.props;
+    const { classes, className, description, image, title, secondary, checked } = this.props;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -55,17 +54,16 @@ class ProductCard extends Component {
           >
             {secondary}
           </Typography>
-
+          <Typography
+            className={classes.description2}
+            variant="body2"
+          >
+            {description}
+          </Typography>
         </div>
       </Paper>
     );
   }
 }
-
-ProductCard.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
-  product: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(ProductCard);

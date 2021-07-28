@@ -16,7 +16,8 @@ import { Button, IconButton } from '@material-ui/core';
 import {
   ArrowDownward as ArrowDownwardIcon,
   ArrowUpward as ArrowUpwardIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
+  VisibilityOff
 } from '@material-ui/icons';
 
 // Shared components
@@ -61,17 +62,26 @@ class UsersToolbar extends Component {
         <div className={classes.row}>
           <SearchInput
             className={classes.searchInput}
-            placeholder="Search employee"
+            placeholder="Cari pegawai"
           />
           <span className={classes.spacer} />
           {/* <DisplayMode mode="list" /> */}
           {selectedUsers.length > 0 && (
-            <IconButton
-              className={classes.deleteButton}
-              onClick={this.handleDeleteUsers}
-            >
-              <DeleteIcon />
-            </IconButton>
+            <>
+              <IconButton
+                className={classes.hideButton}
+                onClick={this.handleDeleteUsers}
+              >
+                <VisibilityOff />
+              </IconButton>
+
+              <IconButton
+                className={classes.deleteButton}
+                onClick={this.handleDeleteUsers}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </>
           )}
           <Button
             color="primary"
@@ -79,7 +89,7 @@ class UsersToolbar extends Component {
             variant="outlined"
             onClick={() => history.push({ pathname: '/users/employee' })}
           >
-            Add
+            Tambah
           </Button>
 
         </div>

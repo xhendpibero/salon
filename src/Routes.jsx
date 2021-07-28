@@ -9,8 +9,10 @@ import UserList from './views/UserList';
 import CustomerList from './views/CustomerList';
 import Customer from './views/Customer';
 import OrderList from './views/OrderList';
-import Order from './views/Order';
 import AddOrder from './views/AddOrder';
+import Payment from './views/Payment';
+import PaymentProof from './views/PaymentProof';
+import PaymentDetail from './views/PaymentDetail';
 import Account from './views/Account';
 import Employee from './views/Employee';
 import Product from './views/Product';
@@ -50,14 +52,24 @@ export default class Routes extends Component {
         path="/orders"
       />
       <ProtectedRoute
-        component={Order}
-        exact
-        path="/orders/detail"
-      />
-      <ProtectedRoute
         component={AddOrder}
         exact
         path="/orders/add"
+      />
+      <ProtectedRoute
+        component={Payment}
+        exact
+        path="/orders/payment"
+      />
+      <ProtectedRoute
+        component={PaymentProof}
+        exact
+        path="/orders/payment/proof"
+      />
+      <ProtectedRoute
+        component={PaymentDetail}
+        exact
+        path="/orders/detail"
       />
       <ProtectedRoute
         component={CustomerList}

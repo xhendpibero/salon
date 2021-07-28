@@ -196,18 +196,18 @@ class SignUp extends Component {
                     className={classes.title}
                     variant="h2"
                   >
-                    Create new account
+                    Buat Akun Baru
                   </Typography>
                   <Typography
                     className={classes.subtitle}
                     variant="body1"
                   >
-                    Use your work email to create new account... it's free.
+                    Membuat akun baru... gratis.
                   </Typography>
                   <div className={classes.fields}>
                     <TextField
                       className={classes.textField}
-                      label="First name"
+                      label="Nama Depan"
                       name="firstName"
                       onChange={event =>
                         this.handleFieldChange('firstName', event.target.value)
@@ -225,7 +225,7 @@ class SignUp extends Component {
                     )}
                     <TextField
                       className={classes.textField}
-                      label="Last name"
+                      label="Nama Belakang"
                       onChange={event =>
                         this.handleFieldChange('lastName', event.target.value)
                       }
@@ -242,7 +242,7 @@ class SignUp extends Component {
                     )}
                     <TextField
                       className={classes.textField}
-                      label="Email address"
+                      label="Alamat Email"
                       name="email"
                       onChange={event =>
                         this.handleFieldChange('email', event.target.value)
@@ -260,7 +260,7 @@ class SignUp extends Component {
                     )}
                     <TextField
                       className={classes.textField}
-                      label="Password"
+                      label="Kata Sandi"
                       onChange={event =>
                         this.handleFieldChange('password', event.target.value)
                       }
@@ -290,7 +290,7 @@ class SignUp extends Component {
                         className={classes.policyText}
                         variant="body1"
                       >
-                        I have read the &nbsp;
+                        Saya telah membaca &nbsp;
                         <Link
                           className={classes.policyUrl}
                           to="#"
@@ -328,19 +328,19 @@ class SignUp extends Component {
                       size="large"
                       variant="contained"
                     >
-                      Sign up now
+                      Daftar Sekarang
                     </Button>
                   )}
                   <Typography
                     className={classes.signIn}
                     variant="body1"
                   >
-                    Have an account?{' '}
+                    Sudah punya akun Celine Salon?{' '}
                     <Link
                       className={classes.signInUrl}
                       to="/sign-in"
                     >
-                      Sign In
+                      Masuk
                     </Link>
                   </Typography>
                 </form>

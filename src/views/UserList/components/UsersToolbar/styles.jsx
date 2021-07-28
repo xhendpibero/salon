@@ -13,6 +13,10 @@ export default theme => ({
     color: theme.palette.danger.main,
     marginRight: theme.spacing.unit
   },
+  hideButton: {
+    color: theme.palette.info.main,
+    marginRight: theme.spacing.unit
+  },
   importButton: {
     marginRight: theme.spacing.unit
   },
