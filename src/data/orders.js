@@ -5,7 +5,13 @@ export default [
     customer: 'DEV705225',
     products: ['DEV738089'],
     createdAt: 1555016400000,
-    status: 'Perlu konfirmasi'
+    status: 'Perlu konfirmasi',
+    services: ["Kids Haircut", "Hair Repair Treatment"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   },
   {
     id: 'DEV898812',
@@ -13,7 +19,13 @@ export default [
     customer: 'DEV696649',
     products: ['DEV774585'],
     createdAt: 1555016400000,
-    status: 'Pesanan berhasil'
+    status: 'Pesanan berhasil',
+    services: ["Kids Haircut"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   },
   {
     id: 'DEV793788',
@@ -21,15 +33,27 @@ export default [
     customer: 'DEV702967',
     products: ['DEV654476'],
     createdAt: 1554930000000,
-    status: 'Pesanan batal'
+    status: 'Pesanan batal',
+    services: ["Kids Haircut", "Hair Repair Treatment"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   },
   {
     id: 'DEV841788',
-    amount: 96.43,
-    customer: 'DEV663348',
-    products: ['DEV654476', 'DEV773559'],
-    createdAt: 1554757200000,
-    status: 'Perlu konfirmasi'
+    amount: 10.99,
+    customer: 'DEV702967',
+    products: ['DEV654476'],
+    createdAt: 1554930000000,
+    status: 'Pesanan batal',
+    services: ["Kids Haircut", "Hair Repair Treatment"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   },
   {
     id: 'DEV552540',
@@ -37,7 +61,13 @@ export default [
     customer: 'DEV728981',
     products: ['DEV738089'],
     createdAt: 1554670800000,
-    status: 'Pesanan berhasil'
+    status: 'Pesanan berhasil',
+    services: ["Kids Haircut"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   },
   {
     id: 'DEV783653',
@@ -45,7 +75,13 @@ export default [
     customer: 'DEV883167',
     products: ['DEV773559'],
     createdAt: 1554325200000,
-    status: 'Pesanan berhasil'
+    status: 'Pesanan berhasil',
+    services: ["Kids Haircut"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   },
   {
     id: 'DEV593146',
@@ -53,7 +89,13 @@ export default [
     customer: 'DEV883167',
     products: ['DEV795381'],
     createdAt: 1554325200000,
-    status: 'Pesanan batal'
+    status: 'Pesanan batal',
+    services: ["Kids Haircut"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   },
   {
     id: 'DEV593146',
@@ -61,7 +103,13 @@ export default [
     customer: 'DEV883167',
     products: ['DEV795381'],
     createdAt: 1554325200000,
-    status: 'Pesanan batal'
+    status: 'Pesanan batal',
+    services: ["Kids Haircut"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   },
   {
     id: 'DEV593146',
@@ -69,6 +117,12 @@ export default [
     customer: 'DEV883167',
     products: ['DEV795381'],
     createdAt: 1554325200000,
-    status: 'Pesanan batal'
+    status: 'Pesanan batal',
+    services: ["Kids Haircut"],
+    price: 240000,
+    employee: "Ekaterina Tankova",
+    norek: "9002312412",
+    nominalDp: 24000,
+    user: "Okta",
   }
 ];

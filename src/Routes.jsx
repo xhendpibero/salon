@@ -17,6 +17,7 @@ import Account from './views/Account';
 import Employee from './views/Employee';
 import Product from './views/Product';
 import Settings from './views/Settings';
+import Report from './views/Report';
 import SignUp from './views/SignUp';
 import SignIn from './views/SignIn';
 import UnderDevelopment from './views/UnderDevelopment';
@@ -60,6 +61,11 @@ export default class Routes extends Component {
         component={Payment}
         exact
         path="/orders/payment"
+      />
+      <ProtectedRoute
+        component={Report}
+        exact
+        path="/orders/report"
       />
       <ProtectedRoute
         component={PaymentProof}

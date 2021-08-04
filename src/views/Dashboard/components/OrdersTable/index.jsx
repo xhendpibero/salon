@@ -142,7 +142,7 @@ class OrdersTable extends Component {
                         title="Sort"
                       >
                         <TableSortLabel
-                          active
+                          // active
                           direction="desc"
                         >
                           Tanggal Pemesanan

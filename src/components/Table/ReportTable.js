@@ -73,9 +73,14 @@ class OrdersTable extends Component {
                                     <TableRow>
                                         <TableCell>ID</TableCell>
                                         <TableCell align="left">Pemesan</TableCell>
+                                        <TableCell align="left">Pegawai</TableCell>
+                                        <TableCell align="left">Layanan</TableCell>
+                                        <TableCell align="left">Harga</TableCell>
+                                        <TableCell align="left">Nomor rek</TableCell>
+                                        <TableCell align="left">Nominal DP</TableCell>
                                         <TableCell
                                             align="left"
-                                            sortDirection="asc"
+                                            sortDirection="desc"
                                         >
                                             <Tooltip
                                                 enterDelay={300}
@@ -83,16 +88,13 @@ class OrdersTable extends Component {
                                             >
                                                 <TableSortLabel
                                                     // active
-                                                    direction="asc"
+                                                    direction="desc"
                                                 >
                                                     Tanggal Pemesanan
                                                 </TableSortLabel>
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell align="left">Status</TableCell>
-                                        {role && (
-                                            <TableCell align="left">Aksi</TableCell>
-                                        )}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -102,20 +104,26 @@ class OrdersTable extends Component {
                                             hover
                                             key={order.id}
                                         >
-                                            <TableCell>
-                                                <div className={classes.tableCellInner}>
-                                                    <Link to="orders/detail?id=1">
-                                                        <Typography
-                                                            className={classes.nameText}
-                                                            variant="body1"
-                                                        >
-                                                            {order.id}
-                                                        </Typography>
-                                                    </Link>
-                                                </div>
+                                            <TableCell className={classes.customerCell}>
+                                                {order.id}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
                                                 {order.customer.name}
+                                            </TableCell>
+                                            <TableCell className={classes.customerCell}>
+                                                {order.employee}
+                                            </TableCell>
+                                            <TableCell className={classes.customerCell}>
+                                                {order.services.toString().replace(",", ", ")}
+                                            </TableCell>
+                                            <TableCell className={classes.customerCell}>
+                                                {order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                            </TableCell>
+                                            <TableCell className={classes.customerCell}>
+                                                {order.norek}
+                                            </TableCell>
+                                            <TableCell className={classes.customerCell}>
+                                                {order.nominalDp.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
                                             </TableCell>
                                             <TableCell>
                                                 {moment(order.createdAt).format('DD/MM/YYYY')}
@@ -130,28 +138,6 @@ class OrdersTable extends Component {
                                                     {order.status}
                                                 </div>
                                             </TableCell>
-                                            {role && (
-                                                <TableCell align="left">
-                                                    {order.status === "Perlu konfirmasi" && (
-                                                        <>
-                                                            <Button
-                                                                color="primary"
-                                                                variant="contained"
-                                                                style={{ marginRight: 10 }}
-                                                            >
-                                                                Konfirmasi
-                                                            </Button>
-                                                            <Button
-                                                                color="secondary"
-                                                                variant="contained"
-                                                            >
-                                                                Batalkan
-                                                            </Button>
-                                                        </>
-
-                                                    )}
-                                                </TableCell>
-                                            )}
                                         </TableRow>
                                     ))}
                                 </TableBody>

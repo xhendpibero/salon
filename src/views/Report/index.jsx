@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-
+import { convertArrayToCSV } from 'convert-array-to-csv';
 // Externals
 import compose from 'recompose/compose';
 
@@ -28,7 +28,7 @@ import { getOrders } from 'services/order';
 // import { OrdersTable } from './components';
 
 // components
-import { Toolbar, OrdersTable } from '../../components';
+import { Toolbar, ReportTable } from '../../components';
 
 // Component styles
 import styles from './styles';
@@ -38,7 +38,7 @@ class OrdersList extends Component {
 
   state = {
     isLoading: false,
-    limit: 6,
+    limit: 60,
     orders: [],
     ordersTotal: 0,
     selected: [],
@@ -87,7 +87,7 @@ class OrdersList extends Component {
   renders() {
     const { classes } = this.props;
     const { isLoading, orders, ordersTotal } = this.state;
-
+    console.log({ orders })
     if (isLoading) {
       return (
         <div className={classes.progressWrapper}>
@@ -103,34 +103,67 @@ class OrdersList extends Component {
     }
 
     return (
-      <OrdersTable className={classes.item} isLoading={isLoading} orders={orders} ordersTotal={ordersTotal} />
+      <ReportTable className={classes.item} isLoading={isLoading} orders={orders} ordersTotal={ordersTotal} />
     );
   }
 
+  exportToCsv = (filename, rows) => {
+    const orders = rows.map((r) => {
+      return {
+        nama: r.customer.name,
+        email: r.customer.email,
+        karyawan: r.employee,
+        nominalDp: r.nominalDp,
+        nomorRekening: r.norek,
+        layanan: r.services.toString().replace(",", "; "),
+        harga: r.price,
+        metodePembayaran: "BRI",
+        status: r.status,
+      }
+    });
+    let csv = '';
+    let header = Object.keys(orders[0]).join(',') ? Object.keys(orders[0]).join(',') : "null";
+    let values = orders.map(o => Object.values(o).join(',')).join('\n') ? orders.map(o => Object.values(o).join(',')).join('\n') : null;
+
+    csv += header + '\n' + values;
+    console.log({ csv })
+
+
+
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+      navigator.msSaveBlob(blob, filename);
+    } else {
+      var link = document.createElement("a");
+      if (link.download !== undefined) { // feature detection
+        // Browsers that support HTML5 download attribute
+        var url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  }
+
   render() {
-    const { classes, history } = this.props;
+    const { classes } = this.props;
+    const { orders } = this.state;
     const role = localStorage.getItem("role") === "admin";
 
     return (
-      <DashboardLayout title="Pesanan">
+      <DashboardLayout title="Laporan Pesanan">
         <div className={classes.root}>
           <Toolbar
-            placeholder="Cari pesanan"
-            buttonAdd={role ? "Buat Laporan" : "Buat pesanan baru"}
+            buttonAdd={role ? "Unduh Laporan" : "Buat pesanan baru"}
             selectedUsers={[]}
-            onChange={(e) => console.log(e.target.value)}
-            onClick={() => role ? history.push({ pathname: '/orders/report' }) : history.push({ pathname: '/orders/add' })}
+            onClick={() => {
+              this.exportToCsv("my_data.csv", orders)
+            }}
           />
           <div className={classes.content}>{this.renders()}</div>
-          <div className={classes.pagination}>
-            <Typography variant="caption">1-6 dari 20</Typography>
-            <IconButton>
-              <ChevronLeftIcon />
-            </IconButton>
-            <IconButton>
-              <ChevronRightIcon />
-            </IconButton>
-          </div>
         </div>
       </DashboardLayout>
     );

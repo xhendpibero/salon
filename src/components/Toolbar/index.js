@@ -29,11 +29,13 @@ class Toolbar extends Component {
         return (
             <div className={rootClassName}>
                 <div className={classes.row}>
-                    <SearchInput
-                        className={classes.searchInput}
-                        placeholder={this.props.placeholder}
-                        onChange={this.props.onChange}
-                    />
+                    {this.props.placeholder && (
+                        <SearchInput
+                            className={classes.searchInput}
+                            placeholder={this.props.placeholder}
+                            onChange={this.props.onChange}
+                        />
+                    )}
                     <span className={classes.spacer} />
                     {selectedUsers.length > 0 && (
                         <IconButton
@@ -43,16 +45,14 @@ class Toolbar extends Component {
                             <DeleteIcon />
                         </IconButton>
                     )}
-                    {buttonAdd && (
-                        <Button
-                            color="primary"
-                            size="small"
-                            variant="outlined"
-                            onClick={this.props.onClick}
-                        >
-                            {buttonAdd}
-                        </Button>
-                    )}
+                    <Button
+                        color="primary"
+                        size="small"
+                        variant="outlined"
+                        onClick={this.props.onClick}
+                    >
+                        {buttonAdd}
+                    </Button>
                 </div>
             </div>
         );

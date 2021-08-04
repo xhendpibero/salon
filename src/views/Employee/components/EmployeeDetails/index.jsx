@@ -47,9 +47,9 @@ class Employee extends Component {
     country: 'USA'
   };
 
-  handleChange = e => {
+  handleChange = (e, name) => {
     this.setState({
-      state: e.target.value
+      [name]: e.target.value
     });
   };
 
@@ -81,6 +81,7 @@ class Employee extends Component {
                 label="Nama Panjang"
                 margin="dense"
                 required
+                onChange={e => this.handleChange(e, "firstName")}
                 value={firstName}
                 variant="outlined"
               />
@@ -91,6 +92,7 @@ class Employee extends Component {
                 label="Nomor Hp"
                 margin="dense"
                 type="number"
+                onChange={e => this.handleChange(e, "phone")}
                 value={phone}
                 variant="outlined"
               />
@@ -101,6 +103,7 @@ class Employee extends Component {
                 label="Alamat"
                 margin="dense"
                 required
+                onChange={e => this.handleChange(e, "country")}
                 value={country}
                 variant="outlined"
               />

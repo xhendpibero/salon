@@ -37,8 +37,8 @@ class Footer extends Component {
           &copy; BarberShop WebAdmin. 2021
         </Typography>
         <Typography variant="caption">
-          Created with love for the environment. By designers and developers who
-          love to work together in offices!
+          Dibuat dengan cinta lingkungan. Oleh desainer dan pengembang yang
+          suka bekerja sama di kantor!
         </Typography>
       </div>
     );

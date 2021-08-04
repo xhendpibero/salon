@@ -10,5 +10,6 @@ export { default as SearchInput } from './SearchInput';
 export { default as Status } from './Status';
 export { default as Toolbar } from './Toolbar';
 export { default as OrdersTable } from './Table/OrdersTable';
+export { default as ReportTable } from './Table/ReportTable';
 export { default as ProductCard } from './ProductCard';
 export { default as BookingCard } from './BookingCard';
