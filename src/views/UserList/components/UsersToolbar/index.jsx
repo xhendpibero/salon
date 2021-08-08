@@ -66,23 +66,25 @@ class UsersToolbar extends Component {
           />
           <span className={classes.spacer} />
           {/* <DisplayMode mode="list" /> */}
-          {selectedUsers.length > 0 && (
-            <>
-              <IconButton
-                className={classes.hideButton}
-                onClick={this.handleDeleteUsers}
-              >
-                <VisibilityOff />
-              </IconButton>
+          {/* {selectedUsers.length > 0 && ( */}
+          <>
+            <IconButton
+              className={classes.hideButton}
+              style={!selectedUsers.length > 0 ? ({ color: "#eee" }) : null}
+              onClick={selectedUsers.length > 0 ? this.handleDeleteUsers : null}
+            >
+              <VisibilityOff />
+            </IconButton>
 
-              <IconButton
-                className={classes.deleteButton}
-                onClick={this.handleDeleteUsers}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </>
-          )}
+            <IconButton
+              className={classes.deleteButton}
+              style={!selectedUsers.length > 0 ? ({ color: "#eee" }) : null}
+              onClick={selectedUsers.length > 0 ? this.handleDeleteUsers : null}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </>
+          {/* )} */}
           <Button
             color="primary"
             size="small"

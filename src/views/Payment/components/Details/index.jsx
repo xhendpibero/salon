@@ -103,21 +103,25 @@ class Account extends Component {
     bank: 0,
     bankList: [
       {
-        name: "BCA",
+        name: "Tunai",
         value: 0,
-        rek: "0913 2012 001"
       },
       {
-        name: "BRI",
+        name: "DP",
         value: 1,
-        rek: "0913 2012 002"
+      },
+    ],
+    amount: 0,
+    amountList: [
+      {
+        name: "Tunai",
+        value: 0,
       },
       {
-        name: "BTPN",
-        value: 2,
-        rek: "0913 2012 003"
+        name: "DP",
+        value: 1,
       },
-    ]
+    ],
   };
 
   async getUsers() {
@@ -208,6 +212,14 @@ class Account extends Component {
     });
   };
 
+  handleChangeNumber = (e, name) => {
+    let number = e && e.target && e.target.value ? e.target.value : e;
+    number = String(number).replace(/[^0-9.]/g, '') - 0;
+    this.setState({
+      [name]: number,
+    });
+  };
+
   handleDayClick = (day, { selected }) => {
     this.setState({
       date: selected ? undefined : day,
@@ -242,6 +254,8 @@ class Account extends Component {
       bank,
       bankList,
       address,
+      amount,
+      amountList,
     } = this.state;
     var today = new Date(date);
     var dd = today.getDate();
@@ -266,6 +280,8 @@ class Account extends Component {
         tab,
         bank,
         bankList,
+        amount,
+        amountList,
       }
     )
 
@@ -293,6 +309,7 @@ class Account extends Component {
 
     const mainTab = [
       (<>
+        {/* 
         <div className={classes.field}>
           <Typography
             className={classes.title}
@@ -322,8 +339,8 @@ class Account extends Component {
               <option value={2}>BTPN</option>
             </Select>
           </FormControl>
-        </div>
-        <div className={classes.field}>
+        </div> */}
+        {/* <div className={classes.field}>
           <Grid
             container
             spacing={3}
@@ -335,7 +352,7 @@ class Account extends Component {
               <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek} />
             </Grid>
           </Grid>
-        </div>
+        </div> */}
 
         <div className={classes.field}>
           <Typography
@@ -374,7 +391,7 @@ class Account extends Component {
             >
               <TextField
                 className={classes.textField}
-                onChange={e => this.handleChange(e, "email")}
+                onChange={e => this.handleChangeNumber(e, "email")}
                 label="Nomor Rek"
                 margin="dense"
                 required
@@ -383,28 +400,75 @@ class Account extends Component {
                 type="text"
               />
             </Grid>
+          </Grid>
+        </div>
+
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Nominal Pembayaran
+          </Typography>
+        </div>
+
+        <div className={classes.field}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-controlled-open-select-label">Pembayaran</InputLabel>
+            <Select
+              labelId="demo-controlled-open-select-label"
+              id="demo-controlled-open-select"
+              value={amount}
+              onChange={e => this.handleChange(e, "amount")}
+              inputProps={{
+                name: 'amount',
+                id: 'amount-simple',
+              }}
+              native
+            >
+              <option aria-label="None" value="" />
+              {
+                amountList.map(e =>
+                  <option value={e.value}>{e.name}</option>
+                )
+              }
+            </Select>
+          </FormControl>
+        </div>
+
+        {amount == 1 && (
+          <div className={classes.field}>
+            <Grid
+              item
+              xs={12}
+            >
+              <Typography
+                className={classes.title}
+              >
+                minimal 10.000
+              </Typography>
+            </Grid>
             <Grid
               item
               xs={12}
             >
               <TextField
                 className={classes.textField}
-                label="Nominal"
+                label="Nominal Pembayaran"
                 name="address"
-                helperText="DP 10% dari total harga"
+                helperText="harus lebih besar dari 10% total harga"
                 margin="dense"
                 required
                 onChange={event =>
-                  this.handleChange(event.target.value, 'address')
+                  this.handleChangeNumber(event.target.value, 'address')
                 }
                 type="text"
                 value={address}
                 variant="outlined"
               />
             </Grid>
-          </Grid>
-        </div>
-
+          </div>
+        )}
       </>),
     ];
 

@@ -10,6 +10,20 @@ export default theme => ({
     display: 'flex',
     alignItems: 'center'
   },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
   avatar: {
     backgroundColor: theme.palette.primary.main,
     display: 'inline-flex',

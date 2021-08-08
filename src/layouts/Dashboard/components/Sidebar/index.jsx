@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, withRouter } from 'react-router-dom';
 
 // Externals
 import classNames from 'classnames';
+import compose from 'recompose/compose';
 import PropTypes from 'prop-types';
 
 // Material helpers
@@ -35,6 +36,15 @@ import {
 import styles from './styles';
 
 class Sidebar extends Component {
+
+  handleSignOut = () => {
+    const { history } = this.props;
+
+    localStorage.setItem('isAuthenticated', false);
+    localStorage.setItem('role', null);
+    history.push('/sign-in');
+  };
+
   render() {
     const { classes, className } = this.props;
     const role = localStorage.getItem("role") === "admin";
@@ -49,7 +59,7 @@ class Sidebar extends Component {
             to="/"
           >
             <img
-              alt="Barbershop logo"
+              alt="Celine Salon logo"
               className={classes.logoImage}
               src="/images/logos/logo.png"
             />
@@ -76,6 +86,19 @@ class Sidebar extends Component {
           >
             {role ? "Admin" : "User"}
           </Typography>
+          <Link
+            style={{ marginTop: 5 }}
+            to="/"
+          >
+            <Typography
+              className={classes.bioText}
+              variant="h6"
+              style={{ color: "#ED4740" }}
+              onClick={this.handleSignOut}
+            >
+              Logout
+            </Typography>
+          </Link>
         </div>
         <Divider className={classes.profileDivider} />
         <List
@@ -143,22 +166,22 @@ class Sidebar extends Component {
                   primary="Pegawai"
                 />
               </ListItem>
+              <ListItem
+                activeClassName={classes.activeListItem}
+                className={classes.listItem}
+                component={NavLink}
+                to="/products"
+              >
+                <ListItemIcon className={classes.listItemIcon}>
+                  <ShopIcon />
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.listItemText }}
+                  primary="Layanan"
+                />
+              </ListItem>
             </>
           )}
-          <ListItem
-            activeClassName={classes.activeListItem}
-            className={classes.listItem}
-            component={NavLink}
-            to="/products"
-          >
-            <ListItemIcon className={classes.listItemIcon}>
-              <ShopIcon />
-            </ListItemIcon>
-            <ListItemText
-              classes={{ primary: classes.listItemText }}
-              primary="Layanan"
-            />
-          </ListItem>
 
         </List>
         <Divider className={classes.listDivider} />
@@ -224,4 +247,7 @@ Sidebar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Sidebar);
+export default compose(
+  withRouter,
+  withStyles(styles)
+)(Sidebar);

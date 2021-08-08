@@ -409,7 +409,7 @@ class Account extends Component {
             >
               <TextField
                 className={classes.textField}
-                label="Nominal"
+                label="Nominal Pembayaran"
                 name="address"
                 margin="dense"
                 disabled

@@ -110,39 +110,24 @@ class Dashboard extends Component {
             >
               <Grid
                 item
-                lg={3}
-                sm={6}
-                xl={3}
+                lg={4}
                 xs={12}
               >
                 <Budget className={classes.item} title={"TANGGAL"} value={new Date()} />
               </Grid>
               <Grid
                 item
-                lg={3}
-                sm={6}
-                xl={3}
+                lg={4}
                 xs={12}
               >
                 <Users className={classes.item} title={"TOTAL PELANGGAN"} value={20} />
               </Grid>
               <Grid
                 item
-                lg={3}
-                sm={6}
-                xl={3}
+                lg={4}
                 xs={12}
               >
                 <Progress className={classes.item} title={"TOTAL KARYAWAN"} value={10} />
-              </Grid>
-              <Grid
-                item
-                lg={3}
-                sm={6}
-                xl={3}
-                xs={12}
-              >
-                <Profit className={classes.item} title={"TOTAL PROFIT"} value={1000} />
               </Grid>
               <Grid
                 item

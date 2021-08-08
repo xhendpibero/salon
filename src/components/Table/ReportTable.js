@@ -41,7 +41,8 @@ import {
 import styles from './styles';
 
 const statusColors = {
-    "Pesanan berhasil": 'success',
+    "Selesai": 'success',
+    "Pesanan berhasil": 'primary',
     "Perlu konfirmasi": 'info',
     "Pesanan batal": 'danger'
 };

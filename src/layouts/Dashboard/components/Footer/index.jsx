@@ -34,7 +34,7 @@ class Footer extends Component {
           className={classes.company}
           variant="body1"
         >
-          &copy; BarberShop WebAdmin. 2021
+          &copy; Celine Salon WebAdmin. 2021
         </Typography>
         <Typography variant="caption">
           Dibuat dengan cinta lingkungan. Oleh desainer dan pengembang yang

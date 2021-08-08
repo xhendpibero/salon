@@ -12,6 +12,7 @@ import { withStyles } from '@material-ui/core';
 // Material components
 import {
   Badge,
+  Button,
   IconButton,
   Popover,
   Toolbar,
@@ -99,13 +100,14 @@ class Topbar extends Component {
       className,
       title,
       isSidebarOpen,
-      onToggleSidebar
+      onToggleSidebar,
+      history
     } = this.props;
     const { notifications, notificationsCount, notificationsEl } = this.state;
 
     const rootClassName = classNames(classes.root, className);
+    const role = localStorage.getItem("role") === "admin";
     const showNotifications = Boolean(notificationsEl);
-
     return (
       <Fragment>
         <div className={rootClassName}>
@@ -135,12 +137,23 @@ class Topbar extends Component {
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
-            <IconButton
+            {/* <IconButton
               className={classes.signOutButton}
               onClick={this.handleSignOut}
             >
               <InputIcon />
-            </IconButton>
+            </IconButton> */}
+            {!role && !history.location.pathname.includes("/orders") && (
+              <Button
+                className={classes.signOutButton}
+                color="primary"
+                size="small"
+                variant="outlined"
+                onClick={this.handleSignOut}
+              >
+                Buat Pesanan
+              </Button>
+            )}
           </Toolbar>
         </div>
         <Popover

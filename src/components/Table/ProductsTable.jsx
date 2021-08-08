@@ -6,6 +6,16 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import StarBorder from '@material-ui/icons/StarBorder';
+
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
@@ -97,7 +107,31 @@ class ProductsTable extends Component {
       <Portlet className={rootClassName}>
         <PortletContent noPadding>
           <PerfectScrollbar>
-            <Table>
+
+            <List
+              component="nav"
+              aria-labelledby="nested-list-subheader"
+              className={classes.root}
+            >
+              <ListItem button onClick={handleClick}>
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Inbox" />
+                {open ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={open} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Starred" />
+                  </ListItem>
+                </List>
+              </Collapse>
+            </List>
+            {/* <Table>
               <TableHead>
                 <TableRow>
                   <TableCell align="left">
@@ -164,7 +198,7 @@ class ProductsTable extends Component {
                     </TableRow>
                   ))}
               </TableBody>
-            </Table>
+            </Table> */}
           </PerfectScrollbar>
           <TablePagination
             backIconButtonProps={{

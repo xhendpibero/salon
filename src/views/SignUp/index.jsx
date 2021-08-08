@@ -286,19 +286,6 @@ class SignUp extends Component {
                           this.handleFieldChange('policy', !values.policy)
                         }
                       />
-                      <Typography
-                        className={classes.policyText}
-                        variant="body1"
-                      >
-                        Saya telah membaca &nbsp;
-                        <Link
-                          className={classes.policyUrl}
-                          to="#"
-                        >
-                          Terms and Conditions
-                        </Link>
-                        .
-                      </Typography>
                     </div>
                     {showPolicyError && (
                       <Typography
