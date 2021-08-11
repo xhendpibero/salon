@@ -41,6 +41,7 @@ class Account extends Component {
   state = {
     service: '',
     price: '',
+    description: '',
   };
 
   handleChange = (e, name) => {
@@ -51,7 +52,7 @@ class Account extends Component {
 
   render() {
     const { classes, className, ...rest } = this.props;
-    const { service, price } = this.state;
+    const { service, price, description } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -79,6 +80,16 @@ class Account extends Component {
                 margin="dense"
                 required
                 value={service}
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
+                onChange={e => this.handleChange(e, "description")}
+                label="Deskripsi"
+                margin="dense"
+                multiline
+                rows={4}
+                value={description}
                 variant="outlined"
               />
               <TextField

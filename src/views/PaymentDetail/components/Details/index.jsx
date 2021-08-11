@@ -352,7 +352,7 @@ class Account extends Component {
               item
               md={12}
             >
-              <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek} />
+              <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek + "atas nama Celine"} />
             </Grid>
           </Grid>
         </div>

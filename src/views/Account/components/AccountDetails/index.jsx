@@ -93,6 +93,8 @@ class Employee extends Component {
                 value={email}
                 variant="outlined"
               />
+            </div>
+            <div className={classes.field}>
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "phone")}

@@ -40,9 +40,9 @@ import styles from './styles';
 
 const statusColors = {
   "Selesai": 'success',
-  "Pesanan berhasil": 'primary',
+  "Pemesanan berhasil": 'primary',
   "Perlu konfirmasi": 'info',
-  "Pesanan batal": 'danger'
+  "Pemesanan batal": 'danger'
 };
 
 class OrdersTable extends Component {
@@ -103,7 +103,7 @@ class OrdersTable extends Component {
         <PortletHeader noDivider>
           <PortletLabel
             subtitle={`${ordersTotal} in total`}
-            title="Pesanan Terbaru"
+            title="Pemesanan Terbaru"
           />
           {!role && (
             <PortletToolbar>
@@ -113,7 +113,7 @@ class OrdersTable extends Component {
                 size="small"
                 variant="outlined"
               >
-                Buat pesanan baru
+                Buat pemesanan baru
               </Button>
             </PortletToolbar>
           )}

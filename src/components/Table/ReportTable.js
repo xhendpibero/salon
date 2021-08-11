@@ -42,9 +42,9 @@ import styles from './styles';
 
 const statusColors = {
     "Selesai": 'success',
-    "Pesanan berhasil": 'primary',
+    "Pemesanan berhasil": 'primary',
     "Perlu konfirmasi": 'info',
-    "Pesanan batal": 'danger'
+    "Pemesanan batal": 'danger'
 };
 
 class OrdersTable extends Component {

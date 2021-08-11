@@ -7,8 +7,9 @@ export default theme => ({
     paddingLeft: theme.spacing.unit * 3
   },
   imageWrapper: {
-    height: '64px',
-    width: '64px',
+    height: '256px',
+    width: '256px',
+    maxWidth: "100%",
     margin: '0 auto',
     border: '1px solid #EDF0F2',
     borderRadius: '5px',
@@ -39,14 +40,15 @@ export default theme => ({
     marginBottom: theme.spacing.unit * 2
   },
   description2: {
+    textAlign: "justify",
     lineHeight: '16px',
-    height: theme.spacing.unit * 4,
+    minHeight: theme.spacing.unit * 4,
+    maxHeight: theme.spacing.unit * 24,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     paddingLeft: 20,
     paddingRight: 20,
     color: theme.palette.text.secondary,
-    textAlign: 'center',
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit * 2
   },

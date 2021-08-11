@@ -39,12 +39,12 @@ export default theme => ({
     marginBottom: theme.spacing.unit * 2
   },
   description2: {
+    textAlign: "justify",
     lineHeight: '16px',
     height: theme.spacing.unit * 4,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     color: theme.palette.text.secondary,
-    textAlign: 'center',
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit * 2
   },

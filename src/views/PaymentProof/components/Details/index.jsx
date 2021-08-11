@@ -119,10 +119,10 @@ class Account extends Component {
         rek: "0913 2012 003"
       },
     ],
-    amount: 0,
+    amount: 1,
     amountList: [
       {
-        name: "Tunai",
+        name: "Penuh",
         value: 0,
       },
       {
@@ -290,6 +290,15 @@ class Account extends Component {
     const isBackTab = tab > 1
     const isSubmitTab = tab === 4
 
+    const transfer = (products.filter((product) =>
+      selectedProducts
+        .indexOf(product.id) !== -1)
+      .map(e => e.price.replace(".", "") - 0)
+      .reduce((a, b) => a + b, 0)
+      * 0.1 + Math.floor(100 + Math.random() * 400))
+      .toLocaleString('id', { style: 'currency', currency: 'IDR' })
+
+
     console.log(
       {
         date,
@@ -384,102 +393,33 @@ class Account extends Component {
             </Grid>
           </Grid>
         </div>
-
         <div className={classes.field}>
           <Typography
             className={classes.title}
-            variant="h4"
+            variant="h5"
           >
-            Nominal Pembayaran
+            Total Nominal Transfer {amount == 1 ? "Down Payment" : "Keseluruhan"}
           </Typography>
-        </div>
-
-        <Grid
-          container
-          spacing={2}
-        >
-          <Grid
-            item
-            md={6}
-            xs={12}
-          >
-            <div className={classes.field}>
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open-select-label">Pembayaran</InputLabel>
-                <Select
-                  labelId="demo-controlled-open-select-label"
-                  id="demo-controlled-open-select"
-                  value={amount}
-                  onChange={e => this.handleChange(e, "amount")}
-                  inputProps={{
-                    name: 'amount',
-                    id: 'amount-simple',
-                  }}
-                  native
-                >
-                  <option aria-label="None" value="" />
-                  {
-                    amountList.map(e =>
-                      <option value={e.value}>{e.name}</option>
-                    )
-                  }
-                </Select>
-              </FormControl>
-            </div>
-
-            {amount == 1 && (
-              <div className={classes.field}>
-                <Grid
-                  item
-                  xs={12}
-                >
-                  <Typography
-                    className={classes.title}
-                  >
-                    minimal 10.000
-                  </Typography>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                >
-                  <TextField
-                    className={classes.textField}
-                    label="Nominal Pembayaran"
-                    name="address"
-                    helperText="harus lebih besar dari 10% total harga"
-                    margin="dense"
-                    required
-                    onChange={event =>
-                      this.handleChangeNumber(event.target.value, 'address')
-                    }
-                    type="text"
-                    value={address}
-                    variant="outlined"
-                  />
-                </Grid>
-              </div>
-            )}
-          </Grid>
-          <Grid
-            item
-            md={6}
-            xs={12}
-          >
-            <div className={classes.field}>
-              <Typography variant="h6" className={classes.title}>
-                Total
-              </Typography>
-
-              <Typography variant="body1">{products.filter((product) =>
+          <div className={classes.field}>
+            <Typography
+              className={classes.title}
+              variant="h4"
+            >
+              {amount == 1 ? transfer : (products.filter((product) =>
                 selectedProducts
                   .indexOf(product.id) !== -1)
                 .map(e => e.price.replace(".", "") - 0)
-                .reduce((a, b) => a + b, 0)
-                .toLocaleString('id', { style: 'currency', currency: 'IDR' })}</Typography>
-            </div>
-          </Grid>
-        </Grid>
+                .reduce((a, b) => a + b, 0) + Math.floor(100 + Math.random() * 400))
+                .toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+            </Typography>
+          </div>
+          <Typography
+            className={classes.title}
+            variant="body2"
+          >
+            Pastikan nominal sesuai hingga 3 digit terakhir
+          </Typography>
+        </div>
 
         <div className={classes.field}>
           <Typography
@@ -520,7 +460,7 @@ class Account extends Component {
               item
               md={12}
             >
-              <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek} />
+              <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek + "atas nama Celine"} />
             </Grid>
           </Grid>
         </div>

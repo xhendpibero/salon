@@ -35,7 +35,7 @@ class Order extends Component {
     const title = location.search ? "Edit" : "Tambah";
 
     return (
-      <DashboardLayout title={title + " Pesanan"}>
+      <DashboardLayout title={title + " Pemesanan"}>
         <div className={classes.root}>
           <Button
             className={classes.importButton}

@@ -22,7 +22,16 @@ import {
     Tooltip,
     TableSortLabel,
     Typography,
+    IconButton,
 } from '@material-ui/core';
+
+import {
+    ArrowDownward as ArrowDownwardIcon,
+    ArrowUpward as ArrowUpwardIcon,
+    Delete as DeleteIcon,
+    VisibilityOff,
+    ShoppingBasket
+} from '@material-ui/icons';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -46,9 +55,9 @@ import styles from './styles';
 
 const statusColors = {
     "Selesai": 'success',
-    "Pesanan berhasil": 'primary',
+    "Pemesanan berhasil": 'primary',
     "Perlu konfirmasi": 'info',
-    "Pesanan batal": 'danger'
+    "Pemesanan batal": 'danger'
 };
 
 class OrdersTable extends Component {
@@ -155,7 +164,7 @@ class OrdersTable extends Component {
                             //                                 </Button>
                             //                             </>
                             //                         )}
-                            //                         {(order.status === "Pesanan berhasil") && (
+                            //                         {(order.status === "Pemesanan berhasil") && (
                             //                             <>
                             //                                 <Button
                             //                                     color="secondary"
@@ -186,15 +195,30 @@ class OrdersTable extends Component {
                                                 justifyContent: 'space-between',
                                                 display: "flex"
                                             }}>
-                                                <div>
-                                                    <Typography variant="h5" component="h2">
-                                                        {order.customer.name}
-                                                    </Typography>
-                                                    <Typography className={classes.pos} color="textSecondary">
-                                                        {moment(order.createdAt).format('DD MMM YYYY')}
-                                                    </Typography>
+                                                <div style={{
+                                                    justifyContent: 'space-between',
+                                                    display: "flex"
+                                                }}>
+                                                    <IconButton
+                                                        style={({ color: "#45B880", paddingBottom: 20 })}
+                                                    >
+                                                        <ShoppingBasket />
+                                                    </IconButton>
+                                                    <Link to="orders/detail?id=1">
+                                                        <div>
+                                                            <Typography variant="h5" component="h2">
+                                                                {order.customer.name}
+                                                            </Typography>
+                                                            <Typography className={classes.pos} color="textSecondary">
+                                                                {moment(order.createdAt).format('DD MMM YYYY')}
+                                                            </Typography>
+                                                        </div>
+                                                    </Link>
                                                 </div>
-                                                <div className={classes.statusWrapper}>
+
+                                                <div className={classes.statusWrapper}
+                                                    style={({ paddingBottom: 20 })}
+                                                >
                                                     <Status
                                                         className={classes.status}
                                                         color={statusColors[order.status]}
@@ -219,58 +243,63 @@ class OrdersTable extends Component {
                                                 {order.employee}
                                             </Typography>
                                             <Typography variant="h5" component="h2">
-                                                Nominal DP
+                                                Pembayaran : {(order.status === "Perlu konfirmasi") ? "DP" : "Penuh"}
                                             </Typography>
                                             <Typography variant="body2" component="p">
-                                                {order.nominalDp.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                                {(order.status === "Perlu konfirmasi") ? order.nominalDp.toLocaleString('id', { style: 'currency', currency: 'IDR' }) : order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
                                             </Typography>
                                         </CardContent>
                                         <div style={{
-                                            paddingLeft: 18
+                                            paddingTop: 12,
+                                            paddingLeft: 12
                                         }}>
                                             <div>
-                                                <Typography component="h2">
-                                                    Total Belanja
+                                                <Typography variant="h5" component="h2">
+                                                    Total Pemesanan
                                                 </Typography>
-                                                <Typography variant="body2" component="p">
+                                                <Typography variant="h6" component="h2" style={{ color: "#45B880" }}>
                                                     {order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
                                                 </Typography>
                                             </div>
                                         </div>
 
                                         <CardActions style={{ float: "right" }}>
-                                            {(order.status === "Perlu konfirmasi") && (
+                                            {role && (
                                                 <>
-                                                    <Button
-                                                        color="primary"
-                                                        variant="contained"
-                                                        style={{ marginRight: 10 }}
-                                                    >
-                                                        Konfirmasi
-                                                    </Button>
-                                                    <Button
-                                                        color="secondary"
-                                                        variant="contained"
-                                                    >
-                                                        Batalkan
-                                                    </Button>
-                                                </>
-                                            )}
-                                            {(order.status === "Pesanan berhasil") && (
-                                                <>
-                                                    <Button
-                                                        color="secondary"
-                                                        variant="contained"
-                                                        style={{ marginRight: 10, backgroundColor: "#45B880" }}
-                                                    >
-                                                        Selesai
-                                                    </Button>
-                                                    <Button
-                                                        color="secondary"
-                                                        variant="contained"
-                                                    >
-                                                        Batalkan
-                                                    </Button>
+                                                    {(order.status === "Perlu konfirmasi") && (
+                                                        <>
+                                                            <Button
+                                                                color="primary"
+                                                                variant="contained"
+                                                                style={{ marginRight: 10 }}
+                                                            >
+                                                                Konfirmasi
+                                                            </Button>
+                                                            <Button
+                                                                color="secondary"
+                                                                variant="contained"
+                                                            >
+                                                                Batalkan
+                                                            </Button>
+                                                        </>
+                                                    )}
+                                                    {(order.status === "Pemesanan berhasil") && (
+                                                        <>
+                                                            <Button
+                                                                color="secondary"
+                                                                variant="contained"
+                                                                style={{ marginRight: 10, backgroundColor: "#45B880" }}
+                                                            >
+                                                                Selesai
+                                                            </Button>
+                                                            <Button
+                                                                color="secondary"
+                                                                variant="contained"
+                                                            >
+                                                                Batalkan
+                                                            </Button>
+                                                        </>
+                                                    )}
                                                 </>
                                             )}
                                         </CardActions>

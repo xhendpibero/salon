@@ -103,22 +103,22 @@ class Account extends Component {
     bank: 0,
     bankList: [
       {
-        name: "Tunai",
+        name: "Penuh",
         value: 0,
       },
       {
-        name: "DP",
+        name: "Down Payment",
         value: 1,
       },
     ],
     amount: 0,
     amountList: [
       {
-        name: "Tunai",
+        name: "Penuh",
         value: 0,
       },
       {
-        name: "DP",
+        name: "Down Payment",
         value: 1,
       },
     ],
@@ -305,6 +305,14 @@ class Account extends Component {
       dataTime = '0' + selectedTimes;
     }
 
+    const transfer = (products.filter((product) =>
+      selectedProducts
+        .indexOf(product.id) !== -1)
+      .map(e => e.price.replace(".", "") - 0)
+      .reduce((a, b) => a + b, 0)
+      * 0.1 + Math.floor(100 + Math.random() * 400))
+      .toLocaleString('id', { style: 'currency', currency: 'IDR' })
+
     const rootClassName = classNames(classes.root, className);
 
     const mainTab = [
@@ -435,40 +443,25 @@ class Account extends Component {
             </Select>
           </FormControl>
         </div>
-
-        {amount == 1 && (
-          <div className={classes.field}>
-            <Grid
-              item
-              xs={12}
-            >
-              <Typography
-                className={classes.title}
-              >
-                minimal 10.000
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                label="Nominal Pembayaran"
-                name="address"
-                helperText="harus lebih besar dari 10% total harga"
-                margin="dense"
-                required
-                onChange={event =>
-                  this.handleChangeNumber(event.target.value, 'address')
-                }
-                type="text"
-                value={address}
-                variant="outlined"
-              />
-            </Grid>
-          </div>
-        )}
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Total Nominal Transfer {amount == 1 ? transfer : (products.filter((product) =>
+              selectedProducts
+                .indexOf(product.id) !== -1)
+              .map(e => e.price.replace(".", "") - 0)
+              .reduce((a, b) => a + b, 0) + Math.floor(100 + Math.random() * 400))
+              .toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+          </Typography>
+          <Typography
+            className={classes.title}
+            variant="body2"
+          >
+            Pastikan nominal sesuai hingga 3 digit terakhir
+          </Typography>
+        </div>
       </>),
     ];
 

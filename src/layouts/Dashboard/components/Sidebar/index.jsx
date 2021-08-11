@@ -132,7 +132,7 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText
               classes={{ primary: classes.listItemText }}
-              primary="Pesanan"
+              primary="Pemesanan"
             />
           </ListItem>
           {role && (

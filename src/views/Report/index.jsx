@@ -154,10 +154,10 @@ class OrdersList extends Component {
     const role = localStorage.getItem("role") === "admin";
 
     return (
-      <DashboardLayout title="Laporan Pesanan">
+      <DashboardLayout title="Laporan Pemesanan">
         <div className={classes.root}>
           <Toolbar
-            buttonAdd={role ? "Unduh Laporan" : "Buat pesanan baru"}
+            buttonAdd={role ? "Unduh Laporan" : "Buat Pemesanan"}
             selectedUsers={[]}
             onClick={() => {
               this.exportToCsv("my_data.csv", orders)

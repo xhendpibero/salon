@@ -51,7 +51,7 @@ class SignUp extends Component {
       lastName: '',
       email: '',
       password: '',
-      policy: false
+      policy: true
     },
     touched: {
       firstName: false,
@@ -202,7 +202,7 @@ class SignUp extends Component {
                     className={classes.subtitle}
                     variant="body1"
                   >
-                    Membuat akun baru... gratis.
+                    Mari rasakan kemudahan dalam memesan layanan Celine Salon.
                   </Typography>
                   <div className={classes.fields}>
                     <TextField
@@ -276,17 +276,6 @@ class SignUp extends Component {
                         {errors.password[0]}
                       </Typography>
                     )}
-                    <div className={classes.policy}>
-                      <Checkbox
-                        checked={values.policy}
-                        className={classes.policyCheckbox}
-                        color="primary"
-                        name="policy"
-                        onChange={() =>
-                          this.handleFieldChange('policy', !values.policy)
-                        }
-                      />
-                    </div>
                     {showPolicyError && (
                       <Typography
                         className={classes.fieldError}

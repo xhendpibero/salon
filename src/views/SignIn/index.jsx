@@ -270,7 +270,7 @@ class SignIn extends Component {
                       size="large"
                       variant="contained"
                     >
-                      Masuk Sekarang!
+                      Masuk Sekarang
                     </Button>
                   )}
                   <Typography
@@ -282,7 +282,7 @@ class SignIn extends Component {
                       className={classes.signUpUrl}
                       to="/sign-up"
                     >
-                      Daftar
+                      Daftar Sekarang
                     </Link>
                   </Typography>
                 </form>

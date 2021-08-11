@@ -151,7 +151,7 @@ class Topbar extends Component {
                 variant="outlined"
                 onClick={this.handleSignOut}
               >
-                Buat Pesanan
+                Buat Pemesanan
               </Button>
             )}
           </Toolbar>

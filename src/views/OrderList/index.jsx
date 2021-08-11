@@ -112,11 +112,11 @@ class OrdersList extends Component {
     const role = localStorage.getItem("role") === "admin";
 
     return (
-      <DashboardLayout title="Pesanan">
+      <DashboardLayout title="Pemesanan">
         <div className={classes.root}>
           <Toolbar
-            placeholder="Cari pesanan"
-            buttonAdd={role ? "Buat Laporan" : "Buat pesanan baru"}
+            placeholder="Cari Pemesanan"
+            buttonAdd={role ? "Buat Laporan" : "Buat Pemesanan"}
             selectedUsers={[]}
             onChange={(e) => console.log(e.target.value)}
             onClick={() => role ? history.push({ pathname: '/orders/report' }) : history.push({ pathname: '/orders/add' })}

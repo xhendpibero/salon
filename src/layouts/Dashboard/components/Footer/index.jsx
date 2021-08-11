@@ -30,16 +30,6 @@ class Footer extends Component {
     return (
       <div className={rootClassName}>
         <Divider />
-        <Typography
-          className={classes.company}
-          variant="body1"
-        >
-          &copy; Celine Salon WebAdmin. 2021
-        </Typography>
-        <Typography variant="caption">
-          Dibuat dengan cinta lingkungan. Oleh desainer dan pengembang yang
-          suka bekerja sama di kantor!
-        </Typography>
       </div>
     );
   }
