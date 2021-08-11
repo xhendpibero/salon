@@ -494,10 +494,10 @@ class Account extends Component {
             <PortletContent noPadding>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Layanan
+                  Jenis Layanan
                 </Typography>
                 {!selectedProducts.length ? (
-                  <Typography variant="body1">Tidak ada layanan yang dipilih</Typography>
+                  <Typography variant="body1">Tidak ada jenis layanan yang dipilih</Typography>
                 ) : (
                   <div className={classes.demo}>
                     <List dense={true}>

@@ -446,18 +446,28 @@ class Account extends Component {
         <div className={classes.field}>
           <Typography
             className={classes.title}
-            variant="h4"
+            variant="h5"
           >
-            Total Nominal Transfer {amount == 1 ? transfer : (products.filter((product) =>
-              selectedProducts
-                .indexOf(product.id) !== -1)
-              .map(e => e.price.replace(".", "") - 0)
-              .reduce((a, b) => a + b, 0) + Math.floor(100 + Math.random() * 400))
-              .toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+            Total Nominal Transfer {amount == 1 ? "Down Payment" : "Keseluruhan"}
           </Typography>
+          <div className={classes.field}>
+            <Typography
+              className={classes.title}
+              variant="h4"
+              style={{ textAlign: "center" }}
+            >
+              {amount == 1 ? transfer : (products.filter((product) =>
+                selectedProducts
+                  .indexOf(product.id) !== -1)
+                .map(e => e.price.replace(".", "") - 0)
+                .reduce((a, b) => a + b, 0) + Math.floor(100 + Math.random() * 400))
+                .toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+            </Typography>
+          </div>
           <Typography
             className={classes.title}
             variant="body2"
+            style={{ marginTop: 4 }}
           >
             Pastikan nominal sesuai hingga 3 digit terakhir
           </Typography>
@@ -502,7 +512,7 @@ class Account extends Component {
                 disabled={(!selectedTimes || !selectedUsers || !selectedProducts.length)}
                 onClick={() => this.handleSubmit()}
               >
-                Bayar
+                Lanjut
               </Button>
             </PortletFooter>
           </Portlet>
@@ -526,10 +536,10 @@ class Account extends Component {
             <PortletContent noPadding>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Layanan
+                  Jenis Layanan
                 </Typography>
                 {!selectedProducts.length ? (
-                  <Typography variant="body1">Tidak ada layanan yang dipilih</Typography>
+                  <Typography variant="body1">Tidak ada jenis layanan yang dipilih</Typography>
                 ) : (
                   <div className={classes.demo}>
                     <List dense={true}>

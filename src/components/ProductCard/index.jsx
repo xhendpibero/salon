@@ -48,18 +48,26 @@ class ProductCard extends Component {
           >
             {title}
           </Typography>
-          <Typography
-            className={classes.description}
-            variant="body1"
-          >
-            {secondary}
-          </Typography>
-          <Typography
-            className={classes.description2}
-            variant="body2"
-          >
-            {description}
-          </Typography>
+          {
+            secondary && (
+              <Typography
+                className={classes.description}
+                variant="body1"
+              >
+                {secondary}
+              </Typography>
+            )
+          }
+          {
+            description && (
+              <Typography
+                className={classes.description2}
+                variant="body2"
+              >
+                {description}
+              </Typography>
+            )
+          }
         </div>
       </Paper>
     );

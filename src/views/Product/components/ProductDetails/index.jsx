@@ -64,7 +64,7 @@ class Account extends Component {
         <PortletHeader>
           <PortletLabel
             subtitle="Silahkan isi informasi dibawah ini"
-            title="Layanan"
+            title="Jenis Layanan"
           />
         </PortletHeader>
         <PortletContent noPadding>
@@ -76,7 +76,7 @@ class Account extends Component {
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "service")}
-                label="Nama Layanan"
+                label="Nama Jenis Layanan"
                 margin="dense"
                 required
                 value={service}

@@ -98,7 +98,7 @@ class OrdersList extends Component {
 
     if (orders.length === 0) {
       return (
-        <Typography variant="h6">Tidak ada layanan yang tersedia</Typography>
+        <Typography variant="h6">Tidak ada jenis layanan yang tersedia</Typography>
       );
     }
 
@@ -116,7 +116,7 @@ class OrdersList extends Component {
         <div className={classes.root}>
           <Toolbar
             placeholder="Cari Pemesanan"
-            buttonAdd={role ? "Buat Laporan" : "Buat Pemesanan"}
+            buttonAdd={role ? "Lihat Laporan" : "Buat Pemesanan"}
             selectedUsers={[]}
             onChange={(e) => console.log(e.target.value)}
             onClick={() => role ? history.push({ pathname: '/orders/report' }) : history.push({ pathname: '/orders/add' })}

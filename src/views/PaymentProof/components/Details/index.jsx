@@ -404,6 +404,7 @@ class Account extends Component {
             <Typography
               className={classes.title}
               variant="h4"
+              style={{ textAlign: "center" }}
             >
               {amount == 1 ? transfer : (products.filter((product) =>
                 selectedProducts
@@ -416,6 +417,7 @@ class Account extends Component {
           <Typography
             className={classes.title}
             variant="body2"
+            style={{ marginTop: 4 }}
           >
             Pastikan nominal sesuai hingga 3 digit terakhir
           </Typography>
@@ -558,10 +560,10 @@ class Account extends Component {
             <PortletContent noPadding>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Layanan
+                  Jenis Layanan
                 </Typography>
                 {!selectedProducts.length ? (
-                  <Typography variant="body1">Tidak ada layanan yang dipilih</Typography>
+                  <Typography variant="body1">Tidak ada jenis layanan yang dipilih</Typography>
                 ) : (
                   <div className={classes.demo}>
                     <List dense={true}>

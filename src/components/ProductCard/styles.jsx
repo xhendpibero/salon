@@ -1,14 +1,14 @@
 export default theme => ({
   root: {
     maxWidth: '100%',
-    paddingTop: theme.spacing.unit * 3,
-    paddingBottom: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 3,
-    paddingLeft: theme.spacing.unit * 3
+    // paddingTop: theme.spacing.unit * 3,
+    // paddingBottom: theme.spacing.unit * 2,
+    // paddingRight: theme.spacing.unit * 3,
+    // paddingLeft: theme.spacing.unit * 3
   },
   imageWrapper: {
-    height: '256px',
-    width: '256px',
+    width: '100%',
+    height: '100%',
     maxWidth: "100%",
     margin: '0 auto',
     border: '1px solid #EDF0F2',
@@ -19,7 +19,10 @@ export default theme => ({
     justifyContent: 'center'
   },
   image: {
-    width: '100%'
+    width: '100%',
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
   },
   details: {},
   title: {
@@ -37,7 +40,7 @@ export default theme => ({
     color: theme.palette.text.secondary,
     textAlign: 'center',
     marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit * 2
+    // marginBottom: theme.spacing.unit * 2
   },
   description2: {
     textAlign: "justify",

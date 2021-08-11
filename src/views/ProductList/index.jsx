@@ -88,7 +88,7 @@ class ProductList extends Component {
 
     if (products.length === 0) {
       return (
-        <Typography variant="h6">Tidak ada layanan yang tersedia</Typography>
+        <Typography variant="h6">Tidak ada jenis layanan yang tersedia</Typography>
       );
     }
 
@@ -105,7 +105,7 @@ class ProductList extends Component {
     const { classes } = this.props;
 
     return (
-      <DashboardLayout title="Layanan">
+      <DashboardLayout title="Jenis Layanan">
         <div className={classes.root}>
           <ProductsToolbar selected={this.state.selectedProducts} />
           <div className={classes.content}>{this.renderProducts()}</div>

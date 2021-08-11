@@ -75,11 +75,12 @@ class OrdersTable extends Component {
                                         <TableCell>ID</TableCell>
                                         <TableCell align="left">Pemesan</TableCell>
                                         <TableCell align="left">Pegawai</TableCell>
-                                        <TableCell align="left">Layanan</TableCell>
+                                        <TableCell align="left">Jenis Layanan</TableCell>
                                         <TableCell align="left">Harga</TableCell>
                                         <TableCell align="left">Nomor rek</TableCell>
                                         <TableCell align="left">Nominal DP</TableCell>
-                                        <TableCell
+                                        <TableCell align="left">Tanggal Pemesanan</TableCell>
+                                        {/* <TableCell
                                             align="left"
                                             sortDirection="desc"
                                         >
@@ -94,7 +95,7 @@ class OrdersTable extends Component {
                                                     Tanggal Pemesanan
                                                 </TableSortLabel>
                                             </Tooltip>
-                                        </TableCell>
+                                        </TableCell> */}
                                         <TableCell align="left">Status</TableCell>
                                     </TableRow>
                                 </TableHead>

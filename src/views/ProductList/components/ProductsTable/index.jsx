@@ -114,7 +114,7 @@ class ProductsTable extends Component {
                         onChange={this.handleSelectAll}
                       />
                     )}
-                    Nama Layanan
+                    Nama Jenis Layanan
                   </TableCell>
                   <TableCell align="left">Deskripsi</TableCell>
                   <TableCell align="left">Harga</TableCell>

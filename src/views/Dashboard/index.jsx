@@ -101,7 +101,7 @@ class Dashboard extends Component {
     } = this.state;
 
     return (
-      <DashboardLayout title="Celine Salon">
+      <DashboardLayout title="Beranda">
         <div className={classes.root}>
           {role ? (
             <Grid

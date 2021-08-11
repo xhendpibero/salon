@@ -117,7 +117,7 @@ class Sidebar extends Component {
             </ListItemIcon>
             <ListItemText
               classes={{ primary: classes.listItemText }}
-              primary="Celine Salon"
+              primary="Beranda"
             />
           </ListItem>
 
@@ -177,7 +177,7 @@ class Sidebar extends Component {
                 </ListItemIcon>
                 <ListItemText
                   classes={{ primary: classes.listItemText }}
-                  primary="Layanan"
+                  primary="Jenis Layanan"
                 />
               </ListItem>
             </>

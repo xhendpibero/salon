@@ -45,7 +45,7 @@ class ProductsToolbar extends Component {
         <div className={classes.row}>
           <SearchInput
             className={classes.searchInput}
-            placeholder="Cari layanan"
+            placeholder="Cari Jenis layanan"
           />
           <span className={classes.spacer} />
           {selected && selected.length > 0 && (

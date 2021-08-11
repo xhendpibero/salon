@@ -27,7 +27,7 @@ import {
 import { getInitials } from 'helpers';
 
 // Shared components
-import { Portlet, PortletContent } from 'components';
+import { Portlet, PortletContent, Status } from 'components';
 
 // Component styles
 import styles from './styles';
@@ -117,6 +117,7 @@ class UsersTable extends Component {
                   <TableCell align="left">Alamat</TableCell>
                   <TableCell align="left">Telpon</TableCell>
                   <TableCell align="left">Tanggal Daftar</TableCell>
+                  <TableCell align="left">Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -177,6 +178,16 @@ class UsersTable extends Component {
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {moment(user.createdAt).format('DD/MM/YYYY')}
+                      </TableCell>
+                      <TableCell>
+                        <div className={classes.statusWrapper}>
+                          <Status
+                            className={classes.status}
+                            color={'success'}
+                            size="sm"
+                          />
+                          Aktif
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

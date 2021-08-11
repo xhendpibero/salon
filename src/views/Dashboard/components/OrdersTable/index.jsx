@@ -134,7 +134,8 @@ class OrdersTable extends Component {
                   <TableRow>
                     <TableCell>ID</TableCell>
                     <TableCell align="left">Pelanggan</TableCell>
-                    <TableCell
+                    <TableCell align="left">Tanggal Pemesanan</TableCell>
+                    {/* <TableCell
                       align="left"
                       sortDirection="desc"
                     >
@@ -149,7 +150,7 @@ class OrdersTable extends Component {
                           Tanggal Pemesanan
                         </TableSortLabel>
                       </Tooltip>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="left">Status</TableCell>
                   </TableRow>
                 </TableHead>

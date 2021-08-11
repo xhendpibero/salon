@@ -102,11 +102,11 @@ class UsersTable extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell align="left">
-                    Name
+                    Nama
                   </TableCell>
                   <TableCell align="left">Email</TableCell>
-                  <TableCell align="left">Phone</TableCell>
-                  <TableCell align="left">Registration date</TableCell>
+                  <TableCell align="left">Nomor HP</TableCell>
+                  <TableCell align="left">Tanggal Pendaftaran</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

@@ -35,7 +35,7 @@ class Product extends Component {
     const title = location.search ? "Edit" : "Tambah";
 
     return (
-      <DashboardLayout title={title + " Layanan"}>
+      <DashboardLayout title={title + " Jenis Layanan"}>
         <div className={classes.root}>
           <Button
             className={classes.importButton}

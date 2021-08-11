@@ -82,111 +82,113 @@ class OrdersTable extends Component {
                                 <CircularProgress />
                             </div>
                         )}
-                        {showOrders && (
-                            // <Table>
-                            //     <TableHead>
-                            //         <TableRow>
-                            //             <TableCell>ID</TableCell>
-                            //             <TableCell align="left">Pemesan</TableCell>
-                            //             <TableCell
-                            //                 align="left"
-                            //                 sortDirection="asc"
-                            //             >
-                            //                 <Tooltip
-                            //                     enterDelay={300}
-                            //                     title="Sort"
-                            //                 >
-                            //                     <TableSortLabel
-                            //                         // active
-                            //                         direction="asc"
-                            //                     >
-                            //                         Tanggal Pemesanan
-                            //                     </TableSortLabel>
-                            //                 </Tooltip>
-                            //             </TableCell>
-                            //             <TableCell align="left">Status</TableCell>
-                            //             {role && (
-                            //                 <TableCell align="left">Aksi</TableCell>
-                            //             )}
-                            //         </TableRow>
-                            //     </TableHead>
-                            //     <TableBody>
-                            //         {orders.map(order => (
-                            //             <TableRow
-                            //                 className={classes.tableRow}
-                            //                 hover
-                            //                 key={order.id}
-                            //             >
-                            //                 <TableCell>
-                            //                     <div className={classes.tableCellInner}>
-                            //                         <Link to="orders/detail?id=1">
-                            //                             <Typography
-                            //                                 className={classes.nameText}
-                            //                                 variant="body1"
-                            //                             >
-                            //                                 {order.id}
-                            //                             </Typography>
-                            //                         </Link>
-                            //                     </div>
-                            //                 </TableCell>
-                            //                 <TableCell className={classes.customerCell}>
-                            //                     {order.customer.name}
-                            //                 </TableCell>
-                            //                 <TableCell>
-                            //                     {moment(order.createdAt).format('DD/MM/YYYY')}
-                            //                 </TableCell>
-                            //                 <TableCell>
-                            //                     <div className={classes.statusWrapper}>
-                            //                         <Status
-                            //                             className={classes.status}
-                            //                             color={statusColors[order.status]}
-                            //                             size="sm"
-                            //                         />
-                            //                         {order.status}
-                            //                     </div>
-                            //                 </TableCell>
-                            //                 {role && (
-                            //                     <TableCell align="left">
-                            //                         {(order.status === "Perlu konfirmasi") && (
-                            //                             <>
-                            //                                 <Button
-                            //                                     color="primary"
-                            //                                     variant="contained"
-                            //                                     style={{ marginRight: 10 }}
-                            //                                 >
-                            //                                     Konfirmasi
-                            //                                 </Button>
-                            //                                 <Button
-                            //                                     color="secondary"
-                            //                                     variant="contained"
-                            //                                 >
-                            //                                     Batalkan
-                            //                                 </Button>
-                            //                             </>
-                            //                         )}
-                            //                         {(order.status === "Pemesanan berhasil") && (
-                            //                             <>
-                            //                                 <Button
-                            //                                     color="secondary"
-                            //                                     variant="contained"
-                            //                                     style={{ marginRight: 10, backgroundColor: "#45B880" }}
-                            //                                 >
-                            //                                     Selesai
-                            //                                 </Button>
-                            //                                 <Button
-                            //                                     color="secondary"
-                            //                                     variant="contained"
-                            //                                 >
-                            //                                     Batalkan
-                            //                                 </Button>
-                            //                             </>
-                            //                         )}
-                            //                     </TableCell>
-                            //                 )}
-                            //             </TableRow>
-                            //         ))}
-                            //     </TableBody>
-                            // </Table>
+                        {showOrders && role ? (
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>ID</TableCell>
+                                        <TableCell align="left">Pemesan</TableCell>
+                                        <TableCell align="left">Tanggal Pemesanan</TableCell>
+                                        {/* <TableCell
+                                            align="left"
+                                            sortDirection="asc"
+                                        >
+                                            <Tooltip
+                                                enterDelay={300}
+                                                title="Sort"
+                                            >
+                                                <TableSortLabel
+                                                    // active
+                                                    direction="asc"
+                                                >
+                                                    Tanggal Pemesanan
+                                                </TableSortLabel>
+                                            </Tooltip>
+                                        </TableCell> */}
+                                        <TableCell align="left">Status</TableCell>
+                                        {role && (
+                                            <TableCell align="left">Aksi</TableCell>
+                                        )}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {orders.map(order => (
+                                        <TableRow
+                                            className={classes.tableRow}
+                                            hover
+                                            key={order.id}
+                                        >
+                                            <TableCell>
+                                                <div className={classes.tableCellInner}>
+                                                    <Link to="orders/detail?id=1">
+                                                        <Typography
+                                                            className={classes.nameText}
+                                                            variant="body1"
+                                                        >
+                                                            {order.id}
+                                                        </Typography>
+                                                    </Link>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className={classes.customerCell}>
+                                                {order.customer.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {moment(order.createdAt).format('DD/MM/YYYY')}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className={classes.statusWrapper}>
+                                                    <Status
+                                                        className={classes.status}
+                                                        color={statusColors[order.status]}
+                                                        size="sm"
+                                                    />
+                                                    {order.status}
+                                                </div>
+                                            </TableCell>
+                                            {role && (
+                                                <TableCell align="left">
+                                                    {(order.status === "Perlu konfirmasi") && (
+                                                        <>
+                                                            <Button
+                                                                color="primary"
+                                                                variant="contained"
+                                                                style={{ marginRight: 10 }}
+                                                            >
+                                                                Konfirmasi
+                                                            </Button>
+                                                            <Button
+                                                                color="secondary"
+                                                                variant="contained"
+                                                            >
+                                                                Batalkan
+                                                            </Button>
+                                                        </>
+                                                    )}
+                                                    {(order.status === "Pemesanan berhasil") && (
+                                                        <>
+                                                            <Button
+                                                                color="secondary"
+                                                                variant="contained"
+                                                                style={{ marginRight: 10, backgroundColor: "#45B880" }}
+                                                            >
+                                                                Selesai
+                                                            </Button>
+                                                            <Button
+                                                                color="secondary"
+                                                                variant="contained"
+                                                            >
+                                                                Batalkan
+                                                            </Button>
+                                                        </>
+                                                    )}
+                                                </TableCell>
+                                            )}
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ) : (
                             <>
                                 {orders.map(order => (
                                     <Card style={{ margin: 10 }} variant="outlined">
@@ -245,23 +247,16 @@ class OrdersTable extends Component {
                                             <Typography variant="h5" component="h2">
                                                 Pembayaran : {(order.status === "Perlu konfirmasi") ? "DP" : "Penuh"}
                                             </Typography>
-                                            <Typography variant="body2" component="p">
+                                            <Typography style={{ marginBottom: 10 }} variant="body2" component="p">
                                                 {(order.status === "Perlu konfirmasi") ? order.nominalDp.toLocaleString('id', { style: 'currency', currency: 'IDR' }) : order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
                                             </Typography>
+                                            <Typography variant="h5" component="h2">
+                                                Total Pemesanan
+                                            </Typography>
+                                            <Typography variant="h6" component="h2" style={{ color: "#45B880" }}>
+                                                {order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                            </Typography>
                                         </CardContent>
-                                        <div style={{
-                                            paddingTop: 12,
-                                            paddingLeft: 12
-                                        }}>
-                                            <div>
-                                                <Typography variant="h5" component="h2">
-                                                    Total Pemesanan
-                                                </Typography>
-                                                <Typography variant="h6" component="h2" style={{ color: "#45B880" }}>
-                                                    {order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
-                                                </Typography>
-                                            </div>
-                                        </div>
 
                                         <CardActions style={{ float: "right" }}>
                                             {role && (

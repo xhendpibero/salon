@@ -477,7 +477,7 @@ class Account extends Component {
             className={classes.title}
             variant="h4"
           >
-            Pilih Layanan
+            Pilih Jenis Layanan
           </Typography>
         </div>
         <div className={classes.field}>
@@ -497,6 +497,7 @@ class Account extends Component {
                 <ProductCard
                   image={product.imageUrl}
                   title={product.title}
+                  description={""}
                   secondary={"Harga Rp " + product.price}
                   checked={selectedProducts.indexOf(product.id) !== -1}
                 />
@@ -724,6 +725,7 @@ class Account extends Component {
                 <ProductCard
                   image={user.avatarUrl}
                   title={user.name}
+                  description={""}
                   secondary={""}
                   checked={selectedUsers === user.id}
                 />
@@ -776,7 +778,7 @@ class Account extends Component {
                       style={{ marginRight: 10 }}
                       onClick={() => this.handleTab(tab, false)}
                     >
-                      Back
+                      Kembali
                     </Button>
                     <Button
                       color="primary"
@@ -784,7 +786,7 @@ class Account extends Component {
                       disabled={(!selectedTimes || !selectedUsers || !selectedProducts.length)}
                       onClick={() => this.handleSubmit()}
                     >
-                      Booking
+                      Lanjut
                     </Button>
                   </>
                 ) : (
@@ -796,7 +798,7 @@ class Account extends Component {
                       style={{ marginRight: 10 }}
                       onClick={() => this.handleTab(tab, false)}
                     >
-                      Back
+                      Kembali
                     </Button>
                     <Button
                       color="primary"
@@ -804,7 +806,7 @@ class Account extends Component {
                       disabled={!isNextTab}
                       onClick={() => this.handleTab(tab, true)}
                     >
-                      Next
+                      Lanjut
                     </Button>
                   </>
                 )
@@ -831,10 +833,10 @@ class Account extends Component {
             <PortletContent noPadding>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Layanan
+                  Jenis Layanan
                 </Typography>
                 {!selectedProducts.length ? (
-                  <Typography variant="body1">Tidak ada layanan yang dipilih</Typography>
+                  <Typography variant="body1">Tidak ada jenis layanan yang dipilih</Typography>
                 ) : (
                   <div className={classes.demo}>
                     <List dense={true}>
