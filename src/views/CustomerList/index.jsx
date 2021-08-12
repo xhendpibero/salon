@@ -99,7 +99,7 @@ class ProductList extends Component {
 
     if (users.length === 0) {
       return (
-        <Typography variant="h6">Tidak ada jenis layanan yang tersedia</Typography>
+        <Typography variant="h6">Tidak ada pelanggan yang tersedia</Typography>
       );
     }
 

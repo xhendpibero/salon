@@ -7,6 +7,12 @@ import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
@@ -61,14 +67,26 @@ const statusColors = {
 };
 
 class OrdersTable extends Component {
+    state = {
+        open: false,
+        title: "",
+        body: "",
+    };
+
+    // handleClickOpen = (title, body) => {
+    //     this.setState({ open: true, title, body });
+    // };
+
+    handleClose = () => {
+        this.setState({ open: false, title: '', body: '' });
+    };
 
     render() {
         const { classes, className, isLoading, orders, ordersTotal } = this.props;
         const role = localStorage.getItem("role") === "admin";
-
+        const { open, title, body } = this.state;
         const rootClassName = classNames(classes.root, className);
         const showOrders = !isLoading && orders.length > 0;
-
         const bull = <span className={classes.bullet}>•</span>;
         return (
             <Portlet className={rootClassName}>
@@ -154,12 +172,18 @@ class OrdersTable extends Component {
                                                                 color="primary"
                                                                 variant="contained"
                                                                 style={{ marginRight: 10 }}
+                                                                onClick={() => {
+                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
+                                                                }}
                                                             >
                                                                 Konfirmasi
                                                             </Button>
                                                             <Button
                                                                 color="secondary"
                                                                 variant="contained"
+                                                                onClick={() => {
+                                                                    this.setState({ open: true, title: "Ingin melakukan Pembatalan?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
+                                                                }}
                                                             >
                                                                 Batalkan
                                                             </Button>
@@ -171,12 +195,18 @@ class OrdersTable extends Component {
                                                                 color="secondary"
                                                                 variant="contained"
                                                                 style={{ marginRight: 10, backgroundColor: "#45B880" }}
+                                                                onClick={() => {
+                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi Selesai?", body: "Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
+                                                                }}
                                                             >
                                                                 Selesai
                                                             </Button>
                                                             <Button
                                                                 color="secondary"
                                                                 variant="contained"
+                                                                onClick={() => {
+                                                                    this.setState({ open: true, title: "Ingin melakukan Pembatalan?", body: "Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
+                                                                }}
                                                             >
                                                                 Batalkan
                                                             </Button>
@@ -267,12 +297,18 @@ class OrdersTable extends Component {
                                                                 color="primary"
                                                                 variant="contained"
                                                                 style={{ marginRight: 10 }}
+                                                                onClick={() => {
+                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
+                                                                }}
                                                             >
                                                                 Konfirmasi
                                                             </Button>
                                                             <Button
                                                                 color="secondary"
                                                                 variant="contained"
+                                                                onClick={() => {
+                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
+                                                                }}
                                                             >
                                                                 Batalkan
                                                             </Button>
@@ -284,12 +320,18 @@ class OrdersTable extends Component {
                                                                 color="secondary"
                                                                 variant="contained"
                                                                 style={{ marginRight: 10, backgroundColor: "#45B880" }}
+                                                                onClick={() => {
+                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
+                                                                }}
                                                             >
                                                                 Selesai
                                                             </Button>
                                                             <Button
                                                                 color="secondary"
                                                                 variant="contained"
+                                                                onClick={() => {
+                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
+                                                                }}
                                                             >
                                                                 Batalkan
                                                             </Button>
@@ -303,6 +345,28 @@ class OrdersTable extends Component {
                                 ))}
                             </>
                         )}
+
+                        <Dialog
+                            open={open}
+                            onClose={this.handleClose}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    {body}
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={this.handleClose} color="primary">
+                                    Kembali
+                                </Button>
+                                <Button onClick={this.handleClose} color="primary" autoFocus>
+                                    Konfirmasi
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </PortletContent>
                 </PerfectScrollbar>
             </Portlet >

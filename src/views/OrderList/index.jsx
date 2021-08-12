@@ -98,7 +98,7 @@ class OrdersList extends Component {
 
     if (orders.length === 0) {
       return (
-        <Typography variant="h6">Tidak ada jenis layanan yang tersedia</Typography>
+        <Typography variant="h6">Tidak ada pemesanan yang tersedia</Typography>
       );
     }
 
