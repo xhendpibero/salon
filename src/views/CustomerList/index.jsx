@@ -123,7 +123,7 @@ class ProductList extends Component {
             buttonAdd={"Tambah Pelanggan"}
             selectedUsers={[]}
             onChange={null}
-            onClick={() => history.push({ pathname: '/orders/report' })}
+            onClick={() => history.push({ pathname: '/customers/s' })}
           />
           <div className={classes.content}>{this.renderProducts()}</div>
         </div>

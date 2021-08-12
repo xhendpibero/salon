@@ -13,3 +13,4 @@ export { default as OrdersTable } from './Table/OrdersTable';
 export { default as ReportTable } from './Table/ReportTable';
 export { default as ProductCard } from './ProductCard';
 export { default as BookingCard } from './BookingCard';
+export { default as Popup } from './Popup';

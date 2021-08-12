@@ -45,7 +45,7 @@ SearchInput.propTypes = {
 };
 
 SearchInput.defaultProps = {
-  onChange: () => {}
+  onChange: () => { }
 };
 
 export default withStyles(styles)(SearchInput);

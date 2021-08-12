@@ -9,6 +9,12 @@ import classNames from 'classnames';
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 // Material components
 import { Button, IconButton } from '@material-ui/core';
 
@@ -27,8 +33,28 @@ import { DisplayMode, SearchInput } from 'components';
 import styles from './styles';
 
 class UsersToolbar extends Component {
+  state = {
+    open: false,
+    title: "",
+    body: "",
+  };
+
+  handleClose = () => {
+    this.setState({ open: false, title: '', body: '' });
+  };
+
+  handleHideUsers = () => {
+    this.setState({ open: true, title: "Ingin melakukan perubahan status?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+  }
+
+  handleDeleteUsers = () => {
+    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+  }
+
   render() {
     const { classes, className, selectedUsers, history } = this.props;
+
+    const { open, title, body } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -71,7 +97,7 @@ class UsersToolbar extends Component {
             <IconButton
               className={classes.hideButton}
               style={!selectedUsers.length > 0 ? ({ color: "#eee" }) : null}
-              onClick={selectedUsers.length > 0 ? this.handleDeleteUsers : null}
+              onClick={selectedUsers.length > 0 ? this.handleHideUsers : null}
             >
               <VisibilityOff />
             </IconButton>
@@ -95,6 +121,28 @@ class UsersToolbar extends Component {
           </Button>
 
         </div>
+
+        <Dialog
+          open={open}
+          onClose={this.handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {body}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Kembali
+            </Button>
+            <Button onClick={this.handleClose} color="primary" autoFocus>
+              Setuju
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

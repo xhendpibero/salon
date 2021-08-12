@@ -23,6 +23,7 @@ import {
   PortletLabel,
   PortletContent,
   PortletFooter,
+  Popup,
 } from 'components';
 
 // Component styles
@@ -51,8 +52,23 @@ class Employee extends Component {
     phone: '',
     state: 'Alabama',
     country: 'USA',
-    status: 0
+    status: 0,
+    open: false,
+    title: "",
+    body: "",
   };
+
+  handleClose = () => {
+    this.setState({ open: false, title: '', body: '' });
+  };
+
+  handleHideUsers = () => {
+    this.setState({ open: true, title: "Ingin melakukan penambahan?", body: "Pastikan telah melakukan pengecekan pada masukan yang anda isi" });
+  }
+
+  handleDeleteUsers = () => {
+    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+  }
 
   handleChange = (e, name) => {
     this.setState({
@@ -62,7 +78,7 @@ class Employee extends Component {
 
   render() {
     const { classes, className, ...rest } = this.props;
-    const { firstName, lastName, phone, status, country, email } = this.state;
+    const { firstName, lastName, phone, status, country, body, title, open, email } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -117,7 +133,7 @@ class Employee extends Component {
             </div>
             <div className={classes.field}>
               <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open-select-label">status</InputLabel>
+                <InputLabel id="demo-controlled-open-select-label">Status</InputLabel>
                 <Select
                   labelId="demo-controlled-open-select-label"
                   id="demo-controlled-open-select"
@@ -141,10 +157,12 @@ class Employee extends Component {
           <Button
             color="primary"
             variant="contained"
+            onClick={this.handleHideUsers}
           >
             Simpan
           </Button>
         </PortletFooter>
+        <Popup handleClose={this.handleClose} title={title} body={body} open={open} />
       </Portlet>
     );
   }

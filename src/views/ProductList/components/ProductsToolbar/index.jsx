@@ -15,6 +15,12 @@ import { Button, IconButton } from '@material-ui/core';
 // Shared components
 import { DisplayMode, SearchInput } from 'components';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 // Component styles
 import {
   Delete as DeleteIcon,
@@ -24,8 +30,27 @@ import {
 import styles from './styles';
 
 class ProductsToolbar extends Component {
+  state = {
+    open: false,
+    title: "",
+    body: "",
+  };
+
+  handleClose = () => {
+    this.setState({ open: false, title: '', body: '' });
+  };
+
+  handleHideUsers = () => {
+    this.setState({ open: true, title: "Ingin melakukan perubahan status?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+  }
+
+  handleDeleteUsers = () => {
+    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+  }
+
   render() {
     const { classes, className, selected, history } = this.props;
+    const { open, title, body } = this.state;
     const role = localStorage.getItem("role") === "admin";
 
     const rootClassName = classNames(classes.root, className);
@@ -48,23 +73,21 @@ class ProductsToolbar extends Component {
             placeholder="Cari Jenis layanan"
           />
           <span className={classes.spacer} />
-          {selected && selected.length > 0 && (
-            <>
-              <IconButton
-                className={classes.hideButton}
-                onClick={this.handleDeleteUsers}
-              >
-                <VisibilityOff />
-              </IconButton>
+          <IconButton
+            className={classes.hideButton}
+            style={!selected.length > 0 ? ({ color: "#eee" }) : null}
+            onClick={selected.length > 0 ? this.handleHideUsers : null}
+          >
+            <VisibilityOff />
+          </IconButton>
 
-              <IconButton
-                className={classes.deleteButton}
-                onClick={this.handleDeleteUsers}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </>
-          )}
+          <IconButton
+            className={classes.deleteButton}
+            style={!selected.length > 0 ? ({ color: "#eee" }) : null}
+            onClick={selected.length > 0 ? this.handleDeleteUsers : null}
+          >
+            <DeleteIcon />
+          </IconButton>
 
           {role && (
             <Button
@@ -79,6 +102,27 @@ class ProductsToolbar extends Component {
           {/* <span className={classes.spacer} /> */}
           {/* <DisplayMode mode="grid" /> */}
         </div>
+        <Dialog
+          open={open}
+          onClose={this.handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {body}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Kembali
+            </Button>
+            <Button onClick={this.handleClose} color="primary" autoFocus>
+              Setuju
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

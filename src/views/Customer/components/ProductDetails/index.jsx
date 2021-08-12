@@ -75,7 +75,7 @@ class Account extends Component {
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "service")}
-                label="Service Name"
+                label="Nama Depan"
                 margin="dense"
                 required
                 value={service}
@@ -84,12 +84,31 @@ class Account extends Component {
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "price")}
-                label="Price"
+                label="Nama Belakang"
+                value={price}
                 margin="dense"
                 required
-                value={price}
                 variant="outlined"
-                type="number"
+              />
+            </div>
+            <div className={classes.field}>
+              <TextField
+                className={classes.textField}
+                onChange={e => this.handleChange(e, "service")}
+                label="Email"
+                margin="dense"
+                required
+                value={service}
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
+                onChange={e => this.handleChange(e, "price")}
+                label="Kata Sandi"
+                value={price}
+                margin="dense"
+                required
+                variant="outlined"
               />
             </div>
           </form>

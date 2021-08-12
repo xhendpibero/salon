@@ -139,6 +139,7 @@ class UsersTable extends Component {
                       className={classes.tableRow}
                       hover
                       key={user.id}
+                      // style={{ opacity: user.status ? 1 : 0.6 }}
                       selected={selectedUsers.indexOf(user.id) !== -1}
                     >
                       <TableCell className={classes.tableCell}>
@@ -183,10 +184,10 @@ class UsersTable extends Component {
                         <div className={classes.statusWrapper}>
                           <Status
                             className={classes.status}
-                            color={'success'}
+                            color={user.status ? 'success' : 'danger'}
                             size="sm"
                           />
-                          Tersedia
+                          {user.status ? "Tersedia" : "Tidak Tersedia"}
                         </div>
                       </TableCell>
                     </TableRow>

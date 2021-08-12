@@ -363,7 +363,7 @@ class OrdersTable extends Component {
                                     Kembali
                                 </Button>
                                 <Button onClick={this.handleClose} color="primary" autoFocus>
-                                    Konfirmasi
+                                    Setuju
                                 </Button>
                             </DialogActions>
                         </Dialog>

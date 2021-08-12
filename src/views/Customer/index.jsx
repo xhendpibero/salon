@@ -50,7 +50,7 @@ class Customer extends Component {
             container
             spacing={4}
           >
-            <Grid
+            {/* <Grid
               item
               lg={4}
               md={6}
@@ -58,12 +58,9 @@ class Customer extends Component {
               xs={12}
             >
               <ProductPicture />
-            </Grid>
+            </Grid> */}
             <Grid
               item
-              lg={8}
-              md={6}
-              xl={8}
               xs={12}
             >
               <ProductDetails />

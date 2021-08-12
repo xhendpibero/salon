@@ -115,7 +115,7 @@ class OrdersList extends Component {
       <DashboardLayout title="Pemesanan">
         <div className={classes.root}>
           <Toolbar
-            placeholder="Cari Pemesanan"
+            placeholder="Cari pemesanan"
             buttonAdd={role ? "" : "Buat Pemesanan"}
             selectedUsers={[]}
             onChange={(e) => console.log(e.target.value)}

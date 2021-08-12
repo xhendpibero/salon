@@ -16,6 +16,7 @@ export default [
     acceptedCookies: false,
     orders: ['DEV730658'],
     interests: ['ReactJS'],
+    status: false,
     returning: false
   },
   {
@@ -35,6 +36,7 @@ export default [
     acceptedCookies: false,
     orders: ['DEV898812'],
     interests: ['ReactJS', 'Angular'],
+    status: false,
     returning: false
   },
   {
@@ -54,6 +56,7 @@ export default [
     acceptedCookies: true,
     orders: [],
     interests: ['VueJS'],
+    status: true,
     returning: false
   },
   {
@@ -73,7 +76,8 @@ export default [
     acceptedCookies: true,
     orders: ['DEV793788'],
     interests: ['HTML'],
-    returning: true
+    status: true,
+    returning: false
   },
   {
     id: 'DEV663348',
@@ -93,7 +97,8 @@ export default [
     acceptedCookies: true,
     orders: ['DEV841788'],
     interests: ['ReactJS', 'EmberJS'],
-    returning: true
+    status: true,
+    returning: false
   },
   {
     id: 'DEV728981',
@@ -113,6 +118,7 @@ export default [
     acceptedCookies: true,
     orders: ['DEV552540'],
     interests: ['ReactJS', 'VueJS'],
+    status: true,
     returning: false
   },
   {
@@ -132,6 +138,7 @@ export default [
     acceptedCookies: true,
     orders: ['DEV593146', 'DEV783653'],
     interests: ['NextJS'],
+    status: true,
     returning: false
   },
   {
@@ -151,6 +158,7 @@ export default [
     acceptedCookies: true,
     orders: [],
     interests: ['GatsbyJS'],
+    status: true,
     returning: false
   },
   {
@@ -170,7 +178,8 @@ export default [
     acceptedCookies: true,
     orders: [],
     interests: ['Apollo GraphQL'],
-    returning: true
+    status: false,
+    returning: false
   },
   {
     id: 'DEV662801',
@@ -189,6 +198,7 @@ export default [
     acceptedCookies: false,
     orders: [],
     interests: ['Angular'],
-    returning: true
+    status: false,
+    returning: false
   }
 ];

@@ -133,7 +133,7 @@ class OrdersTable extends Component {
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
-                    <TableCell align="left">Pelanggan</TableCell>
+                    <TableCell align="left">Nama Pelanggan</TableCell>
                     <TableCell align="left">Tanggal Pemesanan</TableCell>
                     {/* <TableCell
                       align="left"
