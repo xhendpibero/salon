@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+
+// Externals
+import compose from 'recompose/compose';
 
 // Externals
 import PropTypes from 'prop-types';
@@ -26,6 +30,7 @@ import { getUsers } from 'services/user';
 
 // Custom components
 import { ProductsToolbar, ProductCard, ProductsTable } from './components';
+import { Toolbar } from '../../components';
 
 // Component styles
 import styles from './styles';
@@ -107,12 +112,19 @@ class ProductList extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
 
     return (
       <DashboardLayout title="Pelanggan">
         <div className={classes.root}>
-          <ProductsToolbar />
+          {/* <ProductsToolbar /> */}
+          <Toolbar
+            placeholder="Cari Pelanggan"
+            buttonAdd={"Tambah Pelanggan"}
+            selectedUsers={[]}
+            onChange={null}
+            onClick={() => history.push({ pathname: '/orders/report' })}
+          />
           <div className={classes.content}>{this.renderProducts()}</div>
         </div>
       </DashboardLayout>
@@ -125,4 +137,6 @@ ProductList.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ProductList);
+export default compose(
+  withRouter, withStyles(styles)
+)(ProductList);

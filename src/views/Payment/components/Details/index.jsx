@@ -122,6 +122,7 @@ class Account extends Component {
         value: 1,
       },
     ],
+    countdown: "",
   };
 
   async getUsers() {
@@ -172,11 +173,32 @@ class Account extends Component {
     }
   }
 
+  timer = (seconds) => {
+    var days = Math.floor(seconds / 24 / 60 / 60);
+    var hoursLeft = Math.floor((seconds) - (days * 86400));
+    var hours = Math.floor(hoursLeft / 3600);
+    var minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
+    var minutes = Math.floor(minutesLeft / 60);
+    var remainingSeconds = seconds % 60;
+    const pad = (n) => {
+      return (n < 10 ? "0" + n : n);
+    }
+    if (seconds == 0) {
+      return "Selesai";
+    } else {
+      setTimeout(() => {
+        this.setState({ countdown: this.timer(--seconds) });
+      }, 1000)
+      return pad(days) + ":" + pad(hours) + ":" + pad(minutes) + ":" + pad(remainingSeconds);
+    }
+  }
+
   componentWillMount() {
     this.signal = true;
 
     const { limit } = this.state;
 
+    console.log({ dasds: this.timer(10000) })
     this.getUsers(limit);
     this.getProducts(limit);
   }
@@ -256,6 +278,7 @@ class Account extends Component {
       address,
       amount,
       amountList,
+      countdown,
     } = this.state;
     var today = new Date(date);
     var dd = today.getDate();
@@ -282,6 +305,7 @@ class Account extends Component {
         bankList,
         amount,
         amountList,
+        countdown,
       }
     )
 
@@ -310,7 +334,7 @@ class Account extends Component {
         .indexOf(product.id) !== -1)
       .map(e => e.price.replace(".", "") - 0)
       .reduce((a, b) => a + b, 0)
-      * 0.1 + Math.floor(100 + Math.random() * 400))
+      * 0.1 + 300)
       .toLocaleString('id', { style: 'currency', currency: 'IDR' })
 
     const rootClassName = classNames(classes.root, className);
@@ -448,7 +472,7 @@ class Account extends Component {
             className={classes.title}
             variant="h5"
           >
-            Total Nominal Transfer {amount == 1 ? "Down Payment" : "Keseluruhan"}
+            Total Nominal Pembayaran {amount == 1 ? "Down Payment" : "Keseluruhan"}
           </Typography>
           <div className={classes.field}>
             <Typography
@@ -456,12 +480,12 @@ class Account extends Component {
               variant="h4"
               style={{ textAlign: "center" }}
             >
-              {amount == 1 ? transfer : (products.filter((product) =>
+              {amount == 1 ? transfer.split(",")[0] : (products.filter((product) =>
                 selectedProducts
                   .indexOf(product.id) !== -1)
                 .map(e => e.price.replace(".", "") - 0)
-                .reduce((a, b) => a + b, 0) + Math.floor(100 + Math.random() * 400))
-                .toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                .reduce((a, b) => a + b, 0) + 300)
+                .toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
             </Typography>
           </div>
           <Typography
@@ -494,7 +518,7 @@ class Account extends Component {
             <PortletHeader>
               <PortletLabel
                 subtitle="Silahkan isi informasi dibawah ini"
-                title="Metode Pembayaran"
+                title="Informasi Biaya dan Pembayaran"
               />
             </PortletHeader>
             <PortletContent noPadding>
@@ -576,7 +600,7 @@ class Account extends Component {
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Tanggal booking
+                  Tanggal pemesanan
                 </Typography>
                 <DayPicker
                   selectedDays={[
@@ -586,7 +610,7 @@ class Account extends Component {
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Jam booking
+                  Jam pemesanan
                 </Typography>
                 {selectedTimes ? (
                   <>

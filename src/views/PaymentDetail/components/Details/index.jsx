@@ -429,7 +429,7 @@ class Account extends Component {
             className={classes.title}
             variant="h4"
           >
-            Bukti Transfer
+            Bukti Pembayaran
           </Typography>
         </div>
         <div className={classes.field}>
@@ -534,7 +534,7 @@ class Account extends Component {
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Tanggal booking
+                  Tanggal pemesanan
                 </Typography>
                 <DayPicker
                   selectedDays={[
@@ -544,7 +544,7 @@ class Account extends Component {
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Jam booking
+                  Jam pemesanan
                 </Typography>
                 {selectedTimes ? (
                   <>

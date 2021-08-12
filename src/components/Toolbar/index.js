@@ -45,14 +45,16 @@ class Toolbar extends Component {
                             <DeleteIcon />
                         </IconButton>
                     )}
-                    <Button
-                        color="primary"
-                        size="small"
-                        variant="outlined"
-                        onClick={this.props.onClick}
-                    >
-                        {buttonAdd}
-                    </Button>
+                    {buttonAdd && (
+                        <Button
+                            color="primary"
+                            size="small"
+                            variant="outlined"
+                            onClick={this.props.onClick}
+                        >
+                            {buttonAdd}
+                        </Button>
+                    )}
                 </div>
             </div>
         );

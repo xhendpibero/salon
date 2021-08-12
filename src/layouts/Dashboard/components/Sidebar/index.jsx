@@ -28,6 +28,8 @@ import {
   People as People2Icon,
   Shop as ShopIcon,
   ShoppingBasketOutlined as ShoppingBasketIcon,
+  Info as InfoIcon,
+  Description as DescriptionIcon,
   AccountBoxOutlined as AccountBoxIcon,
   SettingsOutlined as SettingsIcon
 } from '@material-ui/icons';
@@ -96,7 +98,7 @@ class Sidebar extends Component {
               style={{ color: "#ED4740" }}
               onClick={this.handleSignOut}
             >
-              Logout
+              Keluar
             </Typography>
           </Link>
         </div>
@@ -135,8 +137,42 @@ class Sidebar extends Component {
               primary="Pemesanan"
             />
           </ListItem>
+
+          {!role && (
+            <ListItem
+              activeClassName={classes.activeListItem}
+              className={classes.listItem}
+              component={NavLink}
+              to="/about"
+            >
+              <ListItemIcon className={classes.listItemIcon}>
+                <InfoIcon />
+              </ListItemIcon>
+              <ListItemText
+                classes={{ primary: classes.listItemText }}
+                primary="Tentang Kami"
+              />
+            </ListItem>
+          )}
           {role && (
             <>
+
+
+              <ListItem
+                activeClassName={classes.activeListItem}
+                className={classes.listItem}
+                component={NavLink}
+                to="/report/orders"
+              >
+                <ListItemIcon className={classes.listItemIcon}>
+                  <DescriptionIcon />
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.listItemText }}
+                  primary="Lihat Laporan"
+                />
+              </ListItem>
+
               <ListItem
                 activeClassName={classes.activeListItem}
                 className={classes.listItem}

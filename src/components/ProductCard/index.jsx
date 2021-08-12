@@ -41,34 +41,36 @@ class ProductCard extends Component {
             )
           }
         </div>
-        <div className={classes.details}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            {title}
-          </Typography>
-          {
-            secondary && (
-              <Typography
-                className={classes.description}
-                variant="body1"
-              >
-                {secondary}
-              </Typography>
-            )
-          }
-          {
-            description && (
-              <Typography
-                className={classes.description2}
-                variant="body2"
-              >
-                {description}
-              </Typography>
-            )
-          }
-        </div>
+        {title && (
+          <div className={classes.details}>
+            <Typography
+              className={classes.title}
+              variant="h4"
+            >
+              {title}
+            </Typography>
+            {
+              secondary && (
+                <Typography
+                  className={classes.description}
+                  variant="body1"
+                >
+                  {secondary}
+                </Typography>
+              )
+            }
+            {
+              description && (
+                <Typography
+                  className={classes.description2}
+                  variant="body2"
+                >
+                  {description}
+                </Typography>
+              )
+            }
+          </div>
+        )}
       </Paper>
     );
   }

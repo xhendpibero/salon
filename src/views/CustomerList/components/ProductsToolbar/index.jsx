@@ -39,18 +39,18 @@ class ProductsToolbar extends Component {
         <div className={classes.row}>
           <SearchInput
             className={classes.searchInput}
-            placeholder="Cari jenis layanan"
+            placeholder="Cari Pelanggan"
           />
           <span className={classes.spacer} />
-          {/* <Button
+          <Button
             color="primary"
             size="small"
             variant="outlined"
             onClick={() => history.push({ pathname: '/products/service', state: { detail: 'Buat' } })}
           >
             Tambah
-          </Button> */}
-          {/* <span className={classes.spacer} /> */}
+          </Button>
+          <span className={classes.spacer} />
           {/* <DisplayMode mode="grid" /> */}
         </div>
       </div>

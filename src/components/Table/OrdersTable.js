@@ -233,7 +233,7 @@ class OrdersTable extends Component {
                                             </div>
                                             <hr style={{ marginBottom: 10 }} />
                                             <Typography variant="h5" component="h2">
-                                                Layanan
+                                                Jenis Layanan
                                             </Typography>
                                             <Typography style={{ marginBottom: 10 }} variant="body2" component="p">
                                                 {order.services.toString().replace(",", ", ")}

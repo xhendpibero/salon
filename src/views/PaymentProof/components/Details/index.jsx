@@ -295,7 +295,7 @@ class Account extends Component {
         .indexOf(product.id) !== -1)
       .map(e => e.price.replace(".", "") - 0)
       .reduce((a, b) => a + b, 0)
-      * 0.1 + Math.floor(100 + Math.random() * 400))
+      * 0.1 + 300)
       .toLocaleString('id', { style: 'currency', currency: 'IDR' })
 
 
@@ -398,7 +398,7 @@ class Account extends Component {
             className={classes.title}
             variant="h5"
           >
-            Total Nominal Transfer {amount == 1 ? "Down Payment" : "Keseluruhan"}
+            Total Nominal Pembayaran {amount == 1 ? "Down Payment" : "Keseluruhan"}
           </Typography>
           <div className={classes.field}>
             <Typography
@@ -406,12 +406,12 @@ class Account extends Component {
               variant="h4"
               style={{ textAlign: "center" }}
             >
-              {amount == 1 ? transfer : (products.filter((product) =>
+              {amount == 1 ? transfer.split(",")[0] : (products.filter((product) =>
                 selectedProducts
                   .indexOf(product.id) !== -1)
                 .map(e => e.price.replace(".", "") - 0)
-                .reduce((a, b) => a + b, 0) + Math.floor(100 + Math.random() * 400))
-                .toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                .reduce((a, b) => a + b, 0) + 300)
+                .toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
             </Typography>
           </div>
           <Typography
@@ -420,6 +420,16 @@ class Account extends Component {
             style={{ marginTop: 4 }}
           >
             Pastikan nominal sesuai hingga 3 digit terakhir
+          </Typography>
+        </div>
+
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+            style={{ textAlign: "center" }}
+          >
+            0 Hari : 01 Jam : 30 Menit : 29 Detik
           </Typography>
         </div>
 
@@ -472,7 +482,7 @@ class Account extends Component {
             className={classes.title}
             variant="h4"
           >
-            Bukti Transfer
+            Bukti Pembayaran
           </Typography>
         </div>
         <div className={classes.field}>
@@ -518,7 +528,7 @@ class Account extends Component {
             <PortletHeader>
               <PortletLabel
                 subtitle="Silahkan isi informasi dibawah ini"
-                title="Metode Pembayaran"
+                title="Pembayaran"
               />
             </PortletHeader>
             <PortletContent noPadding>
@@ -600,7 +610,7 @@ class Account extends Component {
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Tanggal booking
+                  Tanggal pemesanan
                 </Typography>
                 <DayPicker
                   selectedDays={[
@@ -610,7 +620,7 @@ class Account extends Component {
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Jam booking
+                  Jam pemesanan
                 </Typography>
                 {selectedTimes ? (
                   <>

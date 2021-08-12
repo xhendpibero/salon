@@ -29,7 +29,7 @@ class ProductPicture extends Component {
                 <PortletContent>
                     <div className={classes.details}>
                         <div className={classes.info}>
-                            <Typography variant="h4">Gambar Layanan</Typography>
+                            <Typography variant="h4">Gambar Jenis Layanan</Typography>
                         </div>
                     </div>
                     <Avatar

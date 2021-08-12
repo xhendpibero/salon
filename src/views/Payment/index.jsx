@@ -31,7 +31,7 @@ class Order extends Component {
     const { classes, history } = this.props;
 
     return (
-      <DashboardLayout title={"Pembayaran"}>
+      <DashboardLayout title={"Buat Pemesanan"}>
         <div className={classes.root}>
           <Button
             className={classes.importButton}

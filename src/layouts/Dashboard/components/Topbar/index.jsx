@@ -143,17 +143,22 @@ class Topbar extends Component {
             >
               <InputIcon />
             </IconButton> */}
-            {!role && !history.location.pathname.includes("/orders") && (
-              <Button
-                className={classes.signOutButton}
-                color="primary"
-                size="small"
-                variant="outlined"
-                onClick={this.handleSignOut}
-              >
-                Buat Pemesanan
-              </Button>
-            )}
+            {!role &&
+              !history.location.pathname.includes("/orders") &&
+              !history.location.pathname.includes("/about") &&
+              !history.location.pathname.includes("/account") &&
+              !history.location.pathname.includes("/settings") &&
+              (
+                <Button
+                  className={classes.signOutButton}
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                  onClick={this.handleSignOut}
+                >
+                  Buat Pemesanan
+                </Button>
+              )}
           </Toolbar>
         </div>
         <Popover

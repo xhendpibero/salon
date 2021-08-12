@@ -116,14 +116,14 @@ class OrdersList extends Component {
         <div className={classes.root}>
           <Toolbar
             placeholder="Cari Pemesanan"
-            buttonAdd={role ? "Lihat Laporan" : "Buat Pemesanan"}
+            buttonAdd={role ? "" : "Buat Pemesanan"}
             selectedUsers={[]}
             onChange={(e) => console.log(e.target.value)}
             onClick={() => role ? history.push({ pathname: '/orders/report' }) : history.push({ pathname: '/orders/add' })}
           />
           <div className={classes.content}>{this.renders()}</div>
           <div className={classes.pagination}>
-            <Typography variant="caption">1-6 dari 20</Typography>
+            <Typography variant="caption">1-6 dari 6</Typography>
             <IconButton>
               <ChevronLeftIcon />
             </IconButton>
@@ -138,5 +138,5 @@ class OrdersList extends Component {
 }
 
 export default compose(
-  withRouter, withStyles(styles))
-  (OrdersList);
+  withRouter, withStyles(styles)
+)(OrdersList);

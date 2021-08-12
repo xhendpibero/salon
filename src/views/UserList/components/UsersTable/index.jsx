@@ -115,7 +115,7 @@ class UsersTable extends Component {
                   </TableCell>
                   <TableCell align="left">ID</TableCell>
                   <TableCell align="left">Alamat</TableCell>
-                  <TableCell align="left">Telpon</TableCell>
+                  <TableCell align="left">No HP</TableCell>
                   <TableCell align="left">Tanggal Daftar</TableCell>
                   <TableCell align="left">Status</TableCell>
                 </TableRow>

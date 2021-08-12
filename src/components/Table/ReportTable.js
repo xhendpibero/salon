@@ -78,7 +78,8 @@ class OrdersTable extends Component {
                                         <TableCell align="left">Jenis Layanan</TableCell>
                                         <TableCell align="left">Harga</TableCell>
                                         <TableCell align="left">Nomor rek</TableCell>
-                                        <TableCell align="left">Nominal DP</TableCell>
+                                        <TableCell align="left">Pembayaran</TableCell>
+                                        <TableCell align="left">Nominal Pembayaran</TableCell>
                                         <TableCell align="left">Tanggal Pemesanan</TableCell>
                                         {/* <TableCell
                                             align="left"
@@ -100,7 +101,7 @@ class OrdersTable extends Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {orders.map(order => (
+                                    {orders.map((order, id) => (
                                         <TableRow
                                             className={classes.tableRow}
                                             hover
@@ -123,6 +124,9 @@ class OrdersTable extends Component {
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
                                                 {order.norek}
+                                            </TableCell>
+                                            <TableCell className={classes.customerCell}>
+                                                {id % 2 == 0 ? "Penuh" : "DP"}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
                                                 {order.nominalDp.toLocaleString('id', { style: 'currency', currency: 'IDR' })}

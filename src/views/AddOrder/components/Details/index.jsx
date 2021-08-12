@@ -638,9 +638,67 @@ class Account extends Component {
             </Grid>
           </div>
         )}
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Pilih Tanggal Pemesanan
+          </Typography>
+        </div>
+        <div className={classes.field}>
+          <DayPicker
+            onDayClick={this.handleDayClick}
+            selectedDays={[
+              dataDate ? new Date(dataDate) : null,
+            ]}
+          />
+        </div>
+
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Pilih Jam Pemesanan
+          </Typography>
+        </div>
+        {!date && (
+          <div className={classes.field}>
+            <Typography
+              className={classes.title}
+              variant="body1"
+            >
+              Pilih tanggal terlebih dahulu
+            </Typography>
+
+          </div>)}
+        <div className={classes.field}>
+          <Grid
+            container
+            spacing={3}
+          >
+            {Array(12).fill().map((x, i) => i + 8).map((data, index) => {
+              const time = data + 1;
+              return (
+                <Grid
+                  item
+                  key={time}
+                  lg={3}
+                  md={4}
+                  xs={6}
+                  onClick={() => date ? this.handleChange(time, "selectedTimes") : null}
+                >
+                  <BookingCard checked={selectedTimes == time} title={"Jam " + time} status={"Tersedia"} />
+                </Grid>
+              )
+            })
+            }
+          </Grid>
+        </div>
       </>),
       (<>
-        <div className={classes.field}>
+        {/* <div className={classes.field}>
           <Typography
             className={classes.title}
             variant="h4"
@@ -697,7 +755,8 @@ class Account extends Component {
             })
             }
           </Grid>
-        </div></>),
+        </div> */}
+      </>),
       (<>
         <div className={classes.field}>
           <Typography
@@ -882,7 +941,7 @@ class Account extends Component {
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Tanggal booking
+                  Tanggal pemesanan
                 </Typography>
                 <DayPicker
                   onDayClick={this.handleDayClick}
@@ -893,7 +952,7 @@ class Account extends Component {
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
-                  Jam booking
+                  Jam pemesanan
                 </Typography>
                 {selectedTimes ? (
                   <>
