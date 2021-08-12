@@ -16,7 +16,8 @@ import {
   PortletHeader,
   PortletLabel,
   PortletContent,
-  PortletFooter
+  PortletFooter,
+  Popup,
 } from 'components';
 
 // Component styles
@@ -41,7 +42,22 @@ class Account extends Component {
   state = {
     service: '',
     price: '',
+    open: false,
+    title: "",
+    body: "",
   };
+
+  handleClose = () => {
+    this.setState({ open: false, title: '', body: '' });
+  };
+
+  handleHideUsers = () => {
+    this.setState({ open: true, title: "Ingin melakukan penambahan?", body: "Pastikan telah melakukan pengecekan pada masukan yang anda isi" });
+  }
+
+  handleDeleteUsers = () => {
+    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+  }
 
   handleChange = (e, name) => {
     this.setState({
@@ -52,6 +68,7 @@ class Account extends Component {
   render() {
     const { classes, className, ...rest } = this.props;
     const { service, price } = this.state;
+    const { body, title, open } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -63,7 +80,7 @@ class Account extends Component {
         <PortletHeader>
           <PortletLabel
             subtitle="Silahkan isi informasi dibawah ini"
-            title="Service"
+            title="Tambah Pelanggan"
           />
         </PortletHeader>
         <PortletContent noPadding>
@@ -94,11 +111,11 @@ class Account extends Component {
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                onChange={e => this.handleChange(e, "service")}
+                // onChange={e => this.handleChange(e, "service")}
                 label="Email"
                 margin="dense"
                 required
-                value={service}
+                // value={service}
                 variant="outlined"
               />
               <TextField
@@ -107,6 +124,7 @@ class Account extends Component {
                 label="Kata Sandi"
                 value={price}
                 margin="dense"
+                type="password"
                 required
                 variant="outlined"
               />
@@ -117,10 +135,12 @@ class Account extends Component {
           <Button
             color="primary"
             variant="contained"
+            onClick={this.handleHideUsers}
           >
             Simpan
           </Button>
         </PortletFooter>
+        <Popup handleClose={this.handleClose} title={title} body={body} open={open} />
       </Portlet>
     );
   }

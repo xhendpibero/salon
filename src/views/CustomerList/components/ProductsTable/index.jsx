@@ -134,12 +134,14 @@ class UsersTable extends Component {
                     >
                       <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
-                          <Typography
-                            className={classes.nameText}
-                            variant="body1"
-                          >
-                            {user.id}
-                          </Typography>
+                          <Link to="customers/s?id=1">
+                            <Typography
+                              className={classes.nameText}
+                              variant="body1"
+                            >
+                              {user.id}
+                            </Typography>
+                          </Link>
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
