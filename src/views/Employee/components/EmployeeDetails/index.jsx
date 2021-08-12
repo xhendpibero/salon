@@ -8,7 +8,13 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 
 // Material components
-import { Button, TextField } from '@material-ui/core';
+import {
+  Button, TextField,
+  FormControlLabel,
+  FormControl,
+  InputLabel,
+  Select,
+} from '@material-ui/core';
 
 // Shared components
 import {
@@ -16,7 +22,7 @@ import {
   PortletHeader,
   PortletLabel,
   PortletContent,
-  PortletFooter
+  PortletFooter,
 } from 'components';
 
 // Component styles
@@ -44,7 +50,8 @@ class Employee extends Component {
     email: 'contact@devias.io',
     phone: '',
     state: 'Alabama',
-    country: 'USA'
+    country: 'USA',
+    status: 0
   };
 
   handleChange = (e, name) => {
@@ -55,7 +62,7 @@ class Employee extends Component {
 
   render() {
     const { classes, className, ...rest } = this.props;
-    const { firstName, lastName, phone, state, country, email } = this.state;
+    const { firstName, lastName, phone, status, country, email } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -107,6 +114,26 @@ class Employee extends Component {
                 value={country}
                 variant="outlined"
               />
+            </div>
+            <div className={classes.field}>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-controlled-open-select-label">status</InputLabel>
+                <Select
+                  labelId="demo-controlled-open-select-label"
+                  id="demo-controlled-open-select"
+                  value={status}
+                  onChange={e => this.handleChange(e, "status")}
+                  inputProps={{
+                    name: 'bank',
+                    id: 'bank-simple',
+                  }}
+                  native
+                >
+                  <option aria-label="None" value="" />
+                  <option value={0}>Tersedia</option>
+                  <option value={1}>Tidak Tersedia</option>
+                </Select>
+              </FormControl>
             </div>
           </form>
         </PortletContent>

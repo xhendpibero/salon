@@ -102,6 +102,9 @@ class UsersTable extends Component {
               <TableHead>
                 <TableRow>
                   <TableCell align="left">
+                    ID
+                  </TableCell>
+                  <TableCell align="left">
                     Nama
                   </TableCell>
                   <TableCell align="left">Email</TableCell>
@@ -135,9 +138,12 @@ class UsersTable extends Component {
                             className={classes.nameText}
                             variant="body1"
                           >
-                            {user.name}
+                            {user.id}
                           </Typography>
                         </div>
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {user.name}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         user-{user.id}@gmail.com

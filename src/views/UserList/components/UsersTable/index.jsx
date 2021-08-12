@@ -111,9 +111,9 @@ class UsersTable extends Component {
                       }
                       onChange={this.handleSelectAll}
                     />
-                    Nama
+                    ID
                   </TableCell>
-                  <TableCell align="left">ID</TableCell>
+                  <TableCell align="left">Nama</TableCell>
                   <TableCell align="left">Alamat</TableCell>
                   <TableCell align="left">No HP</TableCell>
                   <TableCell align="left">Tanggal Daftar</TableCell>
@@ -162,13 +162,13 @@ class UsersTable extends Component {
                               className={classes.nameText}
                               variant="body1"
                             >
-                              {user.name}
+                              {user.id}
                             </Typography>
                           </Link>
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {user.id}
+                        {user.name}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {user.address.state}
@@ -186,7 +186,7 @@ class UsersTable extends Component {
                             color={'success'}
                             size="sm"
                           />
-                          Aktif
+                          Tersedia
                         </div>
                       </TableCell>
                     </TableRow>

@@ -156,23 +156,6 @@ class Sidebar extends Component {
           )}
           {role && (
             <>
-
-
-              <ListItem
-                activeClassName={classes.activeListItem}
-                className={classes.listItem}
-                component={NavLink}
-                to="/report/orders"
-              >
-                <ListItemIcon className={classes.listItemIcon}>
-                  <DescriptionIcon />
-                </ListItemIcon>
-                <ListItemText
-                  classes={{ primary: classes.listItemText }}
-                  primary="Lihat Laporan"
-                />
-              </ListItem>
-
               <ListItem
                 activeClassName={classes.activeListItem}
                 className={classes.listItem}
@@ -214,6 +197,20 @@ class Sidebar extends Component {
                 <ListItemText
                   classes={{ primary: classes.listItemText }}
                   primary="Jenis Layanan"
+                />
+              </ListItem>
+              <ListItem
+                activeClassName={classes.activeListItem}
+                className={classes.listItem}
+                component={NavLink}
+                to="/report/orders"
+              >
+                <ListItemIcon className={classes.listItemIcon}>
+                  <DescriptionIcon />
+                </ListItemIcon>
+                <ListItemText
+                  classes={{ primary: classes.listItemText }}
+                  primary="Laporan"
                 />
               </ListItem>
             </>
