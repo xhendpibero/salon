@@ -130,11 +130,11 @@ class OrdersTable extends Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {orders.map(order => (
+                                    {orders.map((order, index) => (
                                         <TableRow
                                             className={classes.tableRow}
                                             hover
-                                            key={order.id}
+                                            key={order.id + index}
                                         >
                                             <TableCell>
                                                 <div className={classes.tableCellInner}>

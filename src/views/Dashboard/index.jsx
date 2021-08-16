@@ -8,6 +8,7 @@ import { withStyles } from '@material-ui/core';
 
 // Material components
 import { Grid } from '@material-ui/core';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Shared layouts
 import { Dashboard as DashboardLayout } from 'layouts';
@@ -169,9 +170,5 @@ class Dashboard extends Component {
     );
   }
 }
-
-Dashboard.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(Dashboard);

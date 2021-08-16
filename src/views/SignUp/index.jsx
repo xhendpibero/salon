@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import compose from 'recompose/compose';
 import validate from 'validate.js';
 import _ from 'underscore';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
@@ -101,20 +102,29 @@ class SignUp extends Component {
   };
 
   handleSignUp = async () => {
+    const { post } = useHttpClient();
     try {
       const { history } = this.props;
       const { values } = this.state;
 
       this.setState({ isLoading: true });
 
-      await signUp({
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password
-      });
+      const data = await post("/register", {
+        "username": values.email,
+        "password": values.password,
+        "email": values.email,
+        "role": "user"
+      })
+      console.log({ data })
 
-      history.push('/sign-in');
+      if (data?.status === 200) {
+        history.push('/sign-in');
+      } else {
+        this.setState({
+          isLoading: false,
+          submitError: "Email sudah ada yang punya"
+        });
+      }
     } catch (error) {
       this.setState({
         isLoading: false,

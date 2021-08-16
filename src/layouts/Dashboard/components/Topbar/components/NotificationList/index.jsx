@@ -71,9 +71,9 @@ class NotificationList extends Component {
             </div>
             <div className={classes.content}>
               <List component="div">
-                {notifications.map(notification => (
+                {notifications.map((notification, index) => (
                   <Link
-                    key={notification.id}
+                    key={notification.id + index}
                     to="#"
                   >
                     <ListItem
@@ -137,7 +137,7 @@ NotificationList.propTypes = {
 
 NotificationList.defaultProps = {
   notifications: [],
-  onSelect: () => {}
+  onSelect: () => { }
 };
 
 export default withStyles(styles)(NotificationList);

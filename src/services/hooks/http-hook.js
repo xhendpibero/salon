@@ -1,56 +1,74 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import axios from 'axios';
 
 export const useHttpClient = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const baseUrl = 'https://enigmatic-atoll-46738.herokuapp.com/api';
 
-  const activeHttpRequests = useRef([]);
+  const handleResponses = (response) => {
+    if (response.data.message === "Token expired") {
+      localStorage.setItem('isAuthenticated', false);
+      localStorage.setItem('role', null);
+      window.location.reload();
+    } else {
+      return response
+    }
+  }
 
-  const sendRequest = useCallback(
-    async (url, method = 'GET', body = null, headers = {}) => {
-      setIsLoading(true);
-      const httpAbortCtrl = new AbortController();
-      activeHttpRequests.current.push(httpAbortCtrl);
-
-      try {
-        const response = await fetch(url, {
-          method,
-          body,
-          headers,
-          signal: httpAbortCtrl.signal
-        });
-
-        const responseData = await response.json();
-
-        activeHttpRequests.current = activeHttpRequests.current.filter(
-          reqCtrl => reqCtrl !== httpAbortCtrl
-        );
-
-        if (!response.ok) {
-          throw new Error(responseData.message);
-        }
-
-        setIsLoading(false);
-        return responseData;
-      } catch (err) {
-        setError(err.message);
-        setIsLoading(false);
-        throw err;
-      }
-    },
-    []
-  );
-
-  const clearError = () => {
-    setError(null);
+  const post = async (uri, body, tokenStr = "") => {
+    const payload = { uri, body, tokenStr }
+    return await axios.post(baseUrl + uri, body, { headers: false ? { "Authorization": `Bearer ${tokenStr}` } : {} })
+      .then(function (response) {
+        console.log({ payload, response });
+        return handleResponses(response);
+      })
+      .catch(function (error) {
+        console.log(payload, error);
+        return error
+      });
   };
 
-  useEffect(() => {
-    return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      activeHttpRequests.current.forEach(abortCtrl => abortCtrl.abort());
-    };
-  }, []);
+  const get = async (uri, body, tokenStr = "") => {
+    const payload = { uri, body, tokenStr }
+    return await axios.get(baseUrl + uri, { headers: false ? { "Authorization": `Bearer ${tokenStr}` } : {} })
+      .then(function (response) {
+        console.log({ payload, response });
+        return handleResponses(response);
+      })
+      .catch(function (error) {
+        console.log(payload, error);
+        return error
+      });
+  };
 
-  return { isLoading, error, sendRequest, clearError };
+  const put = async (uri, body, tokenStr = "") => {
+    const payload = { uri, body, tokenStr }
+    return await axios.put(baseUrl + uri, body, { headers: false ? { "Authorization": `Bearer ${tokenStr}` } : {} })
+      .then(function (response) {
+        console.log({ payload, response });
+        return handleResponses(response);
+      })
+      .catch(function (error) {
+        console.log(payload, error);
+        return error
+      });
+  };
+
+  const del = async (uri, body, tokenStr = "") => {
+    const payload = { uri, body, tokenStr }
+    return await axios.delete(baseUrl + uri, {
+      headers: {
+        Authorization: `Bearer ${tokenStr}`
+      },
+      data: body,
+    })
+      .then(function (response) {
+        console.log({ payload, response });
+        return handleResponses(response);
+      })
+      .catch(function (error) {
+        console.log(payload, error);
+        return error
+      });
+  };
+
+  return { post, get, put, del };
 };

@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
 
 // Externals
 import classNames from 'classnames';
@@ -39,8 +40,12 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { classes, width, title, children } = this.props;
+    const { classes, width, title, children, history } = this.props;
     const { isOpen } = this.state;
+    console.log({ asdasdas: localStorage.getItem("isAuthenticated") })
+    if (!localStorage.getItem("isAuthenticated")) {
+      history.push('/sign-in');
+    }
 
     const isMobile = ['xs', 'sm', 'md'].includes(width);
     const shiftTopbar = isOpen && !isMobile;
@@ -87,6 +92,7 @@ Dashboard.propTypes = {
 };
 
 export default compose(
+  withRouter,
   withStyles(styles),
   withWidth()
 )(Dashboard);

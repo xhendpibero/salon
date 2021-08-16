@@ -8,6 +8,12 @@ export default theme => ({
     maxWidth: '100%',
     marginRight: theme.spacing.unit * 3
   },
+  progress: {
+    display: 'block',
+    marginTop: theme.spacing.unit * 2,
+    marginLeft: 'auto',
+    marginRight: 'auto'
+  },
   portletFooter: {
     paddingLeft: theme.spacing.unit * 3,
     paddingRight: theme.spacing.unit * 3,

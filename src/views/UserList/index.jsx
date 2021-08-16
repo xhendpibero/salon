@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 // Externals
 import PropTypes from 'prop-types';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
@@ -27,23 +28,28 @@ class UserList extends Component {
   state = {
     isLoading: false,
     limit: 10,
+    page: 0,
+    row: 10,
     users: [],
+    usersTemp: [],
     selectedUsers: [],
     error: null
   };
 
-  async getUsers() {
+  get = async () => {
     try {
       this.setState({ isLoading: true });
-
-      const { limit } = this.state;
-
-      const { users } = await getUsers(limit);
+      const { get } = useHttpClient();
+      this.setState({ isLoading: true });
+      const token = localStorage.getItem("token");
+      const products = await get("/employees", token)
 
       if (this.signal) {
         this.setState({
           isLoading: false,
-          users
+          users: products?.data,
+          usersTemp: products?.data,
+          limit: products?.data.length
         });
       }
     } catch (error) {
@@ -54,20 +60,60 @@ class UserList extends Component {
         });
       }
     }
-  }
+  };
 
-  componentDidMount() {
+  hide = async () => {
+    const { post } = useHttpClient();
+    const { selectedUsers } = this.state;
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    console.log({ selectedUsers })
+    selectedUsers.map(async (e) => {
+      const data = await post("/employees/hide", {
+        employee_id: e,
+        updated_by: user
+      }, token)
+      console.log({ data })
+    })
+  };
+
+  delete = async () => {
+    const { del } = useHttpClient();
+    const { selectedUsers } = this.state;
+    const token = localStorage.getItem("token");
+    selectedUsers.map(async (e) => {
+      const data = await del("/employees", {
+        employee_id: e
+      }, token)
+      console.log({ data })
+    })
+  };
+
+  componentWillMount() {
     this.signal = true;
-    this.getUsers();
+    this.get();
   }
 
   componentWillUnmount() {
     this.signal = false;
   }
 
-  handleSelect = selectedUsers => {
-    this.setState({ selectedUsers });
+  handleSelect = (selectedUsers, index) => {
+    this.setState({ [index]: selectedUsers });
+    if (index === "row") {
+      this.setState({ users: this.state.usersTemp.slice(this.state.page * selectedUsers, (this.state.page + 1) * selectedUsers) });
+    } else if (index === "page") {
+      this.setState({ users: this.state.usersTemp.slice(this.state.row * selectedUsers, this.state.row * (selectedUsers + 1)) });
+    }
   };
+
+  onChange = e => {
+    const users = this.state.usersTemp.filter((x) => {
+      return String(x?.fullname).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0 ||
+        String(x?.employee_id).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0;
+    })
+    this.setState({ users });
+  }
 
   renderUsers() {
     const { classes } = this.props;
@@ -91,7 +137,7 @@ class UserList extends Component {
 
     return (
       <UsersTable
-        //
+        count={this.state.usersTemp.length}
         onSelect={this.handleSelect}
         users={users}
       />
@@ -105,7 +151,7 @@ class UserList extends Component {
     return (
       <DashboardLayout title="Pegawai">
         <div className={classes.root}>
-          <UsersToolbar selectedUsers={selectedUsers} />
+          <UsersToolbar selectedUsers={selectedUsers} onChange={this.onChange} hide={this.hide} delete={this.delete} />
           <div className={classes.content}>{this.renderUsers()}</div>
         </div>
       </DashboardLayout>

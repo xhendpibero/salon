@@ -8,7 +8,10 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 
 // Material components
-import { Button, TextField } from '@material-ui/core';
+import {
+  Button, TextField,
+  CircularProgress,
+} from '@material-ui/core';
 
 // Shared components
 import {
@@ -22,24 +25,9 @@ import {
 // Component styles
 import styles from './styles';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
-
 class Account extends Component {
   state = {
-    service: '',
+    service_name: '',
     price: '',
     description: '',
   };
@@ -50,9 +38,15 @@ class Account extends Component {
     });
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props?.data?.service_name !== nextProps?.data?.service_name) {
+      this.setState({ ...nextProps?.data, });
+    }
+  }
+
   render() {
-    const { classes, className, ...rest } = this.props;
-    const { service, price, description } = this.state;
+    const { classes, onSubmit, isLoading, className, ...rest } = this.props;
+    const { service_name, price, description } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -75,11 +69,11 @@ class Account extends Component {
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                onChange={e => this.handleChange(e, "service")}
+                onChange={e => this.handleChange(e, "service_name")}
                 label="Nama Jenis Layanan"
                 margin="dense"
                 required
-                value={service}
+                value={service_name}
                 variant="outlined"
               />
               <TextField
@@ -106,12 +100,17 @@ class Account extends Component {
           </form>
         </PortletContent>
         <PortletFooter className={classes.portletFooter}>
-          <Button
-            color="primary"
-            variant="contained"
-          >
-            Simpan
-          </Button>
+          {isLoading ? (
+            <CircularProgress className={classes.progress} />
+          ) : (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => onSubmit({ service_name, price, description })}
+            >
+              Simpan
+            </Button>
+          )}
         </PortletFooter>
       </Portlet>
     );

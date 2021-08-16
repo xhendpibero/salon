@@ -45,25 +45,25 @@ class UsersTable extends Component {
     let selectedUsers;
 
     if (event.target.checked) {
-      selectedUsers = users.map(user => user.id);
+      selectedUsers = users.map(user => user.employee_id);
     } else {
       selectedUsers = [];
     }
 
     this.setState({ selectedUsers });
 
-    onSelect(selectedUsers);
+    onSelect(selectedUsers, "selectedUsers");
   };
 
-  handleSelectOne = (event, id) => {
+  handleSelectOne = (event, employee_id) => {
     const { onSelect } = this.props;
     const { selectedUsers } = this.state;
 
-    const selectedIndex = selectedUsers.indexOf(id);
+    const selectedIndex = selectedUsers.indexOf(employee_id);
     let newSelectedUsers = [];
 
     if (selectedIndex === -1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
+      newSelectedUsers = newSelectedUsers.concat(selectedUsers, employee_id);
     } else if (selectedIndex === 0) {
       newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
     } else if (selectedIndex === selectedUsers.length - 1) {
@@ -81,11 +81,15 @@ class UsersTable extends Component {
   };
 
   handleChangePage = (event, page) => {
+    const { onSelect } = this.props;
     this.setState({ page });
+    onSelect(page, "page");
   };
 
   handleChangeRowsPerPage = event => {
+    const { onSelect } = this.props;
     this.setState({ rowsPerPage: event.target.value });
+    onSelect(event.target.value, "row");
   };
 
   render() {
@@ -138,56 +142,55 @@ class UsersTable extends Component {
                     <TableRow
                       className={classes.tableRow}
                       hover
-                      key={user.id}
-                      // style={{ opacity: user.status ? 1 : 0.6 }}
-                      selected={selectedUsers.indexOf(user.id) !== -1}
+                      key={user.employee_id}
+                      selected={selectedUsers.indexOf(user.employee_id) !== -1}
                     >
                       <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
                           <Checkbox
-                            checked={selectedUsers.indexOf(user.id) !== -1}
+                            checked={selectedUsers.indexOf(user.employee_id) !== -1}
                             color="primary"
                             onChange={event =>
-                              this.handleSelectOne(event, user.id)
+                              this.handleSelectOne(event, user.employee_id)
                             }
                             value="true"
                           />
                           <Avatar
                             className={classes.avatar}
-                            src={user.avatarUrl}
+                            src={user.profile_image}
                           >
-                            {getInitials(user.name)}
+                            {getInitials(user.fullname)}
                           </Avatar>
-                          <Link to="users/employee?id=1">
+                          <Link to={"users/employee?id=" + user.employee_id}>
                             <Typography
                               className={classes.nameText}
                               variant="body1"
                             >
-                              {user.id}
+                              {user.employee_id}
                             </Typography>
                           </Link>
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {user.name}
+                        {user.fullname}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {user.address.state}
+                        {user.address}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {user.phone}
+                        {user.phone_number}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {moment(user.createdAt).format('DD/MM/YYYY')}
+                        {moment(user.created).format('DD/MM/YYYY')}
                       </TableCell>
                       <TableCell>
                         <div className={classes.statusWrapper}>
                           <Status
                             className={classes.status}
-                            color={user.status ? 'success' : 'danger'}
+                            color={user.is_show ? 'success' : 'danger'}
                             size="sm"
                           />
-                          {user.status ? "Tersedia" : "Tidak Tersedia"}
+                          {user.is_show ? "Tersedia" : "Tidak Tersedia"}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -200,7 +203,7 @@ class UsersTable extends Component {
               'aria-label': 'Previous Page'
             }}
             component="div"
-            count={users.length}
+            count={this.props.count}
             nextIconButtonProps={{
               'aria-label': 'Next Page'
             }}

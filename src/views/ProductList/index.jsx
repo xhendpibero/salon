@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 // Externals
 import PropTypes from 'prop-types';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material components
 import {
@@ -12,9 +13,6 @@ import {
 
 // Shared layouts
 import { Dashboard as DashboardLayout } from 'layouts';
-
-// Shared services
-import { getProducts } from 'services/product';
 
 // Custom components
 import { ProductsToolbar, ProductsTable } from './components';
@@ -34,18 +32,21 @@ class ProductList extends Component {
     error: null
   };
 
-  async getProducts(limit) {
+  get = async () => {
     try {
       this.setState({ isLoading: true });
-
-      const { products, productsTotal } = await getProducts(limit);
+      const { get } = useHttpClient();
+      this.setState({ isLoading: true });
+      const token = localStorage.getItem("token");
+      const products = await get("/services", token)
+      console.log({ products })
 
       if (this.signal) {
         this.setState({
           isLoading: false,
-          products,
-          productsTotal,
-          limit
+          products: products?.data,
+          productsTotal: products?.data.length,
+          limit: products?.data.length
         });
       }
     } catch (error) {
@@ -56,14 +57,37 @@ class ProductList extends Component {
         });
       }
     }
-  }
+  };
+
+  hide = async () => {
+    const { post } = useHttpClient();
+    const { selectedProducts } = this.state;
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    selectedProducts.map(async (e) => {
+      const data = await post("/services/hide", {
+        "service_id": e,
+        "updated_by": user
+      }, token)
+      console.log({ data })
+    })
+  };
+
+  delete = async () => {
+    const { del } = useHttpClient();
+    const { selectedProducts } = this.state;
+    const token = localStorage.getItem("token");
+    selectedProducts.map(async (e) => {
+      const data = await del("/services", {
+        "service_id": e
+      }, token)
+      console.log({ data })
+    })
+  };
 
   componentWillMount() {
     this.signal = true;
-
-    const { limit } = this.state;
-
-    this.getProducts(limit);
+    this.get();
   }
 
   componentWillUnmount() {
@@ -107,7 +131,7 @@ class ProductList extends Component {
     return (
       <DashboardLayout title="Jenis Layanan">
         <div className={classes.root}>
-          <ProductsToolbar selected={this.state.selectedProducts} />
+          <ProductsToolbar selected={this.state.selectedProducts} hide={this.hide} delete={this.delete} />
           <div className={classes.content}>{this.renderProducts()}</div>
         </div>
       </DashboardLayout>

@@ -7,7 +7,12 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core';
 
 // Material components
-import { Button, IconButton } from '@material-ui/core';
+import {
+    Button, IconButton,
+    FormControl,
+    InputLabel,
+    Select,
+} from '@material-ui/core';
 
 // Shared components
 import { SearchInput } from 'components';
@@ -44,6 +49,22 @@ class Toolbar extends Component {
                         >
                             <DeleteIcon />
                         </IconButton>
+                    )}
+                    {this.props.filter && (
+                        <FormControl className={classes.formControl} style={{ marginRight: 20 }}>
+                            <InputLabel id="demo-controlled-open-select-label">Filter</InputLabel>
+                            <Select
+                                labelId="demo-controlled-open-select-label"
+                                id="demo-controlled-open-select"
+                                native
+                                value={"Minggu ini"}
+                            >
+                                {this.props.filter.map((e) =>
+                                    <option value={e}>{e}</option>
+                                )
+                                }
+                            </Select>
+                        </FormControl>
                     )}
                     {buttonAdd && (
                         <Button

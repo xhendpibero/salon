@@ -132,7 +132,19 @@ class Account extends Component {
         value: 2,
         rek: "0913 2012 003"
       },
-    ]
+    ],
+    amount: 0,
+    amountList: [
+      {
+        name: "Penuh",
+        value: 0,
+      },
+      {
+        name: "Down Payment",
+        value: 1,
+      },
+    ],
+    countdown: "",
   };
 
   async getUsers() {
@@ -229,6 +241,14 @@ class Account extends Component {
     });
   }
 
+  handleChangeNumber = (e, name) => {
+    let number = e && e.target && e.target.value ? e.target.value : e;
+    number = String(number).replace(/[^0-9.]/g, '') - 0;
+    this.setState({
+      [name]: number,
+    });
+  };
+
   handleTab = (tabInit, go) => {
     const tab = go ? tabInit + 1 : tabInit - 1
     this.setState({ tab });
@@ -236,7 +256,7 @@ class Account extends Component {
 
   handleSubmit = () => {
     const { history } = this.props;
-    history.push({ pathname: '/orders/payment/' });
+    history.push({ pathname: '/orders/payment/proof' });
   }
 
   render() {
@@ -258,6 +278,9 @@ class Account extends Component {
       buyer,
       buyerList,
       bankList,
+      amount,
+      amountList,
+      countdown,
     } = this.state;
     var today = new Date(date);
     var dd = today.getDate();
@@ -265,6 +288,14 @@ class Account extends Component {
     const isNextTab = tab < 4
     const isBackTab = tab > 1
     const isSubmitTab = tab === 4
+
+    const transfer = (products.filter((product) =>
+      selectedProducts
+        .indexOf(product.id) !== -1)
+      .map(e => e.price.replace(".", "") - 0)
+      .reduce((a, b) => a + b, 0)
+      * 0.1 + 300)
+      .toLocaleString('id', { style: 'currency', currency: 'IDR' })
 
     console.log(
       {
@@ -348,7 +379,7 @@ class Account extends Component {
               item
               md={12}
             >
-              <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek + "atas nama Celine"} />
+              <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek + " atas nama Celine"} />
             </Grid>
           </Grid>
         </div>
@@ -362,19 +393,16 @@ class Account extends Component {
           </Typography>
         </div>
 
-
         <div className={classes.field}>
           <Grid
             container
             spacing={2}
           >
-
             <Grid
               item
               md={4}
               xs={12}
             >
-
               <FormControl className={classes.formControl}>
                 <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
                 <Select
@@ -698,66 +726,7 @@ class Account extends Component {
         </div>
       </>),
       (<>
-        {/* <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Pilih Tanggal Booking
-          </Typography>
-        </div>
-        <div className={classes.field}>
-          <DayPicker
-            onDayClick={this.handleDayClick}
-            selectedDays={[
-              dataDate ? new Date(dataDate) : null,
-            ]}
-          />
-        </div>
 
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Pilih Jam Booking
-          </Typography>
-        </div>
-        {!date && (
-          <div className={classes.field}>
-            <Typography
-              className={classes.title}
-              variant="body1"
-            >
-              Pilih tanggal terlebih dahulu
-            </Typography>
-
-          </div>)}
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={3}
-          >
-            {Array(12).fill().map((x, i) => i + 8).map((data, index) => {
-              const time = data + 1;
-              return (
-                <Grid
-                  item
-                  key={time}
-                  lg={3}
-                  md={4}
-                  xs={6}
-                  onClick={() => date ? this.handleChange(time, "selectedTimes") : null}
-                >
-                  <BookingCard checked={selectedTimes == time} title={"Jam " + time} status={"Tersedia"} />
-                </Grid>
-              )
-            })
-            }
-          </Grid>
-        </div> */}
-      </>),
-      (<>
         <div className={classes.field}>
           <Typography
             className={classes.title}
@@ -792,7 +761,120 @@ class Account extends Component {
             ))
             }
           </Grid>
-        </div></>),
+        </div>
+      </>),
+      (<>
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Informasi Rekening Pengirim
+          </Typography>
+        </div>
+
+
+        <div className={classes.field}>
+          <Grid
+            container
+            spacing={2}
+          >
+            <Grid
+              item
+              md={4}
+              xs={12}
+            >
+              <TextField
+                className={classes.textField}
+                onChange={e => this.handleChange(e, "name")}
+                label="Nama"
+                margin="dense"
+                required
+                value={name}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid
+              item
+              md={8}
+              xs={12}
+            >
+              <TextField
+                className={classes.textField}
+                onChange={e => this.handleChangeNumber(e, "email")}
+                label="Nomor Rek"
+                margin="dense"
+                required
+                value={email}
+                variant="outlined"
+                type="text"
+              />
+            </Grid>
+          </Grid>
+        </div>
+
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Nominal Pembayaran
+          </Typography>
+        </div>
+
+        <div className={classes.field}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-controlled-open-select-label">Pembayaran</InputLabel>
+            <Select
+              labelId="demo-controlled-open-select-label"
+              id="demo-controlled-open-select"
+              value={amount}
+              onChange={e => this.handleChange(e, "amount")}
+              inputProps={{
+                name: 'amount',
+                id: 'amount-simple',
+              }}
+              native
+            >
+              <option aria-label="None" value="" />
+              {
+                amountList.map(e =>
+                  <option value={e.value}>{e.name}</option>
+                )
+              }
+            </Select>
+          </FormControl>
+        </div>
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h5"
+          >
+            Total Nominal Pembayaran {amount == 1 ? "Down Payment" : "Keseluruhan"}
+          </Typography>
+          <div className={classes.field}>
+            <Typography
+              className={classes.title}
+              variant="h4"
+              style={{ textAlign: "center" }}
+            >
+              {amount == 1 ? transfer.split(",")[0] : (products.filter((product) =>
+                selectedProducts
+                  .indexOf(product.id) !== -1)
+                .map(e => e.price.replace(".", "") - 0)
+                .reduce((a, b) => a + b, 0) + 300)
+                .toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+            </Typography>
+          </div>
+          <Typography
+            className={classes.title}
+            variant="body2"
+            style={{ marginTop: 4 }}
+          >
+            Pastikan nominal sesuai hingga 3 digit terakhir
+          </Typography>
+        </div>
+      </>),
     ];
 
 

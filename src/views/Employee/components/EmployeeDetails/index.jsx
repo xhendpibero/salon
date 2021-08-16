@@ -10,7 +10,7 @@ import { withStyles } from '@material-ui/core';
 // Material components
 import {
   Button, TextField,
-  FormControlLabel,
+  CircularProgress,
   FormControl,
   InputLabel,
   Select,
@@ -23,7 +23,6 @@ import {
   PortletLabel,
   PortletContent,
   PortletFooter,
-  Popup,
 } from 'components';
 
 // Component styles
@@ -46,29 +45,13 @@ const states = [
 
 class Employee extends Component {
   state = {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'contact@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA',
-    status: 0,
+    username: '',
+    fullname: '',
+    phone_number: '',
+    address: '',
+    is_show: true,
     open: false,
-    title: "",
-    body: "",
   };
-
-  handleClose = () => {
-    this.setState({ open: false, title: '', body: '' });
-  };
-
-  handleHideUsers = () => {
-    this.setState({ open: true, title: "Ingin melakukan penambahan?", body: "Pastikan telah melakukan pengecekan pada masukan yang anda isi" });
-  }
-
-  handleDeleteUsers = () => {
-    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
-  }
 
   handleChange = (e, name) => {
     this.setState({
@@ -76,9 +59,15 @@ class Employee extends Component {
     });
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props?.data?.username !== nextProps?.data?.username) {
+      this.setState({ ...nextProps?.data, });
+    }
+  }
+
   render() {
-    const { classes, className, ...rest } = this.props;
-    const { firstName, lastName, phone, status, country, body, title, open, email } = this.state;
+    const { classes, onSubmit, isLoading, className, ...rest } = this.props;
+    const { fullname, phone_number, is_show, address, username } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -104,8 +93,8 @@ class Employee extends Component {
                 label="Nama Panjang"
                 margin="dense"
                 required
-                onChange={e => this.handleChange(e, "firstName")}
-                value={firstName}
+                onChange={e => (this.handleChange(e, "username"), this.handleChange(e, "fullname"))}
+                value={fullname}
                 variant="outlined"
               />
             </div>
@@ -115,8 +104,8 @@ class Employee extends Component {
                 label="Nomor Hp"
                 margin="dense"
                 type="number"
-                onChange={e => this.handleChange(e, "phone")}
-                value={phone}
+                onChange={e => this.handleChange(e, "phone_number")}
+                value={phone_number}
                 variant="outlined"
               />
             </div>
@@ -126,8 +115,8 @@ class Employee extends Component {
                 label="Alamat"
                 margin="dense"
                 required
-                onChange={e => this.handleChange(e, "country")}
-                value={country}
+                onChange={e => this.handleChange(e, "address")}
+                value={address}
                 variant="outlined"
               />
             </div>
@@ -137,32 +126,35 @@ class Employee extends Component {
                 <Select
                   labelId="demo-controlled-open-select-label"
                   id="demo-controlled-open-select"
-                  value={status}
-                  onChange={e => this.handleChange(e, "status")}
+                  value={is_show}
+                  onChange={e => this.handleChange(e, "is_show")}
                   inputProps={{
-                    name: 'bank',
-                    id: 'bank-simple',
+                    name: 'is_show',
+                    id: 'is_show-simple',
                   }}
                   native
                 >
                   <option aria-label="None" value="" />
-                  <option value={0}>Tersedia</option>
-                  <option value={1}>Tidak Tersedia</option>
+                  <option value={true}>Tersedia</option>
+                  <option value={false}>Tidak Tersedia</option>
                 </Select>
               </FormControl>
             </div>
           </form>
         </PortletContent>
         <PortletFooter className={classes.portletFooter}>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={this.handleHideUsers}
-          >
-            Simpan
-          </Button>
+          {isLoading ? (
+            <CircularProgress className={classes.progress} />
+          ) : (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => onSubmit({ username, fullname, phone_number, is_show, address })}
+            >
+              Simpan
+            </Button>
+          )}
         </PortletFooter>
-        <Popup handleClose={this.handleClose} title={title} body={body} open={open} />
       </Portlet>
     );
   }

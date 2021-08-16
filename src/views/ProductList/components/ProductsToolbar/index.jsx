@@ -34,18 +34,28 @@ class ProductsToolbar extends Component {
     open: false,
     title: "",
     body: "",
+    hide: true,
   };
 
   handleClose = () => {
     this.setState({ open: false, title: '', body: '' });
   };
 
+  handleSubmit = () => {
+    this.setState({ open: false, title: '', body: '' });
+    if (this.state.hide) {
+      this.props.hide()
+    } else {
+      this.props.delete()
+    }
+  };
+
   handleHideUsers = () => {
-    this.setState({ open: true, title: "Ingin melakukan perubahan status?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+    this.setState({ open: true, title: "Ingin melakukan perubahan status?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih", hide: true });
   }
 
   handleDeleteUsers = () => {
-    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih", hide: false });
   }
 
   render() {
@@ -118,7 +128,7 @@ class ProductsToolbar extends Component {
             <Button onClick={this.handleClose} color="primary">
               Kembali
             </Button>
-            <Button onClick={this.handleClose} color="primary" autoFocus>
+            <Button onClick={this.handleSubmit} color="primary" autoFocus>
               Setuju
             </Button>
           </DialogActions>

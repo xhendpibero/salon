@@ -17,9 +17,27 @@ import { Portlet, PortletContent, PortletFooter } from 'components';
 import styles from './styles';
 
 class ProductPicture extends Component {
-  render() {
-    const { classes, className, ...rest } = this.props;
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+  }
 
+  pickedHandler(event, changeImage) {
+    let pickedFile;
+    if (event.target.files && event.target.files.length === 1) {
+      pickedFile = event.target.files[0];
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        console.log({ dileee: fileReader.result })
+        changeImage(fileReader.result);
+      };
+      fileReader.readAsDataURL(pickedFile);
+    }
+  };
+
+  render() {
+    const { classes, className, thumbnail, changeImage, ...rest } = this.props;
+    console.log(this.props)
     const rootClassName = classNames(classes.root, className);
 
     return (
@@ -36,27 +54,38 @@ class ProductPicture extends Component {
           <Avatar
             variant="square"
             className={classes.avatar}
-            src="/images/products/product_1.png"
+            src={thumbnail || "/images/products/noimage.png"}
           />
         </PortletContent>
         <PortletFooter>
+          <input
+            ref={this.myRef}
+            style={{ display: 'none' }}
+            type="file"
+            accept=".jpg,.png,.jpeg"
+            onChange={e => this.pickedHandler(e, changeImage)}
+          />
           <Button
             className={classes.uploadButton}
             color="primary"
             variant="text"
+            onClick={() => {
+              this.myRef.current.click();
+            }}
           >
             Unggah Foto
           </Button>
-          <Button variant="text">Hapus Foto</Button>
+          <Button variant="text"
+            onClick={() => {
+              changeImage(null);
+            }}
+          >
+            Hapus Foto
+          </Button>
         </PortletFooter>
       </Portlet>
     );
   }
 }
-
-ProductPicture.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(ProductPicture);

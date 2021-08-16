@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+
+// Externals
+import compose from 'recompose/compose';
 
 // Externals
 import PropTypes from 'prop-types';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
@@ -18,7 +23,15 @@ import {
 import { Dashboard as DashboardLayout } from 'layouts';
 
 // Custom components
-import { ProductPicture, ProductDetails } from './components';
+import {
+  ProductPicture,
+  ProductDetails,
+} from './components';
+// Shared components
+
+import {
+  Popup,
+} from 'components';
 
 // Component styles
 const styles = theme => ({
@@ -28,10 +41,91 @@ const styles = theme => ({
 });
 
 class Product extends Component {
-  state = { tabIndex: 0 };
+  state = {
+    openAdd: false,
+    openEdit: false,
+    data: {},
+    thumbnail: "",
+    payload: {},
+    isLoading: false,
+    http: { ...useHttpClient() }
+  };
+
+  changeImage = (thumbnail) => {
+    this.setState({ thumbnail })
+  }
+
+  handleClose = () => {
+    this.setState({ openAdd: false, openEdit: false });
+  };
+
+  get = async (id) => {
+    const { history } = this.props;
+    const { http: { get } } = this.state
+    this.setState({ isLoading: true });
+    const token = localStorage.getItem("token");
+    const response = await get("/services/" + id,
+      token);
+    if (response?.status === 200) {
+      this.setState({ isLoading: false, thumbnail: response?.data?.thumbnail, data: response?.data });
+    } else {
+      history.push('/products');
+    }
+  }
+
+  add = async () => {
+    const { history } = this.props;
+    const { http: { post }, thumbnail, payload } = this.state
+    this.setState({ isLoading: true });
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    const response = await post("/services", {
+      ...payload,
+      thumbnail: thumbnail ?? "",
+      is_show: true,
+      created_by: user
+    },
+      token);
+    if (response?.status === 200) {
+      history.push('/products');
+    } else {
+      window.location.reload();
+    }
+    this.setState({ isLoading: false, payload: {} });
+  };
+
+  edit = async () => {
+    const { history } = this.props;
+    const { http: { put }, data, thumbnail, payload } = this.state
+    this.setState({ isLoading: true });
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    const response = await put("/services", {
+      ...data,
+      ...payload,
+      thumbnail: thumbnail ?? "",
+      updated_by: user
+    },
+      token);
+    if (response?.status === 200) {
+      history.push('/products');
+    } else {
+      window.location.reload();
+    }
+    this.setState({ isLoading: false, payload: {} });
+  };
+
+  componentWillMount() {
+    const { location } = this.props;
+    const id = location.search.split("=")[1];
+    if (location.search) {
+      this.get(id)
+    }
+  }
 
   render() {
     const { classes, location, history } = this.props;
+    const { thumbnail, isLoading, data, openAdd, openEdit } = this.state;
     const title = location.search ? "Edit" : "Tambah";
 
     return (
@@ -57,7 +151,7 @@ class Product extends Component {
               xl={4}
               xs={12}
             >
-              <ProductPicture />
+              <ProductPicture changeImage={(data) => this.changeImage(data)} thumbnail={thumbnail} />
             </Grid>
             <Grid
               item
@@ -66,9 +160,23 @@ class Product extends Component {
               xl={8}
               xs={12}
             >
-              <ProductDetails />
+              <ProductDetails onSubmit={(data) => this.setState({ [location.search ? "openEdit" : "openAdd"]: true, payload: data })} data={data} isLoading={isLoading} />
             </Grid>
           </Grid>
+          <Popup
+            open={openAdd}
+            title={"Ingin melakukan penambahan?"}
+            body={"Pastikan telah melakukan pengecekan pada masukan yang anda isi"}
+            handleClose={this.handleClose}
+            handleSubmit={this.add}
+          />
+          <Popup
+            open={openEdit}
+            title={"Ingin melakukan perubahan?"}
+            body={"Pastikan telah melakukan pengecekan pada masukan yang anda isi"}
+            handleClose={this.handleClose}
+            handleSubmit={this.edit}
+          />
         </div>
       </DashboardLayout>
     );
@@ -81,4 +189,7 @@ Product.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Product);
+export default compose(
+  withRouter,
+  withStyles(styles)
+)(Product);

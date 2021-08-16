@@ -37,22 +37,32 @@ class UsersToolbar extends Component {
     open: false,
     title: "",
     body: "",
+    hide: true,
   };
 
   handleClose = () => {
     this.setState({ open: false, title: '', body: '' });
   };
 
+  handleSubmit = () => {
+    this.setState({ open: false, title: '', body: '' });
+    if (this.state.hide) {
+      this.props.hide()
+    } else {
+      this.props.delete()
+    }
+  };
+
   handleHideUsers = () => {
-    this.setState({ open: true, title: "Ingin melakukan perubahan status?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+    this.setState({ open: true, title: "Ingin melakukan perubahan status?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih", hide: true });
   }
 
   handleDeleteUsers = () => {
-    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih" });
+    this.setState({ open: true, title: "Ingin melakukan penghapusan?", body: "Pastikan telah melakukan pengecekan pada pegawai yang anda pilih", hide: false });
   }
 
   render() {
-    const { classes, className, selectedUsers, history } = this.props;
+    const { classes, className, selectedUsers, history, onChange } = this.props;
 
     const { open, title, body } = this.state;
 
@@ -60,39 +70,13 @@ class UsersToolbar extends Component {
 
     return (
       <div className={rootClassName}>
-        {/* <div className={classes.row}>
-          <span className={classes.spacer} />
-          <Button
-            className={classes.importButton}
-            size="small"
-            variant="outlined"
-          >
-            <ArrowDownwardIcon className={classes.importIcon} /> Import
-          </Button>
-          <Button
-            className={classes.exportButton}
-            size="small"
-            variant="outlined"
-          >
-            <ArrowUpwardIcon className={classes.exportIcon} />
-            Export
-          </Button>
-          <Button
-            color="primary"
-            size="small"
-            variant="outlined"
-          >
-            Add
-          </Button>
-        </div> */}
         <div className={classes.row}>
           <SearchInput
             className={classes.searchInput}
             placeholder="Cari pegawai"
+            onChange={onChange}
           />
           <span className={classes.spacer} />
-          {/* <DisplayMode mode="list" /> */}
-          {/* {selectedUsers.length > 0 && ( */}
           <>
             <IconButton
               className={classes.hideButton}
@@ -138,7 +122,7 @@ class UsersToolbar extends Component {
             <Button onClick={this.handleClose} color="primary">
               Kembali
             </Button>
-            <Button onClick={this.handleClose} color="primary" autoFocus>
+            <Button onClick={this.handleSubmit} color="primary" autoFocus>
               Setuju
             </Button>
           </DialogActions>
@@ -147,17 +131,6 @@ class UsersToolbar extends Component {
     );
   }
 }
-
-UsersToolbar.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  selectedUsers: PropTypes.array
-};
-
-UsersToolbar.defaultProps = {
-  selectedUsers: []
-};
 
 export default compose(
   withRouter,

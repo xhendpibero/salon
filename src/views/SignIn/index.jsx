@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import compose from 'recompose/compose';
 import validate from 'validate.js';
 import _ from 'underscore';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
@@ -40,7 +41,6 @@ const signIn = () => {
     }, 1500);
   });
 };
-
 class SignIn extends Component {
   state = {
     values: {
@@ -57,7 +57,7 @@ class SignIn extends Component {
     },
     isValid: false,
     isLoading: false,
-    submitError: null
+    submitError: null,
   };
 
   handleBack = () => {
@@ -89,15 +89,24 @@ class SignIn extends Component {
   };
 
   handleSignIn = async () => {
+    const { post } = useHttpClient();
     try {
       const { history } = this.props;
       const { values } = this.state;
 
       this.setState({ isLoading: true });
 
-      if (await signIn(values.email, values.password)) {
+      const data = await post("/login", {
+        "username": values.email,
+        "password": values.password
+      })
+      console.log({ data })
+
+      if (data?.data?.data?.token) {
         localStorage.setItem('isAuthenticated', true);
-        localStorage.setItem('role', values.email === "admin@gmail.com" ? "admin" : "user");
+        Object.keys(data.data.data).forEach(function (key) {
+          localStorage.setItem(key, data.data.data[key]);
+        });
         history.push('/dashboard');
       } else {
         this.setState({

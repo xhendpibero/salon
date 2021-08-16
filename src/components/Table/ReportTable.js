@@ -105,7 +105,7 @@ class OrdersTable extends Component {
                                         <TableRow
                                             className={classes.tableRow}
                                             hover
-                                            key={order.id}
+                                            key={order.id + id}
                                         >
                                             <TableCell className={classes.customerCell}>
                                                 {order.id}

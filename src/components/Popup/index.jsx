@@ -24,7 +24,7 @@ import { Search as SearchIcon } from '@material-ui/icons';
 import styles from './styles';
 
 const Popup = props => {
-  const { classes, className, style, open, body, title, handleClose, ...rest } = props;
+  const { classes, className, style, open, body, title, handleClose, handleSubmit, ...rest } = props;
 
   const rootClassName = classNames(classes.root, className);
 
@@ -45,7 +45,7 @@ const Popup = props => {
         <Button onClick={handleClose} color="primary">
           Kembali
         </Button>
-        <Button onClick={handleClose} color="primary" autoFocus>
+        <Button onClick={handleSubmit} color="primary" autoFocus>
           Setuju
         </Button>
       </DialogActions>

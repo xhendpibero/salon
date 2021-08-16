@@ -157,7 +157,8 @@ class OrdersList extends Component {
       <DashboardLayout title="Laporan Pemesanan">
         <div className={classes.root}>
           <Toolbar
-            buttonAdd={role ? "Unduh Laporan" : "Buat Pemesanan"}
+            buttonAdd={"Unduh Laporan"}
+            filter={["Hari ini", "Minggu ini", "Bulan ini"]}
             selectedUsers={[]}
             onClick={() => {
               this.exportToCsv("my_data.csv", orders)

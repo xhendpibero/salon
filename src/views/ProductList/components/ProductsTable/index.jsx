@@ -45,7 +45,7 @@ class ProductsTable extends Component {
     let selectedProducts;
 
     if (event.target.checked) {
-      selectedProducts = products.map(product => product.id);
+      selectedProducts = products.map(product => product?.service_id);
     } else {
       selectedProducts = [];
     }
@@ -130,33 +130,33 @@ class ProductsTable extends Component {
                     <TableRow
                       className={classes.tableRow}
                       hover
-                      key={product.id}
-                      selected={selectedProducts.indexOf(product.id) !== -1}
+                      key={product?.service_id}
+                      selected={selectedProducts.indexOf(product?.service_id) !== -1}
                     >
                       <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
                           {role && (
                             <Checkbox
-                              checked={selectedProducts.indexOf(product.id) !== -1}
+                              checked={selectedProducts.indexOf(product?.service_id) !== -1}
                               color="primary"
                               onChange={event =>
-                                this.handleSelectOne(event, product.id)
+                                this.handleSelectOne(event, product?.service_id)
                               }
                               value="true"
                             />
                           )}
                           <Avatar
                             className={classes.avatar}
-                            src={product.imageUrl}
+                            src={product.thumbnail}
                           >
-                            {getInitials(product.title)}
+                            {getInitials(product.service_name)}
                           </Avatar>
-                          <Link to={"products/service?id=" + product.id}>
+                          <Link to={"products/service?id=" + product?.service_id}>
                             <Typography
                               className={classes.nameText}
                               variant="body1"
                             >
-                              {product.title}
+                              {product.service_name}
                             </Typography>
                           </Link>
                         </div>

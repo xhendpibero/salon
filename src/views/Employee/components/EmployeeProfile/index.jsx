@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 
 // Externals
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
 // Material components
-import { Avatar, Typography, Button, LinearProgress } from '@material-ui/core';
+import { Avatar, Typography, Button } from '@material-ui/core';
 
 // Shared components
 import { Portlet, PortletContent, PortletFooter } from 'components';
@@ -17,33 +16,26 @@ import { Portlet, PortletContent, PortletFooter } from 'components';
 import styles from './styles';
 
 class EmployeePicture extends Component {
-
-  state = {
-    selectedFile: '',
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
   }
 
-  handleUploadClick = event => {
-    console.log();
-    var file = event.target.files[0];
-    const reader = new FileReader();
-    var url = reader.readAsDataURL(file);
-
-    reader.onloadend = function (e) {
-      this.setState({
-        selectedFile: [reader.result]
-      });
-    }.bind(this);
-    console.log(url); // Would see a path?
-
-    this.setState({
-      selectedFile: event.target.files[0],
-    });
+  pickedHandler(event, changeImage) {
+    let pickedFile;
+    if (event.target.files && event.target.files.length === 1) {
+      pickedFile = event.target.files[0];
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        console.log({ dileee: fileReader.result })
+        changeImage(fileReader.result);
+      };
+      fileReader.readAsDataURL(pickedFile);
+    }
   };
 
-
   render() {
-    const { classes, className, ...rest } = this.props;
-    const { selectedFile } = this.state;
+    const { classes, className, profile_image, changeImage, ...rest } = this.props;
     const rootClassName = classNames(classes.root, className);
 
     return (
@@ -54,33 +46,44 @@ class EmployeePicture extends Component {
         <PortletContent>
           <div className={classes.details}>
             <div className={classes.info}>
-              <Typography variant="h4">Foto Karyawan</Typography>
+              <Typography variant="h4">Foto Jenis Layanan</Typography>
             </div>
           </div>
           <Avatar
             variant="square"
             className={classes.avatar}
-            src={selectedFile ? selectedFile : "/images/avatars/avatar_1.png"}
+            src={profile_image || "/images/products/noimage.png"}
           />
         </PortletContent>
         <PortletFooter>
+          <input
+            ref={this.myRef}
+            style={{ display: 'none' }}
+            type="file"
+            accept=".jpg,.png,.jpeg"
+            onChange={e => this.pickedHandler(e, changeImage)}
+          />
           <Button
             className={classes.uploadButton}
             color="primary"
             variant="text"
+            onClick={() => {
+              this.myRef.current.click();
+            }}
           >
             Unggah Foto
           </Button>
-          <Button variant="text">Hapus foto</Button>
+          <Button variant="text"
+            onClick={() => {
+              changeImage(null);
+            }}
+          >
+            Hapus Foto
+          </Button>
         </PortletFooter>
       </Portlet>
     );
   }
 }
-
-EmployeePicture.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(EmployeePicture);

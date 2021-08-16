@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material components
 import { Grid } from '@material-ui/core';
@@ -23,7 +24,56 @@ const styles = theme => ({
 });
 
 class Account extends Component {
-  state = { tabIndex: 0 };
+  state = { tabIndex: 0, data: {} };
+
+  edit = async (payload) => {
+    const { http: { put }, data } = this.state
+    const token = localStorage.getItem("token");
+    await put("/customers", {
+      ...data,
+      "password": "admin",
+    },
+      token);
+  };
+
+  edit = async (payload) => {
+    const { http: { put }, data } = this.state
+    const token = localStorage.getItem("token");
+    await put("/customers", {
+      ...data,
+      "password": "admin",
+    },
+      token);
+  };
+
+  edit = async (payload) => {
+    const { http: { put }, data } = this.state
+    const token = localStorage.getItem("token");
+    await put("/customers", {
+      ...data,
+      "password": "admin",
+    },
+      token);
+  };
+
+  submit = () => {
+    const role = localStorage.getItem("role");
+    if (role === "admin") {
+    } else {
+
+    }
+  };
+
+  componentWillMount() {
+    const username = localStorage.getItem("username");
+    const role = localStorage.getItem("role");
+    const email = localStorage.getItem("email");
+    if (role === "admin") {
+      this.setState({ username, role, email })
+    } else {
+
+    }
+  }
 
   render() {
     const { classes } = this.props;
@@ -35,7 +85,7 @@ class Account extends Component {
             container
             spacing={4}
           >
-            <Grid
+            {/* <Grid
               item
               lg={4}
               md={6}
@@ -43,15 +93,15 @@ class Account extends Component {
               xs={12}
             >
               <AccountProfile />
-            </Grid>
+            </Grid> */}
             <Grid
               item
-              lg={8}
-              md={6}
-              xl={8}
+              // lg={8}
+              // md={6}
+              // xl={8}
               xs={12}
             >
-              <AccountDetails />
+              <AccountDetails submit={this.submit} data={this.state.data} />
             </Grid>
           </Grid>
         </div>

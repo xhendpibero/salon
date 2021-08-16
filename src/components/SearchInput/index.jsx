@@ -37,15 +37,4 @@ const SearchInput = props => {
   );
 };
 
-SearchInput.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
-  onChange: PropTypes.func,
-  style: PropTypes.object
-};
-
-SearchInput.defaultProps = {
-  onChange: () => { }
-};
-
 export default withStyles(styles)(SearchInput);

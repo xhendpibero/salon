@@ -41,7 +41,6 @@ class Sidebar extends Component {
 
   handleSignOut = () => {
     const { history } = this.props;
-
     localStorage.setItem('isAuthenticated', false);
     localStorage.setItem('role', null);
     history.push('/sign-in');
