@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withSnackbar } from 'notistack';
 
 // Externals
 import classNames from 'classnames';
 import compose from 'recompose/compose';
-import PropTypes from 'prop-types';
 
 // Material helpers
 import { withStyles, withWidth } from '@material-ui/core';
@@ -42,7 +42,6 @@ class Dashboard extends Component {
   render() {
     const { classes, width, title, children, history } = this.props;
     const { isOpen } = this.state;
-    console.log({ asdasdas: localStorage.getItem("isAuthenticated") })
     if (!localStorage.getItem("isAuthenticated")) {
       history.push('/sign-in');
     }
@@ -83,16 +82,9 @@ class Dashboard extends Component {
   }
 }
 
-Dashboard.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
-  title: PropTypes.string,
-  width: PropTypes.string.isRequired
-};
-
 export default compose(
   withRouter,
+  withSnackbar,
   withStyles(styles),
   withWidth()
 )(Dashboard);

@@ -3,33 +3,20 @@ import { withRouter } from 'react-router-dom';
 
 // Externals
 import compose from 'recompose/compose';
-
-// Externals
 import PropTypes from 'prop-types';
+import { useHttpClient } from '../../services/hooks/http-hook';
+
+// Material helpers
+import { withStyles } from '@material-ui/core';
 
 // Material components
-import {
-  IconButton,
-  CircularProgress,
-  Grid,
-  Typography,
-  withStyles
-} from '@material-ui/core';
-
-// Material icons
-import {
-  ChevronRight as ChevronRightIcon,
-  ChevronLeft as ChevronLeftIcon
-} from '@material-ui/icons';
+import { CircularProgress, Typography } from '@material-ui/core';
 
 // Shared layouts
 import { Dashboard as DashboardLayout } from 'layouts';
 
-// Shared services
-import { getUsers } from 'services/user';
-
 // Custom components
-import { ProductsToolbar, ProductCard, ProductsTable } from './components';
+import { CustomersTable } from './components';
 import { Toolbar } from '../../components';
 
 // Component styles
@@ -40,23 +27,31 @@ class ProductList extends Component {
 
   state = {
     isLoading: false,
-    limit: 6,
-    users: [],
-    selectedProducts: [],
-    error: null
+    limit: 10,
+    page: 0,
+    row: 10,
+    customers: [],
+    customersTemp: [],
+    selectedCustomers: [],
+    error: null,
+    customers: [],
+    selectedCustomers: [],
   };
 
-  async getProducts(limit) {
+  get = async () => {
     try {
       this.setState({ isLoading: true });
-
-      const { users } = await getUsers(limit);
+      const { get } = useHttpClient();
+      this.setState({ isLoading: true });
+      const token = localStorage.getItem("token");
+      const customers = await get("/customers", token)
 
       if (this.signal) {
         this.setState({
           isLoading: false,
-          users,
-          limit
+          customers: customers?.data,
+          customersTemp: customers?.data,
+          limit: customers?.data.length
         });
       }
     } catch (error) {
@@ -67,27 +62,28 @@ class ProductList extends Component {
         });
       }
     }
-  }
+  };
 
   componentWillMount() {
     this.signal = true;
-
-    const { limit } = this.state;
-
-    this.getProducts(limit);
+    this.get();
   }
 
   componentWillUnmount() {
     this.signal = false;
   }
 
-  handleSelect = selectedProducts => {
-    this.setState({ selectedProducts });
-  };
+  onChange = e => {
+    const customers = this.state.customersTemp.filter((x) => {
+      return String(x?.fullname).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0 ||
+        String(x?.employee_id).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0;
+    })
+    this.setState({ customers });
+  }
 
-  renderProducts() {
+  renderCustomers() {
     const { classes, history } = this.props;
-    const { isLoading, users } = this.state;
+    const { isLoading, customers } = this.state;
 
     if (isLoading) {
       return (
@@ -97,16 +93,16 @@ class ProductList extends Component {
       );
     }
 
-    if (users.length === 0) {
+    if (customers.length === 0) {
       return (
         <Typography variant="h6">Tidak ada pelanggan yang tersedia</Typography>
       );
     }
 
     return (
-      <ProductsTable
-        onSelect={this.handleSelect}
-        users={users}
+      <CustomersTable
+        count={this.state?.customersTemp?.length}
+        customers={customers}
       />
     );
   }
@@ -117,15 +113,14 @@ class ProductList extends Component {
     return (
       <DashboardLayout title="Pelanggan">
         <div className={classes.root}>
-          {/* <ProductsToolbar /> */}
           <Toolbar
             placeholder="Cari Pelanggan"
             buttonAdd={"Tambah Pelanggan"}
-            selectedUsers={[]}
-            onChange={null}
+            selectedCustomers={[]}
+            onChange={this.onChange}
             onClick={() => history.push({ pathname: '/customers/s' })}
           />
-          <div className={classes.content}>{this.renderProducts()}</div>
+          <div className={classes.content}>{this.renderCustomers()}</div>
         </div>
       </DashboardLayout>
     );

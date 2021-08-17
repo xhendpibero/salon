@@ -13,9 +13,6 @@ import { CircularProgress, Typography } from '@material-ui/core';
 // Shared layouts
 import { Dashboard as DashboardLayout } from 'layouts';
 
-// Shared services
-import { getUsers } from 'services/user';
-
 // Custom components
 import { UsersToolbar, UsersTable } from './components';
 
@@ -158,10 +155,5 @@ class UserList extends Component {
     );
   }
 }
-
-UserList.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(UserList);

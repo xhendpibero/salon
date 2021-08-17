@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withSnackbar } from 'notistack';
 
 // Externals
 import compose from 'recompose/compose';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Externals
 import PropTypes from 'prop-types';
-import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
@@ -87,9 +88,10 @@ class Product extends Component {
     },
       token);
     if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil menambah jenis layanan.')
       history.push('/products');
     } else {
-      window.location.reload();
+      this.props.enqueueSnackbar('Gagal menambah jenis layanan.')
     }
     this.setState({ isLoading: false, payload: {} });
   };
@@ -108,9 +110,10 @@ class Product extends Component {
     },
       token);
     if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil merubah jenis layanan.')
       history.push('/products');
     } else {
-      window.location.reload();
+      this.props.enqueueSnackbar('Gagal merubah jenis layanan.')
     }
     this.setState({ isLoading: false, payload: {} });
   };
@@ -183,13 +186,8 @@ class Product extends Component {
   }
 }
 
-Product.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired
-};
-
 export default compose(
   withRouter,
+  withSnackbar,
   withStyles(styles)
 )(Product);

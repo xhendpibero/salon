@@ -42,7 +42,7 @@ class Toolbar extends Component {
                         />
                     )}
                     <span className={classes.spacer} />
-                    {selectedUsers.length > 0 && (
+                    {selectedUsers?.length > 0 && (
                         <IconButton
                             className={classes.deleteButton}
                             onClick={this.handleDeleteUsers}

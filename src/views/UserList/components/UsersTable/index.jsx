@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 // Externals
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
@@ -94,7 +93,7 @@ class UsersTable extends Component {
 
   render() {
     const { classes, className, users } = this.props;
-    const { activeTab, selectedUsers, rowsPerPage, page } = this.state;
+    const { selectedUsers, rowsPerPage, page } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -126,18 +125,6 @@ class UsersTable extends Component {
               </TableHead>
               <TableBody>
                 {users
-                  .filter(user => {
-                    if (activeTab === 1) {
-                      return !user.returning;
-                    }
-
-                    if (activeTab === 2) {
-                      return user.returning;
-                    }
-
-                    return user;
-                  })
-                  .slice(0, rowsPerPage)
                   .map(user => (
                     <TableRow
                       className={classes.tableRow}
@@ -218,17 +205,5 @@ class UsersTable extends Component {
     );
   }
 }
-
-UsersTable.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
-  onSelect: PropTypes.func,
-  users: PropTypes.array.isRequired
-};
-
-UsersTable.defaultProps = {
-  users: [],
-  onSelect: () => { },
-};
 
 export default withStyles(styles)(UsersTable);

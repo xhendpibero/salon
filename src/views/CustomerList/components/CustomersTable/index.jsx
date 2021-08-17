@@ -13,7 +13,6 @@ import { withStyles } from '@material-ui/core';
 // Material components
 import {
   Avatar,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -32,65 +31,28 @@ import { Portlet, PortletContent } from 'components';
 // Component styles
 import styles from './styles';
 
-class UsersTable extends Component {
+class CustomersTable extends Component {
   state = {
-    selectedUsers: [],
+    selectedCustomers: [],
     rowsPerPage: 10,
     page: 0
   };
 
-  handleSelectAll = event => {
-    const { users, onSelect } = this.props;
-
-    let selectedUsers;
-
-    if (event.target.checked) {
-      selectedUsers = users.map(user => user.id);
-    } else {
-      selectedUsers = [];
-    }
-
-    this.setState({ selectedUsers });
-
-    onSelect(selectedUsers);
-  };
-
-  handleSelectOne = (event, id) => {
-    const { onSelect } = this.props;
-    const { selectedUsers } = this.state;
-
-    const selectedIndex = selectedUsers.indexOf(id);
-    let newSelectedUsers = [];
-
-    if (selectedIndex === -1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
-    } else if (selectedIndex === 0) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
-    } else if (selectedIndex === selectedUsers.length - 1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedUsers = newSelectedUsers.concat(
-        selectedUsers.slice(0, selectedIndex),
-        selectedUsers.slice(selectedIndex + 1)
-      );
-    }
-
-    this.setState({ selectedUsers: newSelectedUsers });
-
-    onSelect(newSelectedUsers);
-  };
-
   handleChangePage = (event, page) => {
+    const { onSelect } = this.props;
     this.setState({ page });
+    onSelect(page, "page");
   };
 
   handleChangeRowsPerPage = event => {
+    const { onSelect } = this.props;
     this.setState({ rowsPerPage: event.target.value });
+    onSelect(event.target.value, "row");
   };
 
   render() {
-    const { classes, className, users } = this.props;
-    const { activeTab, selectedUsers, rowsPerPage, page } = this.state;
+    const { classes, className, customers } = this.props;
+    const { rowsPerPage, page } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -113,48 +75,42 @@ class UsersTable extends Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users
-                  .filter(user => {
-                    if (activeTab === 1) {
-                      return !user.returning;
-                    }
-
-                    if (activeTab === 2) {
-                      return user.returning;
-                    }
-
-                    return user;
-                  })
-                  .slice(0, rowsPerPage)
+                {customers
                   .map(user => (
                     <TableRow
                       className={classes.tableRow}
                       hover
-                      key={user.id}
+                      key={user.customer_id}
                     >
                       <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
-                          <Link to="customers/s?id=1">
+                          <Avatar
+                            className={classes.avatar}
+                            src={null}
+                          >
+                            {getInitials(user.fullname)}
+                          </Avatar>
+                          <Link to={"customers/s?id=" + user.customer_id}>
                             <Typography
                               className={classes.nameText}
                               variant="body1"
                             >
-                              {user.id}
+                              {user.customer_id}
                             </Typography>
                           </Link>
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {user.name}
+                        {user.fullname}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        user-{user.id}@gmail.com
+                        {user.email}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {user.phone}
+                        {user.phone_number}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {moment(user.createdAt).format('DD/MM/YYYY')}
+                        {moment(user.created).format('DD/MM/YYYY')}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -166,7 +122,7 @@ class UsersTable extends Component {
               'aria-label': 'Previous Page'
             }}
             component="div"
-            count={users.length}
+            count={this.props.count}
             nextIconButtonProps={{
               'aria-label': 'Next Page'
             }}
@@ -182,16 +138,16 @@ class UsersTable extends Component {
   }
 }
 
-UsersTable.propTypes = {
+CustomersTable.propTypes = {
   className: PropTypes.string,
   classes: PropTypes.object.isRequired,
   onSelect: PropTypes.func,
-  users: PropTypes.array.isRequired
+  customers: PropTypes.array.isRequired
 };
 
-UsersTable.defaultProps = {
-  users: [],
+CustomersTable.defaultProps = {
+  customers: [],
   onSelect: () => { },
 };
 
-export default withStyles(styles)(UsersTable);
+export default withStyles(styles)(CustomersTable);

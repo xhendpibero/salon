@@ -52,7 +52,7 @@ class ProductsTable extends Component {
 
     this.setState({ selectedProducts });
 
-    onSelect(selectedProducts);
+    onSelect(selectedProducts, "selectedProducts");
   };
 
   handleSelectOne = (event, id) => {
@@ -81,16 +81,20 @@ class ProductsTable extends Component {
   };
 
   handleChangePage = (event, page) => {
+    const { onSelect } = this.props;
     this.setState({ page });
+    onSelect(page, "page");
   };
 
   handleChangeRowsPerPage = event => {
+    const { onSelect } = this.props;
     this.setState({ rowsPerPage: event.target.value });
+    onSelect(event.target.value, "row");
   };
 
   render() {
     const { classes, className, products } = this.props;
-    const { activeTab, selectedProducts, rowsPerPage, page } = this.state;
+    const { selectedProducts, rowsPerPage, page } = this.state;
     const role = localStorage.getItem("role") === "admin";
 
     const rootClassName = classNames(classes.root, className);
@@ -122,10 +126,6 @@ class ProductsTable extends Component {
               </TableHead>
               <TableBody>
                 {products
-                  .filter(product => {
-                    return product;
-                  })
-                  .slice(0, rowsPerPage)
                   .map(product => (
                     <TableRow
                       className={classes.tableRow}
@@ -177,7 +177,7 @@ class ProductsTable extends Component {
               'aria-label': 'Previous Page'
             }}
             component="div"
-            count={products.length}
+            count={this.props.count}
             nextIconButtonProps={{
               'aria-label': 'Next Page'
             }}
@@ -192,17 +192,5 @@ class ProductsTable extends Component {
     );
   }
 }
-
-ProductsTable.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
-  onSelect: PropTypes.func,
-  products: PropTypes.array.isRequired
-};
-
-ProductsTable.defaultProps = {
-  products: [],
-  onSelect: () => { },
-};
 
 export default withStyles(styles)(ProductsTable);

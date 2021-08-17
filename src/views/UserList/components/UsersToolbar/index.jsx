@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 
 // Externals
 import compose from 'recompose/compose';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 // Material helpers
@@ -20,8 +19,6 @@ import { Button, IconButton } from '@material-ui/core';
 
 // Material icons
 import {
-  ArrowDownward as ArrowDownwardIcon,
-  ArrowUpward as ArrowUpwardIcon,
   Delete as DeleteIcon,
   VisibilityOff
 } from '@material-ui/icons';

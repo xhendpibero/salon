@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { withSnackbar } from 'notistack';
 
 // Externals
-import PropTypes from 'prop-types';
+import compose from 'recompose/compose';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
@@ -18,7 +21,11 @@ import {
 import { Dashboard as DashboardLayout } from 'layouts';
 
 // Custom components
-import { ProductPicture, ProductDetails } from './components';
+import { CustomerDetails } from './components';
+
+import {
+  Popup,
+} from 'components';
 
 // Component styles
 const styles = theme => ({
@@ -28,10 +35,85 @@ const styles = theme => ({
 });
 
 class Customer extends Component {
-  state = { tabIndex: 0 };
+  state = {
+    openAdd: false,
+    openEdit: false,
+    data: {},
+    payload: {},
+    isLoading: false,
+    http: { ...useHttpClient() }
+  };
+
+  handleClose = () => {
+    this.setState({ openAdd: false, openEdit: false });
+  };
+
+  get = async (id) => {
+    const { history } = this.props;
+    const { http: { get } } = this.state
+    this.setState({ isLoading: true });
+    const token = localStorage.getItem("token");
+    const response = await get("/customers/" + id,
+      token);
+    if (response?.status === 200) {
+      this.setState({ isLoading: false, thumbnail: response?.data?.thumbnail, data: response?.data });
+    } else {
+      history.push('/customers');
+    }
+  }
+
+  add = async () => {
+    const { history } = this.props;
+    const { http: { post }, thumbnail, payload } = this.state
+    this.setState({ isLoading: true });
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    const response = await post("/customers", {
+      ...payload,
+      created_by: user
+    },
+      token);
+    if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil menambah pelanggan.')
+      history.push('/customers');
+    } else {
+      this.props.enqueueSnackbar('Gagal menambah pelanggan.')
+    }
+    this.setState({ isLoading: false, payload: {} });
+  };
+
+  edit = async () => {
+    const { history } = this.props;
+    const { http: { put }, data, thumbnail, payload } = this.state
+    this.setState({ isLoading: true });
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    const response = await put("/customers", {
+      ...data,
+      ...payload,
+      updated_by: user
+    },
+      token);
+    if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil merubah pelanggan.')
+      history.push('/customers');
+    } else {
+      this.props.enqueueSnackbar('Gagal merubah pelanggan.')
+    }
+    this.setState({ isLoading: false, payload: {} });
+  };
+
+  componentWillMount() {
+    const { location } = this.props;
+    const id = location.search.split("=")[1];
+    if (location.search) {
+      this.get(id)
+    }
+  }
 
   render() {
     const { classes, location, history } = this.props;
+    const { isLoading, data, openAdd, openEdit } = this.state;
     const title = location.search ? "Edit" : "Tambah";
 
     return (
@@ -63,19 +145,31 @@ class Customer extends Component {
               item
               xs={12}
             >
-              <ProductDetails />
+              <CustomerDetails onSubmit={(data) => this.setState({ [location.search ? "openEdit" : "openAdd"]: true, payload: data })} data={data} isLoading={isLoading} />
             </Grid>
           </Grid>
+          <Popup
+            open={openAdd}
+            title={"Ingin melakukan penambahan?"}
+            body={"Pastikan telah melakukan pengecekan pada masukan yang anda isi"}
+            handleClose={this.handleClose}
+            handleSubmit={this.add}
+          />
+          <Popup
+            open={openEdit}
+            title={"Ingin melakukan perubahan?"}
+            body={"Pastikan telah melakukan pengecekan pada masukan yang anda isi"}
+            handleClose={this.handleClose}
+            handleSubmit={this.edit}
+          />
         </div>
       </DashboardLayout>
     );
   }
 }
 
-Customer.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired
-};
-
-export default withStyles(styles)(Customer);
+export default compose(
+  withRouter,
+  withSnackbar,
+  withStyles(styles)
+)(Customer);

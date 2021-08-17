@@ -59,7 +59,7 @@ class ProductsToolbar extends Component {
   }
 
   render() {
-    const { classes, className, selected, history } = this.props;
+    const { classes, className, selected, history, onChange } = this.props;
     const { open, title, body } = this.state;
     const role = localStorage.getItem("role") === "admin";
 
@@ -67,20 +67,11 @@ class ProductsToolbar extends Component {
 
     return (
       <div className={rootClassName}>
-        {/* <div className={classes.row}>
-          <span className={classes.spacer} />
-          <Button
-            color="primary"
-            size="small"
-            variant="outlined"
-          >
-            Add
-          </Button>
-        </div> */}
         <div className={classes.row}>
           <SearchInput
             className={classes.searchInput}
             placeholder="Cari Jenis layanan"
+            onChange={onChange}
           />
           <span className={classes.spacer} />
           <IconButton
@@ -109,8 +100,6 @@ class ProductsToolbar extends Component {
               Tambah
             </Button>
           )}
-          {/* <span className={classes.spacer} /> */}
-          {/* <DisplayMode mode="grid" /> */}
         </div>
         <Dialog
           open={open}

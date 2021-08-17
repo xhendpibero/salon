@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+import { SnackbarProvider } from 'notistack';
 
 // Externals
 import { Chart } from 'react-chartjs-2';
@@ -33,9 +34,11 @@ export default class App extends Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
-        <Router history={browserHistory}>
-          <Routes />
-        </Router>
+        <SnackbarProvider maxSnack={3}>
+          <Router history={browserHistory}>
+            <Routes />
+          </Router>
+        </SnackbarProvider>
       </ThemeProvider>
     );
   }

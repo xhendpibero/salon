@@ -26,7 +26,10 @@ class ProductList extends Component {
   state = {
     isLoading: false,
     limit: 6,
+    page: 0,
+    row: 10,
     products: [],
+    productsTemp: [],
     productsTotal: 0,
     selectedProducts: [],
     error: null
@@ -46,6 +49,7 @@ class ProductList extends Component {
           isLoading: false,
           products: products?.data,
           productsTotal: products?.data.length,
+          productsTemp: products?.data,
           limit: products?.data.length
         });
       }
@@ -94,12 +98,25 @@ class ProductList extends Component {
     this.signal = false;
   }
 
-  handleSelect = selectedProducts => {
-    this.setState({ selectedProducts });
+  handleSelect = (selectedProducts, index) => {
+    this.setState({ [index]: selectedProducts });
+    if (index === "row") {
+      this.setState({ products: this.state.productsTemp.slice(this.state.page * selectedProducts, (this.state.page + 1) * selectedProducts) });
+    } else if (index === "page") {
+      this.setState({ products: this.state.productsTemp.slice(this.state.row * selectedProducts, this.state.row * (selectedProducts + 1)) });
+    }
   };
 
+  onChange = e => {
+    const products = this.state.productsTemp.filter((x) => {
+      return String(x?.service_name).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0 ||
+        String(x?.service_id).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0;
+    })
+    this.setState({ products });
+  }
+
   renderProducts() {
-    const { classes, history } = this.props;
+    const { classes } = this.props;
     const { isLoading, products } = this.state;
 
     if (isLoading) {
@@ -118,6 +135,7 @@ class ProductList extends Component {
 
     return (
       <ProductsTable
+        count={this.state.productsTemp.length}
         onSelect={this.handleSelect}
         products={products}
       />
@@ -131,7 +149,7 @@ class ProductList extends Component {
     return (
       <DashboardLayout title="Jenis Layanan">
         <div className={classes.root}>
-          <ProductsToolbar selected={this.state.selectedProducts} hide={this.hide} delete={this.delete} />
+          <ProductsToolbar selected={this.state.selectedProducts} onChange={this.onChange} hide={this.hide} delete={this.delete} />
           <div className={classes.content}>{this.renderProducts()}</div>
         </div>
       </DashboardLayout>

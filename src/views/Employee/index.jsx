@@ -84,9 +84,10 @@ class Employee extends Component {
     },
       token);
     if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil menambah pegawai.')
       history.push('/users');
     } else {
-      window.location.reload();
+      this.props.enqueueSnackbar('Gagal menambah pegawai.')
     }
     this.setState({ isLoading: false, payload: {} });
   };
@@ -105,9 +106,10 @@ class Employee extends Component {
     },
       token);
     if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil merubah pegawai.')
       history.push('/users');
     } else {
-      window.location.reload();
+      this.props.enqueueSnackbar('Gagal merubah pegawai.')
     }
     this.setState({ isLoading: false, payload: {} });
   };

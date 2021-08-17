@@ -26,13 +26,15 @@ import {
 
 // Component styles
 import styles from './styles';
-class Employee extends Component {
+
+class Customer extends Component {
   state = {
     username: '',
     fullname: '',
     phone_number: '',
+    email: '',
     address: '',
-    is_show: true,
+    gender: "",
   };
 
   handleChange = (e, name) => {
@@ -48,8 +50,8 @@ class Employee extends Component {
   }
 
   render() {
-    const { classes, onSubmit, isLoading, className, ...rest } = this.props;
-    const { fullname, phone_number, is_show, address, username } = this.state;
+    const { classes, className, onSubmit, ...rest } = this.props;
+    const { fullname, phone_number, email, address, username, gender } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -61,7 +63,7 @@ class Employee extends Component {
         <PortletHeader>
           <PortletLabel
             subtitle="Silahkan isi informasi dibawah ini"
-            title="Profil Karyawan"
+            title="Tambah Pelanggan"
           />
         </PortletHeader>
         <PortletContent noPadding>
@@ -79,8 +81,6 @@ class Employee extends Component {
                 value={fullname}
                 variant="outlined"
               />
-            </div>
-            <div className={classes.field}>
               <TextField
                 className={classes.textField}
                 label="Nomor Hp"
@@ -94,51 +94,58 @@ class Employee extends Component {
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                label="Alamat"
+                onChange={e => this.handleChange(e, "email")}
+                label="Email"
                 margin="dense"
                 required
+                value={email}
+                type="email"
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
                 onChange={e => this.handleChange(e, "address")}
+                label="Alamat"
                 value={address}
+                margin="dense"
+                type="text"
+                required
                 variant="outlined"
               />
             </div>
             <div className={classes.field}>
               <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open-select-label">Status</InputLabel>
+                <InputLabel id="demo-controlled-open-select-label">Jenis kelamin</InputLabel>
                 <Select
                   labelId="demo-controlled-open-select-label"
                   id="demo-controlled-open-select"
-                  value={is_show}
-                  onChange={e => this.handleChange(e, "is_show")}
+                  value={gender}
+                  onChange={e => this.handleChange(e, "gender")}
                   inputProps={{
-                    name: 'is_show',
-                    id: 'is_show-simple',
+                    name: 'gender',
+                    id: 'gender-simple',
                   }}
                   native
                 >
-                  <option value={true}>Tersedia</option>
-                  <option value={false}>Tidak Tersedia</option>
+                  <option value={"M"}>Laki-laki</option>
+                  <option value={"F"}>Perempuan</option>
                 </Select>
               </FormControl>
             </div>
           </form>
         </PortletContent>
         <PortletFooter className={classes.portletFooter}>
-          {isLoading ? (
-            <CircularProgress className={classes.progress} />
-          ) : (
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => onSubmit({ username, fullname, phone_number, is_show, address })}
-            >
-              Simpan
-            </Button>
-          )}
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => onSubmit({ fullname, phone_number, address, username, gender, email })}
+          >
+            Simpan
+          </Button>
         </PortletFooter>
       </Portlet>
     );
   }
 }
 
-export default withStyles(styles)(Employee);
+export default withStyles(styles)(Customer);
