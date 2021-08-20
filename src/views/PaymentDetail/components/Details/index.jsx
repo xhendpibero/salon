@@ -9,44 +9,23 @@ import PropTypes from 'prop-types';
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
-
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-
-import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
-// import DateFnsUtils from '@date-io/date-fns';
-// import ruLocale from "date-fns/locale/ru";
-
-import {
-  Folder as FolderIcon,
-  Delete as DeleteIcon
-} from '@material-ui/icons';
 
 // Material components
 import {
   Button,
-  TextField,
   Grid,
   Typography,
   List,
   ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
-  IconButton,
-  Checkbox,
-  FormControlLabel,
   FormControl,
   InputLabel,
   Select,
-  NativeSelect,
-  MenuItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
 } from '@material-ui/core';
-
-import { getProducts } from 'services/product';
-import { getUsers } from 'services/user';
 
 // Shared components
 import {
@@ -54,176 +33,49 @@ import {
   PortletHeader,
   PortletLabel,
   PortletContent,
-  PortletFooter,
-  ProductCard,
   BookingCard,
+  Status,
+  PortletFooter,
 } from 'components';
 
 // Component styles
 import styles from './styles';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
-
 class Account extends Component {
-  signal = true;
 
   state = {
-    service: '',
-    price: '',
-    isLoading: false,
-    limit: 100,
-    products: [],
-    productsTotal: 0,
-    users: [],
-    usersTotal: 0,
-    selectedProducts: ["DEV795381", "DEV774585"],
-    selectedUsers: "DEV702967",
-    selectedTimes: 13,
-    error: null,
-    date: new Date("Fri Jul 16 2021"),
-    password: "",
-    name: "Danang",
-    address: "120000",
-    email: "123654789",
-    checkedB: false,
-    tab: 0,
     bank: 1,
     selectedFile: "",
+    bank: "BCA",
+    countdown: 0,
+    seconds: 0,
     bankList: [
       {
         name: "BCA",
-        value: 0,
-        rek: "0913 2012 001"
+        value: "BCA",
+        rek: "0913 2012 001",
+        user: "Celine",
       },
       {
         name: "BRI",
-        value: 1,
-        rek: "0913 2012 002"
+        value: "BRI",
+        rek: "0913 2012 002",
+        user: "Celine",
       },
       {
         name: "BTPN",
-        value: 2,
-        rek: "0913 2012 003"
+        value: "BTPN",
+        rek: "0913 2012 003",
+        user: "Celine",
       },
-    ]
+    ],
   };
-
-  async getUsers() {
-    try {
-      this.setState({ isLoading: true });
-
-      const { limit } = this.state;
-
-      const { users } = await getUsers(limit);
-
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          users
-        });
-      }
-    } catch (error) {
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          error
-        });
-      }
-    }
-  }
-
-  async getProducts(limit) {
-    try {
-      this.setState({ isLoading: true });
-
-      const { products, productsTotal } = await getProducts(limit);
-
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          products,
-          productsTotal,
-          limit
-        });
-      }
-    } catch (error) {
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          error
-        });
-      }
-    }
-  }
-
-  componentWillMount() {
-    this.signal = true;
-
-    const { limit } = this.state;
-
-    this.getUsers(limit);
-    this.getProducts(limit);
-  }
-
-  handleSelectOne = (id, name) => {
-    const { selectedProducts } = this.state;
-
-    const selectedIndex = selectedProducts.indexOf(id);
-    let newSelectedProducts = [];
-
-    if (selectedIndex === -1) {
-      newSelectedProducts = newSelectedProducts.concat(selectedProducts, id);
-    } else if (selectedIndex === 0) {
-      newSelectedProducts = newSelectedProducts.concat(selectedProducts.slice(1));
-    } else if (selectedIndex === selectedProducts.length - 1) {
-      newSelectedProducts = newSelectedProducts.concat(selectedProducts.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedProducts = newSelectedProducts.concat(
-        selectedProducts.slice(0, selectedIndex),
-        selectedProducts.slice(selectedIndex + 1)
-      );
-    }
-    this.setState({ [name]: newSelectedProducts });
-  };
-
-  componentWillUnmount() {
-    this.signal = false;
-  }
 
   handleChange = (e, name) => {
     this.setState({
       [name]: e && e.target && e.target.value ? e.target.value : e
     });
   };
-
-  handleDayClick = (day, { selected }) => {
-    this.setState({
-      date: selected ? undefined : day,
-    });
-  }
-
-  handleTab = (tabInit, go) => {
-    const tab = go ? tabInit + 1 : tabInit - 1
-    this.setState({ tab });
-  }
-
-  handleSubmit = () => {
-    const { history } = this.props;
-    history.push({ pathname: '/orders' });
-  }
 
   handleUploadClick = event => {
     var file = event.target.files[0];
@@ -242,51 +94,91 @@ class Account extends Component {
     });
   };
 
-  render() {
-    const { classes, className, history, ...rest } = this.props;
-    const {
-      date,
-      users,
-      selectedUsers,
-      products,
-      selectedProducts,
-      selectedTimes,
-      password,
-      passwordConfirm,
-      name,
-      email,
-      checkedB,
-      tab,
-      bank,
-      bankList,
-      address,
-      selectedFile
-    } = this.state;
-    var today = new Date(date);
-    var dd = today.getDate();
-
-    const isNextTab = tab < 4
-    const isBackTab = tab > 1
-    const isSubmitTab = tab === 4
-
-    console.log(
-      {
-        date,
-        users,
-        selectedUsers,
-        products,
-        selectedProducts,
-        selectedTimes,
-        password,
-        passwordConfirm,
-        name,
-        email,
-        checkedB,
-        tab,
-        bank,
-        bankList,
+  componentDidMount() {
+    setInterval(() => {
+      var seconds = 0
+      var startDate = new Date(this.props.data?.booking_date || new Date());
+      var endDate = new Date();
+      seconds = parseInt(((endDate.getTime() - startDate.getTime()) / 1000) || 0);
+      if (seconds > 0 && !this.state.seconds) {
+        this.setState({
+          seconds
+        });
       }
-    )
+      const timer = () => {
+        const seconds = this.state.seconds;
+        var days = Math.floor(seconds / 24 / 60 / 60);
+        var hoursLeft = Math.floor((seconds) - (days * 86400));
+        var hours = Math.floor(hoursLeft / 3600);
+        var minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
+        var minutes = Math.floor(minutesLeft / 60);
+        var remainingSeconds = seconds % 60;
+        const pad = (n) => {
+          return (n < 10 ? "0" + n : n);
+        }
+        if (seconds <= 0) {
+          return "Telat transfer meebihi batas waktu";
+        } else {
+          return pad(days) + " Hari : " + pad(hours) + " Jam : " + pad(minutes) + " Menit : " + pad(remainingSeconds) + " Detik";
+        }
+      }
+
+      this.setState({
+        countdown: timer(),
+        seconds: this.state.seconds - 1
+      });
+    }, 1000);
+  }
+
+  render() {
+    const { classes, className, history, handleSubmit, editOrders, ...rest } = this.props;
+    const {
+      order_id,
+      employee_id,
+      customer_id,
+      schedule_id,
+      booking_date,
+      is_down_payment,
+      customer_account_name,
+      customer_account_number,
+      customer_payment_nominal,
+      transfer_evidence,
+      status,
+      created,
+      created_by,
+      updated,
+      updated_bys,
+      celine_bank_name,
+      celine_account_name,
+      celine_account_number,
+      total_payment,
+      total,
+      services,
+      serviceList,
+      employee,
+    } = this.props.data
+    const { bank, bankList, selectedFile } = this.state
+
+    const role = localStorage.getItem("role") === "admin";
+
+    const statusColors = {
+      "completed": 'success',
+      "confirmed": 'primary',
+      "on-progress": 'info',
+      "unconfirmed": 'warning',
+      "canceled": 'danger'
+    };
+
+    const statusText = {
+      "completed": 'Selesai',
+      "confirmed": 'Pemesanan berhasil',
+      "on-progress": 'Sedang berjalan',
+      "unconfirmed": 'Perlu konfirmasi',
+      "canceled": 'Pemesanan batal'
+    };
+
+    var today = new Date(booking_date);
+    var dd = today.getDate();
 
     var mm = today.getMonth() + 1;
     const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -300,149 +192,15 @@ class Account extends Component {
     if (mm < 10) {
       mm = '0' + mm;
     }
-    console.log(selectedTimes, selectedUsers)
 
     const dataDate = dd + " " + monthNames[today.getMonth()] + " " + yyyy;
-    let dataTime = selectedTimes;
-    if (selectedTimes - 0 < 10) {
-      dataTime = '0' + selectedTimes;
+    let dataTime = schedule_id;
+    if (schedule_id - 0 < 10) {
+      dataTime = '0' + schedule_id;
     }
+    const bankDetail = bankList.find(e => e.value === bank)
 
     const rootClassName = classNames(classes.root, className);
-
-    const mainTab = [
-      (<>
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Bank Tujuan
-          </Typography>
-        </div>
-
-        <div className={classes.field}>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
-            <Select
-              labelId="demo-controlled-open-select-label"
-              id="demo-controlled-open-select"
-              value={bank}
-              onChange={e => this.handleChange(e, "bank")}
-              inputProps={{
-                name: 'bank',
-                id: 'bank-simple',
-              }}
-              disabled
-              native
-            >
-              <option aria-label="None" value="" />
-              <option value={0}>BCA</option>
-              <option value={1}>BRI</option>
-              <option value={2}>BTPN</option>
-            </Select>
-          </FormControl>
-        </div>
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={12}
-            >
-              <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek + " atas nama Celine"} />
-            </Grid>
-          </Grid>
-        </div>
-
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Informasi Rekening Pengirim
-          </Typography>
-        </div>
-
-
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={2}
-          >
-            <Grid
-              item
-              md={4}
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                onChange={e => this.handleChange(e, "name")}
-                label="Nama"
-                margin="dense"
-                disabled
-                value={name}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={8}
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                onChange={e => this.handleChange(e, "email")}
-                label="Nomor Rekening"
-                margin="dense"
-                disabled
-                value={email}
-                variant="outlined"
-                type="email"
-              />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                label="Nominal Pembayaran"
-                name="address"
-                margin="dense"
-                disabled
-                onChange={event =>
-                  this.handleChange(event.target.value, 'address')
-                }
-                type="text"
-                value={address}
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
-        </div>
-
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Bukti Pembayaran
-          </Typography>
-        </div>
-        <div className={classes.field}>
-          <img
-            src={"https://images.tokopedia.net/img/cache/500-square/product-1/2020/1/21/5677080/5677080_cf2ef623-8e05-4c90-80ec-0a6edb107d3e_648_648.jpg.webp"}
-            style={{ maxWidth: "100%" }}
-          />
-        </div>
-
-
-      </>),
-    ];
-
 
     return (
       <Grid
@@ -470,9 +228,304 @@ class Account extends Component {
                 autoComplete="off"
                 noValidate
               >
-                {mainTab[tab]}
+
+                <div className={classes.field}>
+                  <Typography
+                    className={classes.title}
+                    variant="h4"
+                  >
+                    Status Pemesanan
+                  </Typography>
+                </div>
+
+                <div className={classes.field}>
+                  <Typography variant="h6" className={classes.title}>
+                    status
+                  </Typography>
+                  <div className={classes.statusWrapper}>
+                    <Status
+                      className={classes.status}
+                      color={statusColors[status]}
+                      size="sm"
+                    />
+                    <Typography variant="body1" className={classes.title}>
+                      {statusText[status]}
+                    </Typography>
+                  </div>
+                </div>
+
+                <div className={classes.field}>
+                  <Typography
+                    className={classes.title}
+                    variant="h4"
+                  >
+                    Informasi Rekening Pengirim
+                  </Typography>
+                </div>
+
+                <div className={classes.field}>
+                  <Typography variant="h6" className={classes.title}>
+                    Nama Pelanggan
+                  </Typography>
+                  <Typography variant="body1" className={classes.title}>
+                    {customer_account_name}
+                  </Typography>
+                </div>
+
+                <div className={classes.field}>
+                  <Typography variant="h6" className={classes.title}>
+                    Nomor Rekening
+                  </Typography>
+                  <Typography variant="body1" className={classes.title}>
+                    {customer_account_number}
+                  </Typography>
+                </div>
+
+                <div className={classes.field}>
+                  <Typography
+                    className={classes.title}
+                    variant="h4"
+                  >
+                    Bank Tujuan
+                  </Typography>
+                </div>
+                {!transfer_evidence ? (
+                  <>
+                    <div className={classes.field}>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
+                        <Select
+                          labelId="demo-controlled-open-select-label"
+                          id="demo-controlled-open-select"
+                          value={bank}
+                          onChange={e => this.handleChange(e, "bank")}
+                          inputProps={{
+                            name: 'bank',
+                            id: 'bank-simple',
+                          }}
+                          native
+                        >
+                          {bankList.map((e) =>
+                            <option value={e.value}>{e.name}</option>
+                          )}
+                        </Select>
+                      </FormControl>
+                    </div>
+                    <div className={classes.field}>
+                      <Grid
+                        container
+                        spacing={3}
+                      >
+                        <Grid
+                          item
+                          md={12}
+                        >
+                          <BookingCard noWrap={true} title={bankDetail.name} status={"Kirim jumlah uang ke nomor Rek " + bankDetail.rek + " atas nama " + bankDetail.user} />
+                        </Grid>
+                      </Grid>
+                    </div>
+
+                    <div className={classes.field}>
+                      <Typography
+                        className={classes.title}
+                        variant="h5"
+                      >
+                        Total Nominal Pembayaran {is_down_payment ? "Down Payment" : "Keseluruhan"}
+                      </Typography>
+                      <div className={classes.field}>
+                        <Typography
+                          className={classes.title}
+                          variant="h4"
+                          style={{ textAlign: "center" }}
+                        >
+                          {new Number(total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+                        </Typography>
+                      </div>
+                      <Typography
+                        className={classes.title}
+                        variant="body2"
+                        style={{ marginTop: 4, textAlign: "center" }}
+                      >
+                        Pastikan nominal sesuai hingga 3 digit terakhir
+                      </Typography>
+                    </div>
+
+                    <div className={classes.field}>
+                      <Typography
+                        className={classes.title}
+                        variant="h4"
+                        style={{ textAlign: "center" }}
+                      >
+                        {this.state.countdown}
+                      </Typography>
+                    </div>
+
+                    <div className={classes.field}>
+                      <Typography
+                        className={classes.title}
+                        variant="h4"
+                      >
+                        Bukti Pembayaran
+                      </Typography>
+                    </div>
+                    <div className={classes.field}>
+                      {
+                        selectedFile && (
+                          <img
+                            src={selectedFile ? selectedFile : "/images/logos/logo.png"}
+                            style={{ maxWidth: "100%" }}
+                          />
+                        )
+                      }
+
+                      <input
+                        accept="image/*"
+                        className={classes.input}
+                        id="contained-button-file"
+                        multiple
+                        type="file"
+                        onChange={this.handleUploadClick}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={classes.field}>
+                      <Typography variant="h6" className={classes.title}>
+                        Bank
+                      </Typography>
+                      <Typography variant="body1" className={classes.title}>
+                        {celine_bank_name}
+                      </Typography>
+                    </div>
+
+                    <div className={classes.field}>
+                      <Grid
+                        container
+                        spacing={3}
+                      >
+                        <Grid
+                          item
+                          md={12}
+                        >
+                          <BookingCard noWrap={true} title={celine_bank_name} status={"Kirim jumlah uang ke nomor Rek " + celine_account_number + " atas nama " + celine_account_name} />
+                        </Grid>
+                      </Grid>
+                    </div>
+                    <div className={classes.field}>
+                      <Typography variant="h6" className={classes.title}>
+                        Nominal Pembayaran
+                      </Typography>
+                      <Typography variant="body1" className={classes.title}>
+                        {new Number(customer_payment_nominal).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+                      </Typography>
+                    </div>
+                    <div className={classes.field}>
+                      <Typography
+                        className={classes.title}
+                        variant="h4"
+                      >
+                        Bukti Pembayaran
+                      </Typography>
+                    </div>
+                    <div className={classes.field}>
+                      <img
+                        src={transfer_evidence}
+                        style={{ maxWidth: "100%" }}
+                      />
+                    </div>
+                  </>
+                )}
               </form>
             </PortletContent>
+            <PortletFooter className={classes.portletFooter}>
+
+              {(!transfer_evidence) && (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={!selectedFile}
+                  onClick={() => {
+                    const {
+                      order_id,
+                      customer_id,
+                      employee_id,
+                      schedule_id,
+                      booking_date,
+                      booking_time,
+                      is_down_payment,
+                      customer_account_name,
+                      customer_account_number,
+                      customer_payment_nominal,
+                      total_payment,
+                      status,
+                      detail_order,
+                    } = this.props.data
+                    // console.log(this.props.data, "asdasds")
+                    editOrders({
+                      order_id,
+                      customer_id,
+                      employee_id,
+                      schedule_id,
+                      booking_date,
+                      booking_time,
+                      is_down_payment,
+                      customer_account_name,
+                      customer_account_number,
+                      customer_payment_nominal,
+                      total_payment,
+                      status,
+                      detail_order,
+                      celine_bank_name: bankDetail.name,
+                      celine_account_name: bankDetail.user,
+                      celine_account_number: bankDetail.rek,
+                      transfer_evidence: selectedFile,
+                    })
+                  }}
+                >
+                  Bayar
+                </Button>
+              )}
+
+              {(status === "unconfirmed" && role && transfer_evidence) && (
+                <>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    style={{ marginRight: 10 }}
+                    onClick={() => handleSubmit("confirm", { order_id: order_id })}
+                  >
+                    Konfirmasi
+                  </Button>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => handleSubmit("cancel", { order_id: order_id })}
+                  >
+                    Batalkan
+                  </Button>
+                </>
+              )}
+              {(status === "confirmed" && role) && (
+                <>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    style={{ marginRight: 10, backgroundColor: "#45B880" }}
+                    onClick={() => handleSubmit("complete", { order_id: order_id })}
+                  >
+                    Selesai
+                  </Button>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => handleSubmit("cancel", { order_id: order_id })}
+                  >
+                    Batalkan
+                  </Button>
+                </>
+              )}
+            </PortletFooter>
           </Portlet>
 
         </Grid>
@@ -488,7 +541,7 @@ class Account extends Component {
           >
             <PortletHeader>
               <PortletLabel
-                title="Ringkasan"
+                title={"Pemesanan No#" + order_id}
               />
             </PortletHeader>
             <PortletContent noPadding>
@@ -496,77 +549,48 @@ class Account extends Component {
                 <Typography variant="h6" className={classes.title}>
                   Jenis Layanan
                 </Typography>
-                {!selectedProducts.length ? (
-                  <Typography variant="body1">Tidak ada jenis layanan yang dipilih</Typography>
-                ) : (
-                  <div className={classes.demo}>
-                    <List dense={true}>
-                      {products.map((product) => selectedProducts.indexOf(product.id) !== -1 && (
-                        <ListItem key={product.id}>
-                          <ListItemAvatar>
-                            <Avatar
-                              className={classes.avatar}
-                              src={product.imageUrl}
-                            />
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={product.title}
-                            secondary={"Rp. " + product.price}
+                <div className={classes.demo}>
+                  <List dense={true}>
+                    {services.map((product, index) =>
+                      <ListItem key={product.service_id}>
+                        <ListItemAvatar>
+                          <Avatar
+                            className={classes.avatar}
+                            src={serviceList?.[index].thumbnail}
                           />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </div>
-                )}
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={product.service_name}
+                          secondary={new Number(product.price).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+                        />
+                      </ListItem>
+                    )}
+                  </List>
+                </div>
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
                   Pegawai
                 </Typography>
-                {selectedUsers ? (
-                  <Typography variant="body1" className={classes.title}>
-                    Ava Gregoraci
-                  </Typography>
-                ) : (
-                  <Typography variant="body1">Tidak ada pegawai yang dipilih</Typography>
-                )}
-
-              </div>
-              <div className={classes.field}>
-                <Typography variant="h6" className={classes.title}>
-                  Tanggal pemesanan
+                <Typography variant="body1" className={classes.title}>
+                  {employee?.fullname}
                 </Typography>
-                <DayPicker
-                  selectedDays={[
-                    dataDate ? new Date(dataDate) : null,
-                  ]}
-                />
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
                   Jam pemesanan
                 </Typography>
-                {selectedTimes ? (
-                  <>
-                    <Typography variant="body1" className={classes.title}>
-                      {dataDate}, jam {dataTime}:00
-                    </Typography>
-                  </>
-                ) : (
-                  <Typography variant="body1">Tidak ada jam yang dipilih</Typography>
-                )}
+                <Typography variant="body1" className={classes.title}>
+                  {dataDate}, jam {dataTime}:00
+                </Typography>
               </div>
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
                   Total
                 </Typography>
-
-                <Typography variant="body1">{products.filter((product) =>
-                  selectedProducts
-                    .indexOf(product.id) !== -1)
-                  .map(e => e.price.replace(".", "") - 0)
-                  .reduce((a, b) => a + b, 0)
-                  .toLocaleString('id', { style: 'currency', currency: 'IDR' })}</Typography>
+                <Typography variant="body1">
+                  {new Number(total).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+                </Typography>
               </div>
 
             </PortletContent>

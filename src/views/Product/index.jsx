@@ -6,9 +6,6 @@ import { withSnackbar } from 'notistack';
 import compose from 'recompose/compose';
 import { useHttpClient } from '../../services/hooks/http-hook';
 
-// Externals
-import PropTypes from 'prop-types';
-
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
@@ -28,8 +25,8 @@ import {
   ProductPicture,
   ProductDetails,
 } from './components';
-// Shared components
 
+// Shared components
 import {
   Popup,
 } from 'components';

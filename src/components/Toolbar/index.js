@@ -19,7 +19,7 @@ import { SearchInput } from 'components';
 
 // Material icons
 import {
-    Delete as DeleteIcon
+    Delete as DeleteIcon, Filter8Sharp
 } from '@material-ui/icons';
 
 // Component styles
@@ -27,7 +27,7 @@ import styles from './styles';
 
 class Toolbar extends Component {
     render() {
-        const { classes, className, selectedUsers, buttonAdd } = this.props;
+        const { classes, className, selectedUsers, buttonAdd, filters, filterValue, onChangeFilter } = this.props;
 
         const rootClassName = classNames(classes.root, className);
 
@@ -50,17 +50,18 @@ class Toolbar extends Component {
                             <DeleteIcon />
                         </IconButton>
                     )}
-                    {this.props.filter && (
+                    {filters && (
                         <FormControl className={classes.formControl} style={{ marginRight: 20 }}>
                             <InputLabel id="demo-controlled-open-select-label">Filter</InputLabel>
                             <Select
                                 labelId="demo-controlled-open-select-label"
                                 id="demo-controlled-open-select"
+                                onChange={e => onChangeFilter(e, "filterValue")}
                                 native
-                                value={"Minggu ini"}
+                                value={filterValue}
                             >
-                                {this.props.filter.map((e) =>
-                                    <option value={e}>{e}</option>
+                                {filters.map((e) =>
+                                    <option value={e.value}>{e.text}</option>
                                 )
                                 }
                             </Select>

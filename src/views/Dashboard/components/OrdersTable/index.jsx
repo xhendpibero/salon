@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 // Externals
 import classNames from 'classnames';
@@ -15,15 +16,11 @@ import {
   CircularProgress,
   Table,
   TableBody,
+  Typography,
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
-  TableSortLabel
 } from '@material-ui/core';
-
-// Shared services
-import { getOrders } from 'services/order';
 
 // Shared components
 import {
@@ -39,62 +36,25 @@ import {
 import styles from './styles';
 
 const statusColors = {
-  "Selesai": 'success',
-  "Pemesanan berhasil": 'primary',
-  "Perlu konfirmasi": 'info',
-  "Pemesanan batal": 'danger'
+  "completed": 'success',
+  "confirmed": 'primary',
+  "on-progress": 'info',
+  "unconfirmed": 'warning',
+  "canceled": 'danger'
 };
 
+const statusText = {
+  "completed": 'Selesai',
+  "confirmed": 'Pemesanan berhasil',
+  "on-progress": 'Sedang berjalan',
+  "unconfirmed": 'Perlu konfirmasi',
+  "canceled": 'Pemesanan batal'
+};
 class OrdersTable extends Component {
-  signal = false;
-
-  state = {
-    isLoading: false,
-    limit: 10,
-    orders: [],
-    ordersTotal: 0
-  };
-
-  async getOrders(limit) {
-    try {
-      this.setState({ isLoading: true });
-
-      const { orders, ordersTotal } = await getOrders(limit);
-
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          orders,
-          ordersTotal
-        });
-      }
-    } catch (error) {
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          error
-        });
-      }
-    }
-  }
-
-  componentDidMount() {
-    this.signal = true;
-
-    const { limit } = this.state;
-
-    this.getOrders(limit);
-  }
-
-  componentWillUnmount() {
-    this.signal = false;
-  }
-
   render() {
-    const { classes, className } = this.props;
-    const { isLoading, orders, ordersTotal } = this.state;
-    const role = localStorage.getItem("role") === "admin";
+    const { classes, className, isLoading, orders } = this.props;
 
+    const role = localStorage.getItem("role") === "admin";
     const rootClassName = classNames(classes.root, className);
     const showOrders = !isLoading && orders.length > 0;
 
@@ -102,7 +62,7 @@ class OrdersTable extends Component {
       <Portlet className={rootClassName}>
         <PortletHeader noDivider>
           <PortletLabel
-            subtitle={`${ordersTotal} in total`}
+            subtitle={`${orders?.length}`}
             title="Pemesanan Terbaru"
           />
           {!role && (
@@ -135,38 +95,33 @@ class OrdersTable extends Component {
                     <TableCell>ID</TableCell>
                     <TableCell align="left">Nama Pelanggan</TableCell>
                     <TableCell align="left">Tanggal Pemesanan</TableCell>
-                    {/* <TableCell
-                      align="left"
-                      sortDirection="desc"
-                    >
-                      <Tooltip
-                        enterDelay={300}
-                        title="Sort"
-                      >
-                        <TableSortLabel
-                          // active
-                          direction="desc"
-                        >
-                          Tanggal Pemesanan
-                        </TableSortLabel>
-                      </Tooltip>
-                    </TableCell> */}
                     <TableCell align="left">Status</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {orders.map(order => (
+                  {orders.map((order, index) => (
                     <TableRow
                       className={classes.tableRow}
                       hover
-                      key={order.id}
+                      key={order.order_id + index}
                     >
-                      <TableCell>{order.id}</TableCell>
+                      <TableCell>
+                        <div className={classes.tableCellInner}>
+                          <Link to={"orders/detail?id=" + order.order_id}>
+                            <Typography
+                              className={classes.nameText}
+                              variant="body1"
+                            >
+                              {order.order_id}
+                            </Typography>
+                          </Link>
+                        </div>
+                      </TableCell>
                       <TableCell className={classes.customerCell}>
-                        {order.customer.name}
+                        {order.customer_account_name}
                       </TableCell>
                       <TableCell>
-                        {moment(order.createdAt).format('DD/MM/YYYY')}
+                        {moment(order.created).format('DD/MM/YYYY')}
                       </TableCell>
                       <TableCell>
                         <div className={classes.statusWrapper}>
@@ -175,7 +130,7 @@ class OrdersTable extends Component {
                             color={statusColors[order.status]}
                             size="sm"
                           />
-                          {order.status}
+                          {statusText[order.status]}
                         </div>
                       </TableCell>
                     </TableRow>

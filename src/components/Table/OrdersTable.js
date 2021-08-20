@@ -7,12 +7,6 @@ import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
@@ -25,33 +19,21 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    Tooltip,
-    TableSortLabel,
     Typography,
     IconButton,
+    TablePagination
 } from '@material-ui/core';
 
 import {
-    ArrowDownward as ArrowDownwardIcon,
-    ArrowUpward as ArrowUpwardIcon,
-    Delete as DeleteIcon,
-    VisibilityOff,
     ShoppingBasket
 } from '@material-ui/icons';
 
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-
-// Shared services
-import { getOrders } from 'services/order';
 
 // Shared components
 import {
     Portlet,
-    PortletHeader,
-    PortletLabel,
-    PortletToolbar,
     PortletContent,
     Status
 } from 'components';
@@ -60,41 +42,52 @@ import {
 import styles from './styles';
 
 const statusColors = {
-    "Selesai": 'success',
-    "Pemesanan berhasil": 'primary',
-    "Perlu konfirmasi": 'info',
-    "Pemesanan batal": 'danger'
+    "completed": 'success',
+    "confirmed": 'primary',
+    "on-progress": 'info',
+    "unconfirmed": 'warning',
+    "canceled": 'danger'
+};
+
+const statusText = {
+    "completed": 'Selesai',
+    "confirmed": 'Pemesanan berhasil',
+    "on-progress": 'Sedang berjalan',
+    "unconfirmed": 'Perlu konfirmasi',
+    "canceled": 'Pemesanan batal'
 };
 
 class OrdersTable extends Component {
     state = {
-        open: false,
-        title: "",
-        body: "",
+        rowsPerPage: 10,
+        page: 0
     };
 
-    // handleClickOpen = (title, body) => {
-    //     this.setState({ open: true, title, body });
-    // };
+    handleChangePage = (event, page) => {
+        const { onSelect } = this.props;
+        this.setState({ page });
+        onSelect(page, "page");
+    };
 
-    handleClose = () => {
-        this.setState({ open: false, title: '', body: '' });
+    handleChangeRowsPerPage = event => {
+        const { onSelect } = this.props;
+        this.setState({ rowsPerPage: event.target.value });
+        onSelect(event.target.value, "row");
     };
 
     render() {
-        const { classes, className, isLoading, orders, ordersTotal } = this.props;
+        const { classes, className, isLoading, orders, handleSubmit } = this.props;
+        const { rowsPerPage, page } = this.state;
         const role = localStorage.getItem("role") === "admin";
-        const { open, title, body } = this.state;
         const rootClassName = classNames(classes.root, className);
         const showOrders = !isLoading && orders.length > 0;
-        const bull = <span className={classes.bullet}>•</span>;
         return (
             <Portlet className={rootClassName}>
-                <PerfectScrollbar>
-                    <PortletContent
-                        className={classes.portletContent}
-                        noPadding
-                    >
+                <PortletContent
+                    className={classes.portletContent}
+                    noPadding
+                >
+                    <PerfectScrollbar>
                         {isLoading && (
                             <div className={classes.progressWrapper}>
                                 <CircularProgress />
@@ -107,22 +100,6 @@ class OrdersTable extends Component {
                                         <TableCell>ID</TableCell>
                                         <TableCell align="left">Nama Pemesan</TableCell>
                                         <TableCell align="left">Tanggal Pemesanan</TableCell>
-                                        {/* <TableCell
-                                            align="left"
-                                            sortDirection="asc"
-                                        >
-                                            <Tooltip
-                                                enterDelay={300}
-                                                title="Sort"
-                                            >
-                                                <TableSortLabel
-                                                    // active
-                                                    direction="asc"
-                                                >
-                                                    Tanggal Pemesanan
-                                                </TableSortLabel>
-                                            </Tooltip>
-                                        </TableCell> */}
                                         <TableCell align="left">Status</TableCell>
                                         {role && (
                                             <TableCell align="left">Aksi</TableCell>
@@ -134,25 +111,25 @@ class OrdersTable extends Component {
                                         <TableRow
                                             className={classes.tableRow}
                                             hover
-                                            key={order.id + index}
+                                            key={order.order_id + index}
                                         >
                                             <TableCell>
                                                 <div className={classes.tableCellInner}>
-                                                    <Link to="orders/detail?id=1">
+                                                    <Link to={"orders/detail?id=" + order.order_id}>
                                                         <Typography
                                                             className={classes.nameText}
                                                             variant="body1"
                                                         >
-                                                            {order.id}
+                                                            {order.order_id}
                                                         </Typography>
                                                     </Link>
                                                 </div>
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
-                                                {order.customer.name}
+                                                {order.customer_account_name}
                                             </TableCell>
                                             <TableCell>
-                                                {moment(order.createdAt).format('DD/MM/YYYY')}
+                                                {moment(order.created).format('DD/MM/YYYY')}
                                             </TableCell>
                                             <TableCell>
                                                 <div className={classes.statusWrapper}>
@@ -161,52 +138,44 @@ class OrdersTable extends Component {
                                                         color={statusColors[order.status]}
                                                         size="sm"
                                                     />
-                                                    {order.status}
+                                                    {statusText[order.status]}
                                                 </div>
                                             </TableCell>
                                             {role && (
                                                 <TableCell align="left">
-                                                    {(order.status === "Perlu konfirmasi") && (
+                                                    {(order.status === "unconfirmed") && (
                                                         <>
                                                             <Button
                                                                 color="primary"
                                                                 variant="contained"
                                                                 style={{ marginRight: 10 }}
-                                                                onClick={() => {
-                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
-                                                                }}
+                                                                onClick={() => handleSubmit("confirm", { order_id: order.order_id })}
                                                             >
                                                                 Konfirmasi
                                                             </Button>
                                                             <Button
                                                                 color="secondary"
                                                                 variant="contained"
-                                                                onClick={() => {
-                                                                    this.setState({ open: true, title: "Ingin melakukan Pembatalan?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
-                                                                }}
+                                                                onClick={() => handleSubmit("cancel", { order_id: order.order_id })}
                                                             >
                                                                 Batalkan
                                                             </Button>
                                                         </>
                                                     )}
-                                                    {(order.status === "Pemesanan berhasil") && (
+                                                    {(order.status === "confirmed") && (
                                                         <>
                                                             <Button
                                                                 color="secondary"
                                                                 variant="contained"
                                                                 style={{ marginRight: 10, backgroundColor: "#45B880" }}
-                                                                onClick={() => {
-                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi Selesai?", body: "Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
-                                                                }}
+                                                                onClick={() => handleSubmit("complete", { order_id: order.order_id })}
                                                             >
                                                                 Selesai
                                                             </Button>
                                                             <Button
                                                                 color="secondary"
                                                                 variant="contained"
-                                                                onClick={() => {
-                                                                    this.setState({ open: true, title: "Ingin melakukan Pembatalan?", body: "Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
-                                                                }}
+                                                                onClick={() => handleSubmit("cancel", { order_id: order.order_id })}
                                                             >
                                                                 Batalkan
                                                             </Button>
@@ -236,13 +205,13 @@ class OrdersTable extends Component {
                                                     >
                                                         <ShoppingBasket />
                                                     </IconButton>
-                                                    <Link to="orders/detail?id=1">
+                                                    <Link to={"orders/detail?id=" + order.order_id}>
                                                         <div>
                                                             <Typography variant="h5" component="h2">
-                                                                {order.customer.name}
+                                                                {order.customer_account_name}
                                                             </Typography>
                                                             <Typography className={classes.pos} color="textSecondary">
-                                                                {moment(order.createdAt).format('DD MMM YYYY')}
+                                                                {moment(order.created).format('DD MMM YYYY')}
                                                             </Typography>
                                                         </div>
                                                     </Link>
@@ -263,120 +232,55 @@ class OrdersTable extends Component {
                                             </div>
                                             <hr style={{ marginBottom: 10 }} />
                                             <Typography variant="h5" component="h2">
-                                                Jenis Layanan
+                                                Id Pemesanan
                                             </Typography>
                                             <Typography style={{ marginBottom: 10 }} variant="body2" component="p">
-                                                {order.services.toString().replace(",", ", ")}
+                                                {order.order_id}
                                             </Typography>
                                             <Typography variant="h5" component="h2">
-                                                Pegawai
+                                                Id Pegawai
                                             </Typography>
                                             <Typography style={{ marginBottom: 10 }} variant="body2" component="p">
-                                                {order.employee}
+                                                {order.employee_id}
                                             </Typography>
                                             <Typography variant="h5" component="h2">
-                                                Pembayaran : {(order.status === "Perlu konfirmasi") ? "DP" : "Penuh"}
+                                                Pembayaran : {(order.is_down_payment) ? "DP" : "Penuh"}
                                             </Typography>
                                             <Typography style={{ marginBottom: 10 }} variant="body2" component="p">
-                                                {(order.status === "Perlu konfirmasi") ? order.nominalDp.toLocaleString('id', { style: 'currency', currency: 'IDR' }) : order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                                {new Number(order.total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' })}
                                             </Typography>
                                             <Typography variant="h5" component="h2">
                                                 Total Pemesanan
                                             </Typography>
                                             <Typography variant="h6" component="h2" style={{ color: "#45B880" }}>
-                                                {order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                                {new Number(order.customer_payment_nominal).toLocaleString('id', { style: 'currency', currency: 'IDR' })}
                                             </Typography>
                                         </CardContent>
-
-                                        <CardActions style={{ float: "right" }}>
-                                            {role && (
-                                                <>
-                                                    {(order.status === "Perlu konfirmasi") && (
-                                                        <>
-                                                            <Button
-                                                                color="primary"
-                                                                variant="contained"
-                                                                style={{ marginRight: 10 }}
-                                                                onClick={() => {
-                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
-                                                                }}
-                                                            >
-                                                                Konfirmasi
-                                                            </Button>
-                                                            <Button
-                                                                color="secondary"
-                                                                variant="contained"
-                                                                onClick={() => {
-                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
-                                                                }}
-                                                            >
-                                                                Batalkan
-                                                            </Button>
-                                                        </>
-                                                    )}
-                                                    {(order.status === "Pemesanan berhasil") && (
-                                                        <>
-                                                            <Button
-                                                                color="secondary"
-                                                                variant="contained"
-                                                                style={{ marginRight: 10, backgroundColor: "#45B880" }}
-                                                                onClick={() => {
-                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
-                                                                }}
-                                                            >
-                                                                Selesai
-                                                            </Button>
-                                                            <Button
-                                                                color="secondary"
-                                                                variant="contained"
-                                                                onClick={() => {
-                                                                    this.setState({ open: true, title: "Ingin melakukan Konfirmasi?", body: " Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran" });
-                                                                }}
-                                                            >
-                                                                Batalkan
-                                                            </Button>
-                                                        </>
-                                                    )}
-                                                </>
-                                            )}
-                                        </CardActions>
                                     </Card>
-
                                 ))}
                             </>
                         )}
+                    </PerfectScrollbar>
 
-                        <Dialog
-                            open={open}
-                            onClose={this.handleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                        >
-                            <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                    {body}
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={this.handleClose} color="primary">
-                                    Kembali
-                                </Button>
-                                <Button onClick={this.handleClose} color="primary" autoFocus>
-                                    Setuju
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
-                    </PortletContent>
-                </PerfectScrollbar>
+                    <TablePagination
+                        backIconButtonProps={{
+                            'aria-label': 'Previous Page'
+                        }}
+                        component="div"
+                        count={this.props?.count || 10}
+                        nextIconButtonProps={{
+                            'aria-label': 'Next Page'
+                        }}
+                        onChangePage={this.handleChangePage}
+                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        rowsPerPageOptions={[5, 10, 25]}
+                    />
+                </PortletContent>
             </Portlet >
         );
     }
 }
-
-OrdersTable.propTypes = {
-    className: PropTypes.string,
-    classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(OrdersTable);

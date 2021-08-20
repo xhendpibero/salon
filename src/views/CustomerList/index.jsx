@@ -27,7 +27,6 @@ class ProductList extends Component {
 
   state = {
     isLoading: false,
-    limit: 10,
     page: 0,
     row: 10,
     customers: [],
@@ -42,7 +41,6 @@ class ProductList extends Component {
     try {
       this.setState({ isLoading: true });
       const { get } = useHttpClient();
-      this.setState({ isLoading: true });
       const token = localStorage.getItem("token");
       const customers = await get("/customers", token)
 
@@ -51,7 +49,6 @@ class ProductList extends Component {
           isLoading: false,
           customers: customers?.data,
           customersTemp: customers?.data,
-          limit: customers?.data.length
         });
       }
     } catch (error) {
@@ -73,16 +70,25 @@ class ProductList extends Component {
     this.signal = false;
   }
 
+  handleSelect = (selectedCustomers, index) => {
+    this.setState({ [index]: selectedCustomers });
+    if (index === "row") {
+      this.setState({ customers: this.state.customersTemp.slice(this.state.page * selectedCustomers, (this.state.page + 1) * selectedCustomers) });
+    } else if (index === "page") {
+      this.setState({ customers: this.state.customersTemp.slice(this.state.row * selectedCustomers, this.state.row * (selectedCustomers + 1)) });
+    }
+  };
+
   onChange = e => {
     const customers = this.state.customersTemp.filter((x) => {
       return String(x?.fullname).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0 ||
-        String(x?.employee_id).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0;
+        String(x?.customer_id).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0;
     })
     this.setState({ customers });
   }
 
   renderCustomers() {
-    const { classes, history } = this.props;
+    const { classes } = this.props;
     const { isLoading, customers } = this.state;
 
     if (isLoading) {
@@ -102,6 +108,7 @@ class ProductList extends Component {
     return (
       <CustomersTable
         count={this.state?.customersTemp?.length}
+        onSelect={this.handleSelect}
         customers={customers}
       />
     );

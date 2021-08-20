@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { withSnackbar } from 'notistack';
 
 // Externals
-import PropTypes from 'prop-types';
+import compose from 'recompose/compose';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
-import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material components
 import { Grid } from '@material-ui/core';
@@ -14,7 +16,13 @@ import { Grid } from '@material-ui/core';
 import { Dashboard as DashboardLayout } from 'layouts';
 
 // Custom components
-import { AccountProfile, AccountDetails } from './components';
+import { AccountDetails } from './components';
+
+// Shared components
+import {
+  Popup,
+} from 'components';
+
 
 // Component styles
 const styles = theme => ({
@@ -24,59 +32,67 @@ const styles = theme => ({
 });
 
 class Account extends Component {
-  state = { tabIndex: 0, data: {} };
-
-  edit = async (payload) => {
-    const { http: { put }, data } = this.state
-    const token = localStorage.getItem("token");
-    await put("/customers", {
-      ...data,
-      "password": "admin",
-    },
-      token);
+  state = {
+    openEdit: false,
+    isLoading: false,
+    payload: {},
+    data: {},
+    http: { ...useHttpClient() },
   };
 
-  edit = async (payload) => {
-    const { http: { put }, data } = this.state
-    const token = localStorage.getItem("token");
-    await put("/customers", {
-      ...data,
-      "password": "admin",
-    },
-      token);
+  changeImage = (thumbnail) => {
+    this.setState({ thumbnail })
+  }
+
+  handleClose = () => {
+    this.setState({ openEdit: false });
   };
 
-  edit = async (payload) => {
-    const { http: { put }, data } = this.state
+  get = async () => {
+    const { http: { post } } = this.state
+    this.setState({ isLoading: true });
     const token = localStorage.getItem("token");
-    await put("/customers", {
-      ...data,
-      "password": "admin",
-    },
+    const response = await post("/me", {},
       token);
-  };
-
-  submit = () => {
-    const role = localStorage.getItem("role");
-    if (role === "admin") {
+    if (response?.status === 200) {
+      this.setState({ isLoading: false, data: response });
     } else {
+      this.props.enqueueSnackbar('Gagal mendapatkan profil.')
+    }
+  }
 
+  edit = async () => {
+    const { http: { post }, payload } = this.state
+    this.setState({ isLoading: true, openEdit: false });
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const response = await post("/user/update", {
+      ...payload,
+      role: role,
+    },
+      token);
+    if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil merubah profil.')
+      localStorage.setItem('isAuthenticated', true);
+      Object.keys(response.data).forEach(function (key) {
+        console.log({ data: response.data })
+        localStorage.setItem(key, response.data[key]);
+      });
+      this.get();
+      this.setState({ payload: {} });
+    } else {
+      this.props.enqueueSnackbar('Gagal merubah profil.')
+      this.setState({ isLoading: false, payload: {} });
     }
   };
 
   componentWillMount() {
-    const username = localStorage.getItem("username");
-    const role = localStorage.getItem("role");
-    const email = localStorage.getItem("email");
-    if (role === "admin") {
-      this.setState({ username, role, email })
-    } else {
-
-    }
+    this.get()
   }
 
   render() {
     const { classes } = this.props;
+    const { openEdit, data, isLoading } = this.state;
 
     return (
       <DashboardLayout title="Akun">
@@ -85,33 +101,28 @@ class Account extends Component {
             container
             spacing={4}
           >
-            {/* <Grid
-              item
-              lg={4}
-              md={6}
-              xl={4}
-              xs={12}
-            >
-              <AccountProfile />
-            </Grid> */}
             <Grid
               item
-              // lg={8}
-              // md={6}
-              // xl={8}
               xs={12}
             >
-              <AccountDetails submit={this.submit} data={this.state.data} />
+              <AccountDetails onSubmit={(data) => this.setState({ openEdit: true, payload: data })} data={data} isLoading={isLoading} />
             </Grid>
           </Grid>
+          <Popup
+            open={openEdit}
+            title={"Ingin melakukan perubahan?"}
+            body={"Pastikan telah melakukan pengecekan pada masukan yang anda isi"}
+            handleClose={this.handleClose}
+            handleSubmit={this.edit}
+          />
         </div>
       </DashboardLayout>
     );
   }
 }
 
-Account.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
-export default withStyles(styles)(Account);
+export default compose(
+  withRouter,
+  withSnackbar,
+  withStyles(styles)
+)(Account);

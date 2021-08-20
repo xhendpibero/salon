@@ -64,13 +64,14 @@ class Customer extends Component {
 
   add = async () => {
     const { history } = this.props;
-    const { http: { post }, thumbnail, payload } = this.state
+    const { http: { post }, payload } = this.state
     this.setState({ isLoading: true });
     const user = localStorage.getItem("email");
     const token = localStorage.getItem("token");
     const response = await post("/customers", {
       ...payload,
-      created_by: user
+      username: user,
+      created_by: user,
     },
       token);
     if (response?.status === 200) {
@@ -84,13 +85,14 @@ class Customer extends Component {
 
   edit = async () => {
     const { history } = this.props;
-    const { http: { put }, data, thumbnail, payload } = this.state
+    const { http: { put }, data, payload } = this.state
     this.setState({ isLoading: true });
     const user = localStorage.getItem("email");
     const token = localStorage.getItem("token");
     const response = await put("/customers", {
       ...data,
       ...payload,
+      username: user,
       updated_by: user
     },
       token);
@@ -148,20 +150,25 @@ class Customer extends Component {
               <CustomerDetails onSubmit={(data) => this.setState({ [location.search ? "openEdit" : "openAdd"]: true, payload: data })} data={data} isLoading={isLoading} />
             </Grid>
           </Grid>
-          <Popup
-            open={openAdd}
-            title={"Ingin melakukan penambahan?"}
-            body={"Pastikan telah melakukan pengecekan pada masukan yang anda isi"}
-            handleClose={this.handleClose}
-            handleSubmit={this.add}
-          />
-          <Popup
-            open={openEdit}
-            title={"Ingin melakukan perubahan?"}
-            body={"Pastikan telah melakukan pengecekan pada masukan yang anda isi"}
-            handleClose={this.handleClose}
-            handleSubmit={this.edit}
-          />
+          {[
+            {
+              open: openAdd,
+              title: 'Ingin melakukan penambahan?',
+              body: 'Pastikan telah melakukan pengecekan pada masukan yang anda isi',
+              handleSubmit: this.add,
+            },
+            {
+              open: openEdit,
+              title: 'Ingin melakukan perubahan?',
+              body: 'Pastikan telah melakukan pengecekan pada masukan yang anda isi',
+              handleSubmit: this.edit,
+            },
+          ].map(e =>
+            <Popup
+              {...e}
+              handleClose={this.handleClose}
+            />
+          )}
         </div>
       </DashboardLayout>
     );

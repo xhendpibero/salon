@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { withSnackbar } from 'notistack';
 
 // Externals
-import PropTypes from 'prop-types';
+import compose from 'recompose/compose';
 import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
@@ -24,7 +25,6 @@ class UserList extends Component {
 
   state = {
     isLoading: false,
-    limit: 10,
     page: 0,
     row: 10,
     users: [],
@@ -37,7 +37,6 @@ class UserList extends Component {
     try {
       this.setState({ isLoading: true });
       const { get } = useHttpClient();
-      this.setState({ isLoading: true });
       const token = localStorage.getItem("token");
       const products = await get("/employees", token)
 
@@ -46,7 +45,6 @@ class UserList extends Component {
           isLoading: false,
           users: products?.data,
           usersTemp: products?.data,
-          limit: products?.data.length
         });
       }
     } catch (error) {
@@ -60,29 +58,52 @@ class UserList extends Component {
   };
 
   hide = async () => {
+    this.setState({ isLoading: true });
     const { post } = useHttpClient();
     const { selectedUsers } = this.state;
+    let data = [];
     const user = localStorage.getItem("email");
     const token = localStorage.getItem("token");
-    console.log({ selectedUsers })
-    selectedUsers.map(async (e) => {
-      const data = await post("/employees/hide", {
+    await selectedUsers.map(async (e) => {
+      const response = await post("/employees/hide", {
         employee_id: e,
         updated_by: user
       }, token)
-      console.log({ data })
+      data.push(response.status === 200)
+      if (data.length === selectedUsers.length) {
+        if (data.filter(e => e).length) {
+          this.props.enqueueSnackbar('Berhasil sembunyikan pelanggan.')
+          this.get();
+          this.setState({ selectedUsers: [] });
+        } else {
+          this.props.enqueueSnackbar('Gagal sembunyikan pelanggan.');
+          this.setState({ isLoading: false, selectedUsers: [] });
+        }
+      }
     })
   };
 
   delete = async () => {
+    this.setState({ isLoading: true });
     const { del } = useHttpClient();
     const { selectedUsers } = this.state;
+    let data = [];
     const token = localStorage.getItem("token");
-    selectedUsers.map(async (e) => {
-      const data = await del("/employees", {
+    await selectedUsers.map(async (e) => {
+      const response = await del("/employees", {
         employee_id: e
       }, token)
-      console.log({ data })
+      data.push(response.status === 200)
+      if (data.length === selectedUsers.length) {
+        if (data.filter(e => e).length) {
+          this.props.enqueueSnackbar('Berhasil hapus pelanggan.')
+          this.get();
+          this.setState({ selectedUsers: [] });
+        } else {
+          this.props.enqueueSnackbar('Gagal hapus pelanggan.');
+          this.setState({ isLoading: false, selectedUsers: [] });
+        }
+      }
     })
   };
 
@@ -95,12 +116,12 @@ class UserList extends Component {
     this.signal = false;
   }
 
-  handleSelect = (selectedUsers, index) => {
-    this.setState({ [index]: selectedUsers });
+  handleSelect = (data, index) => {
+    this.setState({ [index]: data });
     if (index === "row") {
-      this.setState({ users: this.state.usersTemp.slice(this.state.page * selectedUsers, (this.state.page + 1) * selectedUsers) });
+      this.setState({ users: this.state.usersTemp.slice(this.state.page * data, (this.state.page + 1) * data) });
     } else if (index === "page") {
-      this.setState({ users: this.state.usersTemp.slice(this.state.row * selectedUsers, this.state.row * (selectedUsers + 1)) });
+      this.setState({ users: this.state.usersTemp.slice(this.state.row * data, this.state.row * (data + 1)) });
     }
   };
 
@@ -156,4 +177,7 @@ class UserList extends Component {
   }
 }
 
-export default withStyles(styles)(UserList);
+export default compose(
+  withSnackbar,
+  withStyles(styles),
+)(UserList);

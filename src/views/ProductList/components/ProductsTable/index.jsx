@@ -77,7 +77,7 @@ class ProductsTable extends Component {
 
     this.setState({ selectedProducts: newSelectedProducts });
 
-    onSelect(newSelectedProducts);
+    onSelect(newSelectedProducts, "selectedProducts");
   };
 
   handleChangePage = (event, page) => {

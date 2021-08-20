@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { withSnackbar } from 'notistack';
 
 // Externals
-import PropTypes from 'prop-types';
+import compose from 'recompose/compose';
 import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material components
@@ -64,28 +65,52 @@ class ProductList extends Component {
   };
 
   hide = async () => {
+    this.setState({ isLoading: true });
     const { post } = useHttpClient();
     const { selectedProducts } = this.state;
+    let data = [];
     const user = localStorage.getItem("email");
     const token = localStorage.getItem("token");
-    selectedProducts.map(async (e) => {
-      const data = await post("/services/hide", {
-        "service_id": e,
-        "updated_by": user
+    await selectedProducts.map(async (e) => {
+      const response = await post("/services/hide", {
+        service_id: e,
+        updated_by: user
       }, token)
-      console.log({ data })
+      data.push(response.status === 200)
+      if (data.length === selectedProducts.length) {
+        if (data.filter(e => e).length) {
+          this.props.enqueueSnackbar('Berhasil sembunyikan jenis layanan.')
+          this.get();
+          this.setState({ selectedProducts: [] });
+        } else {
+          this.props.enqueueSnackbar('Gagal sembunyikan jenis layanan.');
+          this.setState({ isLoading: false, selectedProducts: [] });
+        }
+      }
     })
   };
 
   delete = async () => {
+    this.setState({ isLoading: true });
     const { del } = useHttpClient();
     const { selectedProducts } = this.state;
+    let data = [];
     const token = localStorage.getItem("token");
-    selectedProducts.map(async (e) => {
-      const data = await del("/services", {
-        "service_id": e
+    await selectedProducts.map(async (e) => {
+      const response = await del("/services", {
+        service_id: e
       }, token)
-      console.log({ data })
+      data.push(response.status === 200)
+      if (data.length === selectedProducts.length) {
+        if (data.filter(e => e).length) {
+          this.props.enqueueSnackbar('Berhasil hapus jenis layanan.')
+          this.get();
+          this.setState({ selectedProducts: [] });
+        } else {
+          this.props.enqueueSnackbar('Gagal hapus jenis layanan.');
+          this.setState({ isLoading: false, selectedProducts: [] });
+        }
+      }
     })
   };
 
@@ -157,9 +182,7 @@ class ProductList extends Component {
   }
 }
 
-ProductList.propTypes = {
-  history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired
-};
-
-export default withStyles(styles)(ProductList);
+export default compose(
+  withSnackbar,
+  withStyles(styles),
+)(ProductList);

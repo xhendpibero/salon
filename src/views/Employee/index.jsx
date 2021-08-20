@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withSnackbar } from 'notistack';
 
 // Externals
 import compose from 'recompose/compose';
@@ -190,5 +191,6 @@ Employee.propTypes = {
 
 export default compose(
   withRouter,
+  withSnackbar,
   withStyles(styles)
 )(Employee);

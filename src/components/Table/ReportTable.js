@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 // Externals
 import classNames from 'classnames';
@@ -12,27 +11,17 @@ import { withStyles } from '@material-ui/core';
 
 // Material components
 import {
-    Button,
     CircularProgress,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow,
-    Tooltip,
-    TableSortLabel,
-    Typography,
 } from '@material-ui/core';
-
-// Shared services
-import { getOrders } from 'services/order';
 
 // Shared components
 import {
     Portlet,
-    PortletHeader,
-    PortletLabel,
-    PortletToolbar,
     PortletContent,
     Status
 } from 'components';
@@ -41,17 +30,24 @@ import {
 import styles from './styles';
 
 const statusColors = {
-    "Selesai": 'success',
-    "Pemesanan berhasil": 'primary',
-    "Perlu konfirmasi": 'info',
-    "Pemesanan batal": 'danger'
+    "completed": 'success',
+    "confirmed": 'primary',
+    "on-progress": 'info',
+    "unconfirmed": 'warning',
+    "canceled": 'danger'
 };
 
+const statusText = {
+    "completed": 'Selesai',
+    "confirmed": 'Pemesanan berhasil',
+    "on-progress": 'Sedang berjalan',
+    "unconfirmed": 'Perlu konfirmasi',
+    "canceled": 'Pemesanan batal'
+};
 class OrdersTable extends Component {
 
     render() {
-        const { classes, className, isLoading, orders, ordersTotal } = this.props;
-        const role = localStorage.getItem("role") === "admin";
+        const { classes, className, isLoading, orders } = this.props;
 
         const rootClassName = classNames(classes.root, className);
         const showOrders = !isLoading && orders.length > 0;
@@ -81,22 +77,6 @@ class OrdersTable extends Component {
                                         <TableCell align="left">Pembayaran</TableCell>
                                         <TableCell align="left">Nominal Pembayaran</TableCell>
                                         <TableCell align="left">Tanggal Pemesanan</TableCell>
-                                        {/* <TableCell
-                                            align="left"
-                                            sortDirection="desc"
-                                        >
-                                            <Tooltip
-                                                enterDelay={300}
-                                                title="Sort"
-                                            >
-                                                <TableSortLabel
-                                                    // active
-                                                    direction="desc"
-                                                >
-                                                    Tanggal Pemesanan
-                                                </TableSortLabel>
-                                            </Tooltip>
-                                        </TableCell> */}
                                         <TableCell align="left">Status</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -105,34 +85,34 @@ class OrdersTable extends Component {
                                         <TableRow
                                             className={classes.tableRow}
                                             hover
-                                            key={order.id + id}
+                                            key={order.order_id}
                                         >
                                             <TableCell className={classes.customerCell}>
-                                                {order.id}
+                                                {order.order_id}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
-                                                {order.customer.name}
+                                                {order.customer_account_name}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
-                                                {order.employee}
+                                                {order.employee_id}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
-                                                {order.services.toString().replace(",", ", ")}
+                                                {order.booking_date}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
-                                                {order.price.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                                {new Number(order.customer_payment_nominal).toLocaleString('id', { style: 'currency', currency: 'IDR' })}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
-                                                {order.norek}
+                                                {order.customer_account_number}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
-                                                {id % 2 == 0 ? "Penuh" : "DP"}
+                                                {order.is_down_payment ? "DP" : "Penuh"}
                                             </TableCell>
                                             <TableCell className={classes.customerCell}>
-                                                {order.nominalDp.toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                                {new Number(order.total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' })}
                                             </TableCell>
                                             <TableCell>
-                                                {moment(order.createdAt).format('DD/MM/YYYY')}
+                                                {moment(order.booking_date).format('DD/MM/YYYY')}
                                             </TableCell>
                                             <TableCell>
                                                 <div className={classes.statusWrapper}>
@@ -141,7 +121,7 @@ class OrdersTable extends Component {
                                                         color={statusColors[order.status]}
                                                         size="sm"
                                                     />
-                                                    {order.status}
+                                                    {statusText[order.status]}
                                                 </div>
                                             </TableCell>
                                         </TableRow>

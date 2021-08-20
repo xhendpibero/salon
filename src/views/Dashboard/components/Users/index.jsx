@@ -24,7 +24,7 @@ import styles from './styles';
 
 class Users extends Component {
   render() {
-    const { classes, className, ...rest } = this.props;
+    const { classes, className, value, ...rest } = this.props;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -45,28 +45,13 @@ class Users extends Component {
               className={classes.value}
               variant="h3"
             >
-              1600
+              {value}
             </Typography>
           </div>
           <div className={classes.iconWrapper}>
             <PeopleIcon className={classes.icon} />
           </div>
         </div>
-        {/* <div className={classes.footer}>
-          <Typography
-            className={classes.difference}
-            variant="body2"
-          >
-            <ArrowUpwardIcon />
-            16%
-          </Typography>
-          <Typography
-            className={classes.caption}
-            variant="caption"
-          >
-            Since last month
-          </Typography>
-        </div> */}
       </Paper>
     );
   }

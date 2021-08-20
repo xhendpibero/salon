@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
+import compose from 'recompose/compose';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material components
 import { Button, Grid } from '@material-ui/core';
@@ -25,7 +27,26 @@ const styles = theme => ({
 });
 
 class Order extends Component {
-  state = { tabIndex: 0 };
+  state = { products: [], isLoadingProduct: false };
+
+  getProduct = async () => {
+    this.setState({ isLoadingProduct: true });
+    const { get } = useHttpClient();
+    const token = localStorage.getItem("token");
+    const products = await get("/services", token)
+    if (products?.status === 200) {
+      this.setState({
+        isLoadingProduct: false,
+        products: products?.data,
+      });
+      return true
+    }
+  };
+
+  componentWillMount() {
+    this.getProduct();
+  }
+
 
   render() {
     const { classes, history } = this.props;
@@ -46,7 +67,7 @@ class Order extends Component {
             container
             spacing={4}
           >
-            <OrdersDetails />
+            <OrdersDetails products={this.state.products} isLoadingProduct={this.state.isLoadingProduct} />
           </Grid>
         </div>
       </DashboardLayout>
@@ -54,4 +75,6 @@ class Order extends Component {
   }
 }
 
-export default withStyles(styles)(Order);
+export default compose(
+  withStyles(styles)
+)(Order);

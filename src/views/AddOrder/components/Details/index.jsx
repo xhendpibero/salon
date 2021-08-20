@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withSnackbar } from 'notistack';
 
 // Externals
 import compose from 'recompose/compose';
+import { useHttpClient } from '../../../../services/hooks/http-hook';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
-
-
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -19,7 +17,6 @@ import 'react-day-picker/lib/style.css';
 // import ruLocale from "date-fns/locale/ru";
 
 import {
-  Folder as FolderIcon,
   Delete as DeleteIcon
 } from '@material-ui/icons';
 
@@ -37,16 +34,12 @@ import {
   Avatar,
   IconButton,
   Checkbox,
+  CircularProgress,
   FormControlLabel,
   FormControl,
   InputLabel,
   Select,
-  NativeSelect,
-  MenuItem,
 } from '@material-ui/core';
-
-import { getProducts } from 'services/product';
-import { getUsers } from 'services/user';
 
 // Shared components
 import {
@@ -62,146 +55,162 @@ import {
 // Component styles
 import styles from './styles';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
-
 class Account extends Component {
-  signal = true;
-
   state = {
+    //list
+    products: [],
+    customers: [],
+    employees: [],
+    selectedProducts: [],
+    selectedEmployee: "",
+    selectedTimes: 0,
+    isLoading: false,
+
+    customer_id: "",
+    employee_id: "",
+    booking_date: "",
+    booking_time: "",
+    is_down_payment: true,
+
+    //customers
+    username: '',
+    fullname: '',
+    phone_number: '',
+    email: '',
+    address: '',
+    gender: '',
+
     service: '',
     price: '',
-    isLoading: false,
-    limit: 100,
-    products: [],
-    productsTotal: 0,
-    users: [],
-    usersTotal: 0,
-    selectedProducts: [],
-    selectedUsers: "",
-    selectedTimes: 0,
-    error: null,
+
     date: "",
-    password: "",
-    passwordConfirm: "",
     name: "",
-    email: "",
     checkedB: false,
     tab: 1,
     bank: 0,
-    buyer: 0,
-    buyerList: [
-      {
-        name: "Celine",
-        value: 0,
-      },
-      {
-        name: "Ibu Celine",
-        value: 1,
-      },
-      {
-        name: "Kaka Nurul",
-        value: 2,
-      },
-    ],
+
+    celine_bank_name: "",
+    celine_account_name: "",
+    celine_account_number: "",
+    customer_account_name: "",
+    customer_account_number: "",
+    customer_payment_nominal: "",
+    total_payment: 0,
+    transfer_evidence: "",
+    detail_order: [{
+      service_id: "",
+      service_name: "",
+      price: ""
+    }],
+    isLoadingProduct: true,
     bankList: [
       {
         name: "BCA",
-        value: 0,
+        value: "BCA",
         rek: "0913 2012 001"
       },
       {
         name: "BRI",
-        value: 1,
+        value: "BRI",
         rek: "0913 2012 002"
       },
       {
         name: "BTPN",
-        value: 2,
+        value: "BTPN",
         rek: "0913 2012 003"
       },
     ],
-    amount: 0,
-    amountList: [
+    is_down_payment: false,
+    is_down_paymentList: [
       {
         name: "Penuh",
-        value: 0,
+        value: false,
       },
       {
         name: "Down Payment",
-        value: 1,
+        value: true,
       },
     ],
     countdown: "",
+    http: { ...useHttpClient() }
   };
 
-  async getUsers() {
-    try {
-      this.setState({ isLoading: true });
-
-      const { limit } = this.state;
-
-      const { users } = await getUsers(limit);
-
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          users
-        });
-      }
-    } catch (error) {
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          error
-        });
-      }
+  getEmployee = async () => {
+    console.log({ response: "lalalalalalala" })
+    this.setState({ isLoading: true });
+    const { http: { get } } = this.state
+    const token = localStorage.getItem("token");
+    const response = await get("/employees",
+      token);
+    console.log({ response })
+    if (response?.status === 200) {
+      this.setState({ employees: response?.data });
+      return true
     }
   }
 
-  async getProducts(limit) {
-    try {
-      this.setState({ isLoading: true });
-
-      const { products, productsTotal } = await getProducts(limit);
-
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          products,
-          productsTotal,
-          limit
-        });
-      }
-    } catch (error) {
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          error
-        });
-      }
+  getCustomer = async () => {
+    this.setState({ isLoading: true });
+    const { http: { get } } = this.state
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    const response = await get("/customers/with-username/" + user,
+      token);
+    console.log({ response })
+    if (response?.status === 200) {
+      this.setState({
+        customers: response?.data,
+        customer_id: response?.data?.[0]?.customer_id ?? "",
+        customer_account_name: response?.data?.[0]?.fullname ?? "",
+        customer_account_number: response?.data?.[0]?.phone_number ?? "",
+      });
+      return true
     }
   }
+
+  addCustomers = async (payload) => {
+    this.setState({ isLoading: true });
+    const { http: { post } } = this.state
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    const response = await post("/customers", {
+      ...payload,
+      username: user,
+      created_by: user,
+    },
+      token);
+    if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil menambah pelanggan.')
+      this.getCustomer();
+    } else {
+      this.props.enqueueSnackbar('Gagal menambah pelanggan.')
+    }
+    this.setState({ isLoading: false, payload: {} });
+  };
+
+  addOrders = async (payload) => {
+    this.setState({ isLoading: true });
+    const { history } = this.props;
+    const { http: { post } } = this.state;
+    const user = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
+    const response = await post("/orders", {
+      ...payload,
+      created_by: user
+    },
+      token);
+    if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil menambah pemesanan.');
+      history.push({ pathname: '/orders/payment/proof' });
+    } else {
+      this.props.enqueueSnackbar('Gagal menambah pemesanan.');
+    }
+    this.setState({ isLoading: false, payload: {} });
+  };
 
   componentWillMount() {
-    this.signal = true;
-
-    const { limit } = this.state;
-
-    this.getUsers(limit);
-    this.getProducts(limit);
+    this.getCustomer();
+    this.getEmployee();
   }
 
   handleSelectOne = (id, name) => {
@@ -224,10 +233,6 @@ class Account extends Component {
     }
     this.setState({ [name]: newSelectedProducts });
   };
-
-  componentWillUnmount() {
-    this.signal = false;
-  }
 
   handleChange = (e, name) => {
     this.setState({
@@ -254,82 +259,118 @@ class Account extends Component {
     this.setState({ tab });
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log({ nextProps })
+    if (this.props?.isLoadingProduct !== nextProps?.isLoadingProduct) {
+      console.log({ nextProps2: nextProps })
+      this.setState({ isLoadingProduct: nextProps?.isLoadingProduct, products: nextProps?.products });
+    }
+  }
+
   handleSubmit = () => {
-    const { history } = this.props;
-    history.push({ pathname: '/orders/payment/proof' });
+    const {
+      customer_id,
+      selectedEmployee,
+      selectedTimes,
+      is_down_payment,
+      customer_account_name,
+      customer_account_number,
+      selectedProducts,
+      products,
+      date,
+    } = this.state
+
+    var today = new Date(date);
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const totalPayment = products.filter((product) =>
+      selectedProducts
+        .indexOf(product.service_id) !== -1)
+      .map(e => e.price.replace(".", "") - 0)
+      .reduce((a, b) => a + b, 0)
+
+    const payload = {
+      customer_id: customer_id,
+      employee_id: selectedEmployee,
+      booking_date: `${yyyy}-${mm}-${dd}`,
+      booking_time: ((selectedTimes < 10) ? "0" + selectedTimes : selectedTimes) + ":00:00",
+      is_down_payment: is_down_payment,
+      celine_bank_name: "",
+      celine_account_name: "",
+      celine_account_number: "",
+      customer_account_name: customer_account_name,
+      customer_account_number: customer_account_number,
+      customer_payment_nominal: String(totalPayment),
+      // total_payment: totalPayment,
+      transfer_evidence: "",
+      detail_order: selectedProducts.map((e) => {
+        const data = products.find(r => r.service_id === e);
+        return {
+          service_id: data.service_id,
+          service_name: data.service_name,
+          price: data.price
+        }
+      }),
+    }
+    this.addOrders(payload);
   }
 
   render() {
     const { classes, className, history, ...rest } = this.props;
     const {
       date,
-      users,
-      selectedUsers,
       products,
+      isLoadingProduct,
+      employees,
+      customers,
       selectedProducts,
+      selectedEmployee,
       selectedTimes,
-      password,
-      passwordConfirm,
-      name,
+
+      customer_id,
+      // employee_id,
+      // booking_date,
+      // booking_time,
+
+      username,
+      fullname,
+      phone_number,
       email,
+      address,
+      gender,
+
+      customer_account_name,
+      customer_account_number,
       checkedB,
       tab,
-      bank,
-      buyer,
-      buyerList,
-      bankList,
-      amount,
-      amountList,
-      countdown,
+      is_down_payment,
+      is_down_paymentList,
     } = this.state;
+
     var today = new Date(date);
     var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ]
 
     const isNextTab = tab < 4
     const isBackTab = tab > 1
     const isSubmitTab = tab === 4
 
-    const transfer = (products.filter((product) =>
+    const totalPayment = products.filter((product) =>
       selectedProducts
-        .indexOf(product.id) !== -1)
+        .indexOf(product.service_id) !== -1)
       .map(e => e.price.replace(".", "") - 0)
       .reduce((a, b) => a + b, 0)
-      * 0.1 + 300)
-      .toLocaleString('id', { style: 'currency', currency: 'IDR' })
-
-    console.log(
-      {
-        date,
-        users,
-        selectedUsers,
-        products,
-        selectedProducts,
-        selectedTimes,
-        password,
-        passwordConfirm,
-        name,
-        email,
-        checkedB,
-        tab,
-        bank,
-        bankList,
-      }
-    )
-
-    var mm = today.getMonth() + 1;
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ]
-    var yyyy = today.getFullYear();
-    if (dd < 10) {
-      dd = '0' + dd;
-    }
-
-    if (mm < 10) {
-      mm = '0' + mm;
-    }
-    console.log(selectedTimes, selectedUsers)
-
+      .toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]
     const dataDate = dd + " " + monthNames[today.getMonth()] + " " + yyyy;
     let dataTime = selectedTimes;
     if (selectedTimes - 0 < 10) {
@@ -339,167 +380,8 @@ class Account extends Component {
     const rootClassName = classNames(classes.root, className);
 
     const mainTab = [
+      null,
       (<>
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Bank Tujuan
-          </Typography>
-        </div>
-
-        <div className={classes.field}>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
-            <Select
-              labelId="demo-controlled-open-select-label"
-              id="demo-controlled-open-select"
-              value={bank}
-              onChange={e => this.handleChange(e, "bank")}
-              inputProps={{
-                name: 'bank',
-                id: 'bank-simple',
-              }}
-              native
-            >
-              <option aria-label="None" value="" />
-              <option value={0}>Celine</option>
-              <option value={1}>Ibu Celine</option>
-              <option value={2}>Kaka Nurul</option>
-            </Select>
-          </FormControl>
-        </div>
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={12}
-            >
-              <BookingCard noWrap={true} title={bankList[bank ? bank : 0].name} status={"Kirim jumlah uang ke nomor Rek " + bankList[bank ? bank : 0].rek + " atas nama Celine"} />
-            </Grid>
-          </Grid>
-        </div>
-
-        <div className={classes.field}>
-          <Typography
-            className={classes.title}
-            variant="h4"
-          >
-            Informasi Rekening Pengirim
-          </Typography>
-        </div>
-
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={2}
-          >
-            <Grid
-              item
-              md={4}
-              xs={12}
-            >
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
-                <Select
-                  labelId="demo-controlled-open-select-label"
-                  id="demo-controlled-open-select"
-                  value={buyer}
-                  onChange={e => this.handleChange(e, "buyer")}
-                  inputProps={{
-                    name: 'buyer',
-                    id: 'bank-simple',
-                  }}
-                  native
-                >
-                  <option aria-label="None" value="" />
-                  <option value={0}>Celine</option>
-                  <option value={1}>Ibu Celine</option>
-                  <option value={2}>Kaka Nurul</option>
-                </Select>
-
-              </FormControl>
-            </Grid>
-
-            <Grid
-              item
-              md={4}
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                onChange={e => this.handleChange(e, "name")}
-                label="Nama"
-                margin="dense"
-                required
-                value={name}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={8}
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                onChange={e => this.handleChange(e, "email")}
-                label="Email"
-                margin="dense"
-                required
-                value={email}
-                variant="outlined"
-                type="email"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                label="Kata Sandi"
-                name="password"
-                margin="dense"
-                required
-                onChange={event =>
-                  this.handleChange(event.target.value, 'password')
-                }
-                type="password"
-                value={password}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                className={classes.textField}
-                label="Konfirmasi Kata Sandi"
-                name="passwordConfirm"
-                margin="dense"
-                required
-                onChange={event =>
-                  this.handleChange(event.target.value, 'passwordConfirm')
-                }
-                type="password"
-                value={passwordConfirm}
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
-        </div>
-
-      </>),
-      (<>
-
         <div className={classes.field}>
           <Typography
             className={classes.title}
@@ -508,32 +390,38 @@ class Account extends Component {
             Pilih Jenis Layanan
           </Typography>
         </div>
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={2}
-          >
-            {products.map((product, index) => (
-              <Grid
-                item
-                key={product.id}
-                lg={4}
-                md={6}
-                xs={12}
-                onClick={() => this.handleSelectOne(product.id, "selectedProducts")}
-              >
-                <ProductCard
-                  image={product.imageUrl}
-                  title={product.title}
-                  description={""}
-                  secondary={"Harga Rp " + product.price}
-                  checked={selectedProducts.indexOf(product.id) !== -1}
-                />
-              </Grid>
-            ))
-            }
-          </Grid>
-        </div>
+        {!isLoadingProduct ? (
+          <div className={classes.field}>
+            <Grid
+              container
+              spacing={2}
+            >
+              {products.map((product, index) => (
+                <Grid
+                  item
+                  key={product.service_id}
+                  lg={4}
+                  md={6}
+                  xs={12}
+                  onClick={() => this.handleSelectOne(product.service_id, "selectedProducts")}
+                >
+                  <ProductCard
+                    image={product.thumbnail}
+                    title={product.service_name}
+                    description={product.description}
+                    secondary={"Harga " + new Number(product.price).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+                    checked={selectedProducts.indexOf(product.service_id) !== -1}
+                  />
+                </Grid>
+              ))
+              }
+            </Grid>
+          </div>
+        ) : (
+          <div className={classes.progressWrapper}>
+            <CircularProgress />
+          </div>
+        )}
       </>),
       (<>
         <div className={classes.field}>
@@ -553,18 +441,17 @@ class Account extends Component {
                 <Select
                   labelId="demo-controlled-open1-select-label"
                   id="demo-controlled-open1-select"
-                  value={buyer}
-                  onChange={e => this.handleChange(e, "buyer")}
+                  value={customer_id}
+                  onChange={e => this.handleChange(e, "customer_id")}
                   inputProps={{
-                    name: 'buyer',
+                    name: 'customer_id',
                     id: 'bank-simple',
                   }}
                   native
                 >
-                  <option aria-label="None" value="" />
-                  <option value={0}>Celine</option>
-                  <option value={1}>Ibu Celine</option>
-                  <option value={2}>Kaka Nurul</option>
+                  {customers.map((e) =>
+                    <option value={e.customer_id}>{e.fullname}</option>
+                  )}
                 </Select>
 
               </FormControl>
@@ -589,82 +476,81 @@ class Account extends Component {
         </div>
 
         {checkedB && (
-          <div className={classes.field}>
-            <Grid
-              container
-              spacing={2}
-            >
-              <Grid
-                item
-                md={4}
-                xs={12}
+          <form
+            autoComplete="off"
+            noValidate
+          >
+            <div className={classes.field}>
+              <TextField
+                className={classes.textField}
+                label="Nama Panjang"
+                margin="dense"
+                required
+                onChange={e => (this.handleChange(e, "username"), this.handleChange(e, "fullname"))}
+                value={fullname}
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
+                label="Nomor Hp"
+                margin="dense"
+                type="number"
+                onChange={e => this.handleChange(e, "phone_number")}
+                value={phone_number}
+                variant="outlined"
+              />
+            </div>
+            <div className={classes.field}>
+              <TextField
+                className={classes.textField}
+                onChange={e => this.handleChange(e, "email")}
+                label="Email"
+                margin="dense"
+                required
+                value={email}
+                type="email"
+                variant="outlined"
+              />
+              <TextField
+                className={classes.textField}
+                onChange={e => this.handleChange(e, "address")}
+                label="Alamat"
+                value={address}
+                margin="dense"
+                type="text"
+                required
+                variant="outlined"
+              />
+            </div>
+            <div className={classes.field}>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-controlled-open-select-label">Jenis kelamin</InputLabel>
+                <Select
+                  labelId="demo-controlled-open-select-label"
+                  id="demo-controlled-open-select"
+                  value={gender}
+                  onChange={e => this.handleChange(e, "gender")}
+                  inputProps={{
+                    name: 'gender',
+                    id: 'gender-simple',
+                  }}
+                  native
+                >
+                  <option value={"M"}>Laki-laki</option>
+                  <option value={"F"}>Perempuan</option>
+                </Select>
+              </FormControl>
+            </div>
+            <div className={classes.field}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => this.addCustomers({ fullname, phone_number, address, username, gender, email })}
               >
-                <TextField
-                  className={classes.textField}
-                  onChange={e => this.handleChange(e, "name")}
-                  label="Nama"
-                  margin="dense"
-                  required
-                  value={name}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid
-                item
-                md={8}
-                xs={12}
-              >
-                <TextField
-                  className={classes.textField}
-                  onChange={e => this.handleChange(e, "email")}
-                  label="Email"
-                  margin="dense"
-                  required
-                  value={email}
-                  variant="outlined"
-                  type="email"
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  className={classes.textField}
-                  label="Alamat"
-                  name="password"
-                  margin="dense"
-                  required
-                  onChange={event =>
-                    this.handleChange(event.target.value, 'password')
-                  }
-                  type="password"
-                  value={password}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  className={classes.textField}
-                  label="Nomor HP"
-                  name="passwordConfirm"
-                  margin="dense"
-                  required
-                  onChange={event =>
-                    this.handleChange(event.target.value, 'passwordConfirm')
-                  }
-                  type="password"
-                  value={passwordConfirm}
-                  variant="outlined"
-                />
-              </Grid>
-            </Grid>
-          </div>
+                Simpan
+              </Button>
+            </div>
+          </form>
         )}
         <div className={classes.field}>
           <Typography
@@ -740,22 +626,22 @@ class Account extends Component {
             container
             spacing={3}
           >
-            {users.map((user, index) => (
+            {employees.map((employee, index) => (
               <Grid
                 item
-                key={user.id}
+                key={employee.employee_id}
                 lg={3}
                 md={6}
                 sm={6}
                 xs={12}
-                onClick={() => this.handleChange(user.id, "selectedUsers")}
+                onClick={() => this.handleChange(employee.employee_id, "selectedEmployee")}
               >
                 <ProductCard
-                  image={user.avatarUrl}
-                  title={user.name}
+                  image={employee.profile_image}
+                  title={employee.fullname}
                   description={""}
                   secondary={""}
-                  checked={selectedUsers === user.id}
+                  checked={selectedEmployee === employee.employee_id}
                 />
               </Grid>
             ))
@@ -786,11 +672,11 @@ class Account extends Component {
             >
               <TextField
                 className={classes.textField}
-                onChange={e => this.handleChange(e, "name")}
+                onChange={e => this.handleChange(e, "customer_account_name")}
                 label="Nama"
                 margin="dense"
                 required
-                value={name}
+                value={customer_account_name}
                 variant="outlined"
               />
             </Grid>
@@ -801,11 +687,11 @@ class Account extends Component {
             >
               <TextField
                 className={classes.textField}
-                onChange={e => this.handleChangeNumber(e, "email")}
+                onChange={e => this.handleChangeNumber(e, "customer_account_number")}
                 label="Nomor Rek"
                 margin="dense"
                 required
-                value={email}
+                value={customer_account_number}
                 variant="outlined"
                 type="text"
               />
@@ -828,29 +714,29 @@ class Account extends Component {
             <Select
               labelId="demo-controlled-open-select-label"
               id="demo-controlled-open-select"
-              value={amount}
-              onChange={e => this.handleChange(e, "amount")}
+              value={is_down_payment}
+              onChange={e => this.handleChange(e, "is_down_payment")}
               inputProps={{
-                name: 'amount',
-                id: 'amount-simple',
+                name: 'is_down_payment',
+                id: 'is_down_payment-simple',
               }}
               native
             >
               <option aria-label="None" value="" />
               {
-                amountList.map(e =>
+                is_down_paymentList.map(e =>
                   <option value={e.value}>{e.name}</option>
                 )
               }
             </Select>
           </FormControl>
         </div>
-        <div className={classes.field}>
+        {/* <div className={classes.field}>
           <Typography
             className={classes.title}
             variant="h5"
           >
-            Total Nominal Pembayaran {amount == 1 ? "Down Payment" : "Keseluruhan"}
+            Total Nominal Pembayaran {is_down_payment == true ? "Down Payment" : "Keseluruhan"}
           </Typography>
           <div className={classes.field}>
             <Typography
@@ -858,9 +744,9 @@ class Account extends Component {
               variant="h4"
               style={{ textAlign: "center" }}
             >
-              {amount == 1 ? transfer.split(",")[0] : (products.filter((product) =>
+              {is_down_payment == true ? transfer.split(",")[0] : (products.filter((product) =>
                 selectedProducts
-                  .indexOf(product.id) !== -1)
+                  .indexOf(product.service_id) !== -1)
                 .map(e => e.price.replace(".", "") - 0)
                 .reduce((a, b) => a + b, 0) + 300)
                 .toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
@@ -873,7 +759,7 @@ class Account extends Component {
           >
             Pastikan nominal sesuai hingga 3 digit terakhir
           </Typography>
-        </div>
+        </div> */}
       </>),
     ];
 
@@ -924,7 +810,7 @@ class Account extends Component {
                     <Button
                       color="primary"
                       variant="contained"
-                      disabled={(!selectedTimes || !selectedUsers || !selectedProducts.length)}
+                      disabled={(!selectedTimes || !selectedEmployee || !selectedProducts.length)}
                       onClick={() => this.handleSubmit()}
                     >
                       Lanjut
@@ -981,23 +867,23 @@ class Account extends Component {
                 ) : (
                   <div className={classes.demo}>
                     <List dense={true}>
-                      {products.map((product) => selectedProducts.indexOf(product.id) !== -1 && (
-                        <ListItem key={product.id}>
+                      {products.map((product) => selectedProducts.indexOf(product.service_id) !== -1 && (
+                        <ListItem key={product.service_id}>
                           <ListItemAvatar>
                             <Avatar
                               className={classes.avatar}
-                              src={product.imageUrl}
+                              src={product.thumbnail}
                             />
                           </ListItemAvatar>
                           <ListItemText
-                            primary={product.title}
-                            secondary={"Rp. " + product.price}
+                            primary={product.service_name}
+                            secondary={new Number(product.price).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
                           />
                           <ListItemSecondaryAction>
                             <IconButton
                               edge="end"
                               aria-label="delete"
-                              onClick={() => this.handleSelectOne(product.id, "selectedProducts")}
+                              onClick={() => this.handleSelectOne(product.service_id, "selectedProducts")}
                             >
                               <DeleteIcon />
                             </IconButton>
@@ -1012,16 +898,16 @@ class Account extends Component {
                 <Typography variant="h6" className={classes.title}>
                   Pegawai
                 </Typography>
-                {selectedUsers ? (
+                {selectedEmployee ? (
                   <Typography variant="body1" className={classes.title}>
-                    Ava Gregoraci
+                    {employees.find(e => e.employee_id === selectedEmployee).fullname}
                   </Typography>
                 ) : (
                   <Typography variant="body1">Tidak ada pegawai yang dipilih</Typography>
                 )}
 
               </div>
-              <div className={classes.field}>
+              {/* <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
                   Tanggal pemesanan
                 </Typography>
@@ -1031,7 +917,7 @@ class Account extends Component {
                     dataDate ? new Date(dataDate) : null,
                   ]}
                 />
-              </div>
+              </div> */}
               <div className={classes.field}>
                 <Typography variant="h6" className={classes.title}>
                   Jam pemesanan
@@ -1051,12 +937,7 @@ class Account extends Component {
                   Total
                 </Typography>
 
-                <Typography variant="body1">{products.filter((product) =>
-                  selectedProducts
-                    .indexOf(product.id) !== -1)
-                  .map(e => e.price.replace(".", "") - 0)
-                  .reduce((a, b) => a + b, 0)
-                  .toLocaleString('id', { style: 'currency', currency: 'IDR' })}</Typography>
+                <Typography variant="body1">{totalPayment}</Typography>
               </div>
 
             </PortletContent>
@@ -1067,10 +948,8 @@ class Account extends Component {
   }
 }
 
-Account.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired
-};
-
 export default compose(
-  withRouter, withStyles(styles))(Account);
+  withRouter,
+  withSnackbar,
+  withStyles(styles)
+)(Account);

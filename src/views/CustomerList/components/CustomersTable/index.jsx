@@ -138,16 +138,4 @@ class CustomersTable extends Component {
   }
 }
 
-CustomersTable.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired,
-  onSelect: PropTypes.func,
-  customers: PropTypes.array.isRequired
-};
-
-CustomersTable.defaultProps = {
-  customers: [],
-  onSelect: () => { },
-};
-
 export default withStyles(styles)(CustomersTable);

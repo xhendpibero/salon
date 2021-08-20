@@ -13,5 +13,12 @@ export default theme => ({
     paddingRight: theme.spacing.unit * 3,
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2
+  },
+  statusWrapper: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  status: {
+    marginRight: theme.spacing.unit
   }
 });

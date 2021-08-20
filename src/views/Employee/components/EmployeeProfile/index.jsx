@@ -46,7 +46,7 @@ class EmployeePicture extends Component {
         <PortletContent>
           <div className={classes.details}>
             <div className={classes.info}>
-              <Typography variant="h4">Foto Jenis Layanan</Typography>
+              <Typography variant="h4">Foto Pegawai</Typography>
             </div>
           </div>
           <Avatar

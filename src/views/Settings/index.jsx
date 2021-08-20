@@ -54,8 +54,4 @@ class Settings extends Component {
   }
 }
 
-Settings.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
 export default withStyles(styles)(Settings);

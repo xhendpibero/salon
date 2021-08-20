@@ -43,6 +43,7 @@ class Dashboard extends Component {
     const { classes, width, title, children, history } = this.props;
     const { isOpen } = this.state;
     if (!localStorage.getItem("isAuthenticated")) {
+      this.props.enqueueSnackbar('Token expired.')
       history.push('/sign-in');
     }
 

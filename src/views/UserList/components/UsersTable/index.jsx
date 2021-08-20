@@ -76,7 +76,7 @@ class UsersTable extends Component {
 
     this.setState({ selectedUsers: newSelectedUsers });
 
-    onSelect(newSelectedUsers);
+    onSelect(newSelectedUsers, "selectedUsers");
   };
 
   handleChangePage = (event, page) => {

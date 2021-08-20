@@ -15,7 +15,7 @@ export const useHttpClient = () => {
 
   const post = async (uri, body, tokenStr = "") => {
     const payload = { uri, body, tokenStr }
-    return await axios.post(baseUrl + uri, body, { headers: false ? { "Authorization": `Bearer ${tokenStr}` } : {} })
+    return await axios.post(baseUrl + uri, body, { headers: tokenStr ? { "Authorization": `Bearer ${tokenStr}` } : {} })
       .then(function (response) {
         console.log({ payload, response });
         return handleResponses(response);
@@ -28,7 +28,7 @@ export const useHttpClient = () => {
 
   const get = async (uri, body, tokenStr = "") => {
     const payload = { uri, body, tokenStr }
-    return await axios.get(baseUrl + uri, { headers: false ? { "Authorization": `Bearer ${tokenStr}` } : {} })
+    return await axios.get(baseUrl + uri, { headers: tokenStr ? { "Authorization": `Bearer ${tokenStr}` } : {} })
       .then(function (response) {
         console.log({ payload, response });
         return handleResponses(response);
@@ -41,7 +41,7 @@ export const useHttpClient = () => {
 
   const put = async (uri, body, tokenStr = "") => {
     const payload = { uri, body, tokenStr }
-    return await axios.put(baseUrl + uri, body, { headers: false ? { "Authorization": `Bearer ${tokenStr}` } : {} })
+    return await axios.put(baseUrl + uri, body, { headers: tokenStr ? { "Authorization": `Bearer ${tokenStr}` } : {} })
       .then(function (response) {
         console.log({ payload, response });
         return handleResponses(response);

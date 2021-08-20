@@ -18,7 +18,7 @@ import styles from './styles';
 class ProductCard extends Component {
   render() {
     const { classes, className, description, image, title, secondary, checked } = this.props;
-
+    console.log({ image })
     const rootClassName = classNames(classes.root, className);
 
     return (
@@ -36,7 +36,7 @@ class ProductCard extends Component {
               <img
                 alt="Services"
                 className={classes.image}
-                src={image}
+                src={image || "/images/products/noimage.png"}
               />
             )
           }

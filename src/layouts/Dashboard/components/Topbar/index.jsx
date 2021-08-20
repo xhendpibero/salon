@@ -74,12 +74,12 @@ class Topbar extends Component {
     this.signal = false;
   }
 
-  handleSignOut = () => {
+  handleCreateOrder = () => {
     const { history } = this.props;
 
-    localStorage.setItem('isAuthenticated', false);
-    localStorage.setItem('role', null);
-    history.push('/sign-in');
+    // localStorage.setItem('isAuthenticated', false);
+    // localStorage.setItem('role', null);
+    history.push('/orders/add');
   };
 
   handleShowNotifications = event => {
@@ -139,7 +139,7 @@ class Topbar extends Component {
             </IconButton> */}
             {/* <IconButton
               className={classes.signOutButton}
-              onClick={this.handleSignOut}
+              onClick={this.handleCreateOrder}
             >
               <InputIcon />
             </IconButton> */}
@@ -154,7 +154,7 @@ class Topbar extends Component {
                   color="primary"
                   size="small"
                   variant="outlined"
-                  onClick={this.handleSignOut}
+                  onClick={this.handleCreateOrder}
                 >
                   Buat Pemesanan
                 </Button>

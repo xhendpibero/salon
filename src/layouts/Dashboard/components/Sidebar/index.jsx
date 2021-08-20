@@ -79,13 +79,13 @@ class Sidebar extends Component {
             className={classes.nameText}
             variant="h6"
           >
-            {role ? "Developer" : "Celine"}
+            {localStorage.getItem("email")}
           </Typography>
           <Typography
             className={classes.bioText}
             variant="caption"
           >
-            {role ? "Admin" : "User"}
+            {localStorage.getItem("role")}
           </Typography>
           <Link
             style={{ marginTop: 5 }}
@@ -240,7 +240,7 @@ class Sidebar extends Component {
               primary="Akun"
             />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             activeClassName={classes.activeListItem}
             className={classes.listItem}
             component={NavLink}
@@ -253,7 +253,7 @@ class Sidebar extends Component {
               classes={{ primary: classes.listItemText }}
               primary="Pengaturan"
             />
-          </ListItem>
+          </ListItem> */}
           {/* <ListItem
             className={classes.listItem}
             component="a"

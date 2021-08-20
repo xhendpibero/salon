@@ -1,34 +1,28 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withSnackbar } from 'notistack';
 
 // Externals
 import compose from 'recompose/compose';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material components
 import {
-  IconButton,
   CircularProgress,
   Typography,
   withStyles,
 } from '@material-ui/core';
 
-// Material icons
-import {
-  ChevronRight as ChevronRightIcon,
-  ChevronLeft as ChevronLeftIcon
-} from '@material-ui/icons';
-
 // Shared layouts
 import { Dashboard as DashboardLayout } from 'layouts';
 
-// Shared services
-import { getOrders } from 'services/order';
-
-// Custom components
-// import { OrdersTable } from './components';
-
 // components
 import { Toolbar, OrdersTable } from '../../components';
+
+// Custom components
+import {
+  Popup,
+} from 'components';
 
 // Component styles
 import styles from './styles';
@@ -38,24 +32,32 @@ class OrdersList extends Component {
 
   state = {
     isLoading: false,
-    limit: 6,
+    page: 0,
+    row: 10,
     orders: [],
+    ordersTemp: [],
     ordersTotal: 0,
     selected: [],
-    error: null
+    error: null,
+    openModal: "", // cancel, complete, confirm
+    http: { ...useHttpClient() }
   };
 
-  async getOrders(limit) {
+  get = async () => {
     try {
       this.setState({ isLoading: true });
+      const { get } = useHttpClient();
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+      const username = localStorage.getItem("username");
 
-      const { orders, ordersTotal } = await getOrders(limit);
+      const orders = role === "admin" ? await get("/orders", token) : await get("/customers/" + username + "/orders", token);
 
       if (this.signal) {
         this.setState({
           isLoading: false,
-          orders,
-          ordersTotal
+          orders: orders?.data,
+          ordersTemp: orders?.data,
         });
       }
     } catch (error) {
@@ -66,22 +68,57 @@ class OrdersList extends Component {
         });
       }
     }
-  }
+  };
 
-  componentDidMount() {
+  updateStatus = async () => {
+    const { http: { post }, payload, openModal } = this.state
+    this.setState({ isLoading: true, openModal: "" });
+    const token = localStorage.getItem("token");
+    const response = await post("/orders/" + openModal, {
+      ...payload,
+    },
+      token);
+    if (response?.status === 200) {
+      this.props.enqueueSnackbar('Berhasil ubah status.')
+      this.get();
+    } else {
+      this.props.enqueueSnackbar('Gagal ubah status.')
+    }
+    this.setState({ isLoading: false, payload: {} });
+  };
+
+  componentWillMount() {
     this.signal = true;
-
-    const { limit } = this.state;
-
-    this.getOrders(limit);
+    this.get();
   }
 
   componentWillUnmount() {
     this.signal = false;
   }
 
-  handleSelect = selected => {
-    this.setState({ selected });
+  handleSelect = (data, index) => {
+    this.setState({ [index]: data });
+    if (index === "row") {
+      this.setState({ orders: this.state.ordersTemp.slice(this.state.page * data, (this.state.page + 1) * data) });
+    } else if (index === "page") {
+      this.setState({ orders: this.state.ordersTemp.slice(this.state.row * data, this.state.row * (data + 1)) });
+    }
+  };
+
+  onChange = e => {
+    const orders = this.state.ordersTemp.filter((x) => {
+      return String(x?.customer_account_name).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0 ||
+        String(x?.order_id).toLowerCase().indexOf(String(e.target.value)?.toLowerCase()) >= 0;
+    })
+    this.setState({ orders });
+  }
+
+  handleClose = () => {
+    this.setState({ openModal: "" });
+  };
+
+  handleSubmit = (e, payload) => {
+    this.setState({ openModal: e, payload });
   };
 
   renders() {
@@ -103,7 +140,41 @@ class OrdersList extends Component {
     }
 
     return (
-      <OrdersTable className={classes.item} isLoading={isLoading} orders={orders} ordersTotal={ordersTotal} />
+      <>
+        <OrdersTable
+          className={classes.item}
+          isLoading={isLoading}
+          orders={orders}
+          onSelect={this.handleSelect}
+          ordersTotal={ordersTotal}
+          handleSubmit={this.handleSubmit}
+        />
+        {[
+          {
+            open: this.state.openModal == "confirm",
+            title: 'Ingin melakukan konfirmasi?',
+            body: 'Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran',
+            handleSubmit: this.updateStatus,
+          },
+          {
+            open: this.state.openModal == "complete",
+            title: 'Ingin melakukan konfirmasi selesai?',
+            body: 'Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran',
+            handleSubmit: this.updateStatus,
+          },
+          {
+            open: this.state.openModal == "cancel",
+            title: 'Ingin melakukan pembatalan?',
+            body: 'Pastikan telah melakukan pengecekan pada Rincian Pemesanan dan Pengecekan Pembayaran',
+            handleSubmit: this.updateStatus,
+          },
+        ].map(e =>
+          <Popup
+            {...e}
+            handleClose={this.handleClose}
+          />
+        )}
+      </>
     );
   }
 
@@ -117,20 +188,11 @@ class OrdersList extends Component {
           <Toolbar
             placeholder="Cari pemesanan"
             buttonAdd={role ? "" : "Buat Pemesanan"}
-            selectedUsers={[]}
-            onChange={(e) => console.log(e.target.value)}
+            data={[]}
+            onChange={this.onChange}
             onClick={() => role ? history.push({ pathname: '/orders/report' }) : history.push({ pathname: '/orders/add' })}
           />
           <div className={classes.content}>{this.renders()}</div>
-          <div className={classes.pagination}>
-            <Typography variant="caption">1-6 dari 6</Typography>
-            <IconButton>
-              <ChevronLeftIcon />
-            </IconButton>
-            <IconButton>
-              <ChevronRightIcon />
-            </IconButton>
-          </div>
         </div>
       </DashboardLayout>
     );
@@ -138,5 +200,7 @@ class OrdersList extends Component {
 }
 
 export default compose(
-  withRouter, withStyles(styles)
+  withSnackbar,
+  withRouter,
+  withStyles(styles),
 )(OrdersList);

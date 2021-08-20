@@ -1,22 +1,16 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { convertArrayToCSV } from 'convert-array-to-csv';
+import { withSnackbar } from 'notistack';
 // Externals
 import compose from 'recompose/compose';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material components
 import {
-  IconButton,
   CircularProgress,
   Typography,
   withStyles,
 } from '@material-ui/core';
-
-// Material icons
-import {
-  ChevronRight as ChevronRightIcon,
-  ChevronLeft as ChevronLeftIcon
-} from '@material-ui/icons';
 
 // Shared layouts
 import { Dashboard as DashboardLayout } from 'layouts';
@@ -33,60 +27,55 @@ import { Toolbar, ReportTable } from '../../components';
 // Component styles
 import styles from './styles';
 
+const statusText = {
+  "completed": 'Selesai',
+  "confirmed": 'Pemesanan berhasil',
+  "on-progress": 'Sedang berjalan',
+  "unconfirmed": 'Perlu konfirmasi',
+  "canceled": 'Pemesanan batal'
+};
 class OrdersList extends Component {
-  signal = true;
-
   state = {
     isLoading: false,
-    limit: 60,
-    orders: [],
-    ordersTotal: 0,
-    selected: [],
-    error: null
+    orders: {},
+    filterValue: "weekly",
+    http: { ...useHttpClient() },
   };
 
-  async getOrders(limit) {
-    try {
-      this.setState({ isLoading: true });
-
-      const { orders, ordersTotal } = await getOrders(limit);
-
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          orders,
-          ordersTotal
-        });
-      }
-    } catch (error) {
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          error
-        });
-      }
+  get = async () => {
+    this.setState({ isLoading: true });
+    const { http: { get } } = this.state
+    const token = localStorage.getItem("token");
+    const response = await get("/report?type=" + this.state.filterValue,
+      token);
+    if (response?.status === 200) {
+      this.setState({
+        orders: response?.data,
+        isLoading: false
+      })
+    } else {
+      this.failLoad('Gagal mendapatkan rincian pesanan.')
     }
+  }
+
+  failLoad = (text) => {
+    this.props.enqueueSnackbar(text);
+    this.setState({ isLoading: false });
   }
 
   componentDidMount() {
     this.signal = true;
 
-    const { limit } = this.state;
-
-    this.getOrders(limit);
+    this.get();
   }
 
   componentWillUnmount() {
     this.signal = false;
   }
 
-  handleSelect = selected => {
-    this.setState({ selected });
-  };
-
   renders() {
     const { classes } = this.props;
-    const { isLoading, orders, ordersTotal } = this.state;
+    const { isLoading, orders } = this.state;
     console.log({ orders })
     if (isLoading) {
       return (
@@ -103,22 +92,22 @@ class OrdersList extends Component {
     }
 
     return (
-      <ReportTable className={classes.item} isLoading={isLoading} orders={orders} ordersTotal={ordersTotal} />
+      <ReportTable className={classes.item} isLoading={isLoading} orders={orders} />
     );
   }
 
   exportToCsv = (filename, rows) => {
     const orders = rows.map((r) => {
       return {
-        nama: r.customer.name,
-        email: r.customer.email,
-        karyawan: r.employee,
-        nominalDp: r.nominalDp,
-        nomorRekening: r.norek,
-        layanan: r.services.toString().replace(",", "; "),
-        harga: r.price,
-        metodePembayaran: "BRI",
-        status: r.status,
+        id: r.order_id,
+        nama: r.customer_account_name,
+        karyawan: r.employee_id,
+        nominalPembayaran: r.is_down_payment ? "DP" : "Penuh",
+        nomorRekening: r.customer_account_number,
+        layanan: r.schedule_id,
+        harga: r.total_payment,
+        metodePembayaran: r.celine_bank_name,
+        status: statusText[r.status],
       }
     });
     let csv = '';
@@ -127,8 +116,6 @@ class OrdersList extends Component {
 
     csv += header + '\n' + values;
     console.log({ csv })
-
-
 
     var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     if (navigator.msSaveBlob) { // IE 10+
@@ -148,18 +135,39 @@ class OrdersList extends Component {
     }
   }
 
+  handleChange = (e, name) => {
+    this.setState({
+      [name]: e && e.target && e.target.value ? e.target.value : e
+    });
+    this.get();
+  };
+
   render() {
     const { classes } = this.props;
     const { orders } = this.state;
-    const role = localStorage.getItem("role") === "admin";
 
     return (
       <DashboardLayout title="Laporan Pemesanan">
         <div className={classes.root}>
           <Toolbar
             buttonAdd={"Unduh Laporan"}
-            filter={["Hari ini", "Minggu ini", "Bulan ini"]}
             selectedUsers={[]}
+            filterValue={this.state.filterValue}
+            filters={[
+              {
+                value: "today",
+                text: "Hari ini"
+              },
+              {
+                value: "weekly",
+                text: "Minggu ini"
+              },
+              {
+                value: "monthly",
+                text: "Bulan ini"
+              },
+            ]}
+            onChangeFilter={this.handleChange}
             onClick={() => {
               this.exportToCsv("my_data.csv", orders)
             }}
@@ -172,5 +180,6 @@ class OrdersList extends Component {
 }
 
 export default compose(
+  withSnackbar,
   withRouter, withStyles(styles))
   (OrdersList);

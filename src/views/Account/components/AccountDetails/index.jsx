@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 
 // Externals
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
 // Material components
-import { Button, TextField } from '@material-ui/core';
+import {
+  Button, TextField,
+  CircularProgress,
+} from '@material-ui/core';
 
 // Shared components
 import {
@@ -22,27 +24,12 @@ import {
 // Component styles
 import styles from './styles';
 
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
 
 class Employee extends Component {
   state = {
-    fullName: 'Developer',
-    email: 'admin@gmail.com',
-    phone: '089602582832',
-    alamat: 'Jl. Haji Ocen, Bekasi',
+    username: localStorage.getItem("username"),
+    email: localStorage.getItem("email"),
+    password: '',
   };
 
   handleChange = (e, name) => {
@@ -51,10 +38,16 @@ class Employee extends Component {
     });
   };
 
-  render() {
-    const { classes, className, ...rest } = this.props;
-    const { fullName, phone, address, email } = this.state;
+  componentWillReceiveProps(nextProps) {
+    if (this.props?.data?.username !== nextProps?.data?.username) {
+      this.setState({ ...nextProps?.data, email: this.props?.data?.email });
+    }
+  }
 
+  render() {
+    const { classes, className, isLoading, onSubmit, ...rest } = this.props;
+    const { username, password, email } = this.state;
+    console.log({ username, password, email })
     const rootClassName = classNames(classes.root, className);
 
     return (
@@ -76,20 +69,10 @@ class Employee extends Component {
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                onChange={e => this.handleChange(e, "fullName")}
+                onChange={e => this.handleChange(e, "email")}
                 label="Nama Lengkap"
                 margin="dense"
                 required
-                value={fullName}
-                variant="outlined"
-              />
-            </div>
-            <div className={classes.field}>
-              <TextField
-                className={classes.textField}
-                label="Email"
-                margin="dense"
-                disabled
                 value={email}
                 variant="outlined"
               />
@@ -97,42 +80,42 @@ class Employee extends Component {
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                onChange={e => this.handleChange(e, "phone")}
-                label="Nomor HP"
+                onChange={e => this.handleChange(e, "username")}
+                label="Email"
                 margin="dense"
-                type="number"
-                value={phone}
+                value={username}
                 variant="outlined"
               />
             </div>
             <div className={classes.field}>
               <TextField
                 className={classes.textField}
-                onChange={e => this.handleChange(e, "address")}
-                label="Alamat"
+                onChange={e => this.handleChange(e, "password")}
+                label="Kata Sandi"
                 margin="dense"
-                value={address}
+                value={password}
+                type="password"
                 variant="outlined"
               />
             </div>
           </form>
         </PortletContent>
         <PortletFooter className={classes.portletFooter}>
-          <Button
-            color="primary"
-            variant="contained"
-          >
-            Simpan
-          </Button>
+          {isLoading ? (
+            <CircularProgress className={classes.progress} />
+          ) : (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => onSubmit({ username, email, password })}
+            >
+              Simpan
+            </Button>
+          )}
         </PortletFooter>
       </Portlet>
     );
   }
 }
-
-Employee.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(Employee);

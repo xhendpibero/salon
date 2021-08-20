@@ -21,7 +21,7 @@ import styles from './styles';
 
 class Progress extends Component {
   render() {
-    const { classes, className, ...rest } = this.props;
+    const { classes, className, value, ...rest } = this.props;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -42,7 +42,7 @@ class Progress extends Component {
               className={classes.value}
               variant="h3"
             >
-              10
+              {value}
             </Typography>
           </div>
           <div className={classes.iconWrapper}>

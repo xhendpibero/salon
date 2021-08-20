@@ -9,7 +9,6 @@ import { withStyles } from '@material-ui/core';
 // Material components
 import {
   Button, TextField,
-  CircularProgress,
   FormControl,
   InputLabel,
   Select,
@@ -34,7 +33,7 @@ class Customer extends Component {
     phone_number: '',
     email: '',
     address: '',
-    gender: "",
+    gender: '',
   };
 
   handleChange = (e, name) => {
@@ -45,7 +44,7 @@ class Customer extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props?.data?.username !== nextProps?.data?.username) {
-      this.setState({ ...nextProps?.data });
+      this.setState({ ...nextProps?.data, gender: nextProps?.data?.gender || "M" });
     }
   }
 

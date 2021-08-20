@@ -1,40 +1,29 @@
 import React, { Component } from 'react';
+import { withSnackbar } from 'notistack';
 
 // Externals
-import PropTypes from 'prop-types';
+import compose from 'recompose/compose';
+import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
 
 // Material components
 import { Grid } from '@material-ui/core';
-import { useHttpClient } from '../../services/hooks/http-hook';
 
 // Shared layouts
 import { Dashboard as DashboardLayout } from 'layouts';
 
 // Shared components
 import {
-  Portlet,
-  PortletHeader,
-  PortletLabel,
-  PortletContent,
-  PortletFooter,
   ProductCard,
-  BookingCard,
 } from 'components';
-
-import { getProducts } from 'services/product';
 
 // Custom components
 import {
   Budget,
   Users,
   Progress,
-  Profit,
-  SalesChart,
-  DevicesChart,
-  ProductList,
   OrdersTable
 } from './components';
 
@@ -49,47 +38,71 @@ const styles = theme => ({
 });
 
 class Dashboard extends Component {
-  signal = true;
-
   state = {
-    limit: 100,
-    isLoading: false,
     products: [],
-    productsTotal: 0,
-    selectedUsers: "",
-    selectedTimes: 0,
+    orders: [],
+    employee: 0,
+    customer: 0,
+    isLoading: false,
+    http: { ...useHttpClient() }
   }
+
+  getEmployee = async () => {
+    const { http: { get } } = this.state
+    this.setState({ isLoading: true });
+    const token = localStorage.getItem("token");
+    const response = await get("/employees",
+      token);
+    if (response?.status === 200) {
+      this.setState({ employee: response?.data?.length });
+    }
+  }
+
+  getCustomer = async () => {
+    const { http: { get } } = this.state
+    this.setState({ isLoading: true });
+    const token = localStorage.getItem("token");
+    const response = await get("/employees",
+      token);
+    if (response?.status === 200) {
+      this.setState({ customer: response?.data?.length });
+    }
+  }
+
+  getProduct = async () => {
+    this.setState({ isLoading: true });
+    const { get } = useHttpClient();
+    const token = localStorage.getItem("token");
+    const products = await get("/services", token)
+    if (products?.status === 200) {
+      this.setState({
+        isLoading: false,
+        products: products?.data,
+      });
+    }
+  };
+
+  getOrder = async () => {
+    this.setState({ isLoading: true });
+    const { get } = useHttpClient();
+    const token = localStorage.getItem("token");
+    const orders = await get("/orders", token)
+    if (orders?.status === 200) {
+      this.setState({
+        isLoading: false,
+        orders: orders?.data,
+      });
+    }
+  };
 
   componentWillMount() {
-    this.signal = true;
-
-    const { limit } = this.state;
-
-    this.getProducts(limit);
-  }
-
-
-  async getProducts(limit) {
-    try {
-      this.setState({ isLoading: true });
-
-      const { products, productsTotal } = await getProducts(limit);
-
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          products,
-          productsTotal,
-          limit
-        });
-      }
-    } catch (error) {
-      if (this.signal) {
-        this.setState({
-          isLoading: false,
-          error
-        });
-      }
+    const role = localStorage.getItem("role") === "admin";
+    if (role) {
+      this.getCustomer();
+      this.getEmployee();
+      this.getOrder();
+    } else {
+      this.getProduct();
     }
   }
 
@@ -98,7 +111,10 @@ class Dashboard extends Component {
     const role = localStorage.getItem("role") === "admin";
     const {
       products,
-      selectedProducts,
+      orders,
+      employee,
+      customer,
+      isLoading,
     } = this.state;
 
     return (
@@ -121,14 +137,14 @@ class Dashboard extends Component {
                 lg={4}
                 xs={12}
               >
-                <Users className={classes.item} title={"TOTAL PELANGGAN"} value={20} />
+                <Users className={classes.item} title={"TOTAL PELANGGAN"} value={customer} />
               </Grid>
               <Grid
                 item
                 lg={4}
                 xs={12}
               >
-                <Progress className={classes.item} title={"TOTAL KARYAWAN"} value={10} />
+                <Progress className={classes.item} title={"TOTAL KARYAWAN"} value={employee} />
               </Grid>
               <Grid
                 item
@@ -137,7 +153,7 @@ class Dashboard extends Component {
                 xl={9}
                 xs={12}
               >
-                <OrdersTable className={classes.item} />
+                <OrdersTable className={classes.item} orders={orders} isLoading={isLoading} />
               </Grid>
             </Grid>
           ) : products && products.length ?
@@ -155,15 +171,15 @@ class Dashboard extends Component {
                   onClick={() => history.push({ pathname: '/orders/add' })}
                 >
                   <ProductCard
-                    image={product.imageUrl}
-                    title={product.title}
+                    image={product.thumbnail}
+                    title={product.service_name}
                     description={product.description}
-                    secondary={"Harga Rp " + product.price}
+                    secondary={"Harga " + new Number(product.price).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
                   />
                 </Grid>
               ))
               }
-            </Grid> : "Loading..."
+            </Grid> : "Mohon tunggu sebentar..."
           }
         </div>
       </DashboardLayout>
@@ -171,4 +187,7 @@ class Dashboard extends Component {
   }
 }
 
-export default withStyles(styles)(Dashboard);
+export default compose(
+  withSnackbar,
+  withStyles(styles)
+)(Dashboard);
