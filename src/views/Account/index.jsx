@@ -56,27 +56,32 @@ class Account extends Component {
     const response = await post("/me", {},
       token);
     if (response?.status === 200) {
-      this.setState({ isLoading: false, data: response, profile_image: response?.image ?? "" });
+      Object.keys(response.data).forEach((key) => {
+        localStorage.removeItem(key)
+        localStorage.setItem(key, response.data[key]);
+      });
+      this.setState({ isLoading: false, data: response.data, profile_image: response?.image ?? "" });
     } else {
       this.props.enqueueSnackbar('Gagal mendapatkan profil.')
     }
   }
 
   edit = async () => {
-    const { http: { post }, payload } = this.state
+    const { http: { post }, payload, profile_image } = this.state
     this.setState({ isLoading: true, openEdit: false });
     const role = localStorage.getItem("role");
     const token = localStorage.getItem("token");
     const response = await post("/user/update", {
       ...payload,
+      image: profile_image,
       role: role,
     },
       token);
     if (response?.status === 200) {
       this.props.enqueueSnackbar('Berhasil merubah profil.')
       localStorage.setItem('isAuthenticated', true);
-      Object.keys(response.data).forEach(function (key) {
-        console.log({ data: response.data })
+      Object.keys(response.data).forEach((key) => {
+        localStorage.removeItem(key)
         localStorage.setItem(key, response.data[key]);
       });
       this.get();

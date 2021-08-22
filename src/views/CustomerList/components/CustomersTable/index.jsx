@@ -19,6 +19,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Tooltip,
+  TableSortLabel,
   TablePagination
 } from '@material-ui/core';
 
@@ -35,8 +37,60 @@ class CustomersTable extends Component {
   state = {
     selectedCustomers: [],
     rowsPerPage: 10,
-    page: 0
+    page: 0,
+    listCell: [
+      {
+        id: "customer_id",
+        name: "ID",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "fullname",
+        name: "Nama Pemesan",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "email",
+        name: "Email",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "phone_number",
+        name: "Nomor HP",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "created",
+        name: "Tanggal Pendaftaran",
+        active: true,
+        direction: "desc",
+      },
+    ],
   };
+
+  sortHandler = (id) => {
+    const listCell = this.state.listCell.map((e) => {
+      if (id === e.id) {
+        if (e.active) {
+          return {
+            ...e,
+            direction: e.direction === "desc" ? "asc" : "desc"
+          }
+        } else {
+          return {
+            ...e,
+            active: true,
+          }
+        }
+      }
+      return { ...e, active: false }
+    })
+    this.setState({ listCell })
+  }
 
   handleChangePage = (event, page) => {
     const { onSelect } = this.props;
@@ -51,8 +105,18 @@ class CustomersTable extends Component {
   };
 
   render() {
-    const { classes, className, customers } = this.props;
-    const { rowsPerPage, page } = this.state;
+    const { classes, className } = this.props;
+    const { rowsPerPage, page, listCell } = this.state;
+
+    const sortData = listCell.find(order => order.active)
+    const { id, direction } = sortData;
+
+    let customers = [];
+    if (id === "created") {
+      customers = this.props.customers.sort((a, b) => (new Date(a[id]).getTime() > new Date(b[id]).getTime()) ? direction === "asc" ? 1 : -1 : ((new Date(b[id]).getTime() > new Date(a[id]).getTime()) ? direction === "asc" ? -1 : 1 : 0))
+    } else {
+      customers = this.props.customers.sort((a, b) => (a[id] > b[id]) ? direction === "asc" ? 1 : -1 : ((b[id] > a[id]) ? direction === "asc" ? -1 : 1 : 0))
+    }
 
     const rootClassName = classNames(classes.root, className);
 
@@ -63,15 +127,25 @@ class CustomersTable extends Component {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell align="left">
-                    ID
-                  </TableCell>
-                  <TableCell align="left">
-                    Nama
-                  </TableCell>
-                  <TableCell align="left">Email</TableCell>
-                  <TableCell align="left">Nomor HP</TableCell>
-                  <TableCell align="left">Tanggal Pendaftaran</TableCell>
+                  {listCell.map((e) =>
+                    <TableCell
+                      align="left"
+                      direction={e.direction}
+                      onClick={() => this.sortHandler(e.id)}
+                    >
+                      <Tooltip
+                        enterDelay={300}
+                        title="Sort"
+                      >
+                        <TableSortLabel
+                          active={e.active}
+                          direction={e.direction}
+                        >
+                          {e.name}
+                        </TableSortLabel>
+                      </Tooltip>
+                    </TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>

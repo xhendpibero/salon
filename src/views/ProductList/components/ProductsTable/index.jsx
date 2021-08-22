@@ -20,6 +20,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Tooltip,
+  TableSortLabel,
   TablePagination
 } from '@material-ui/core';
 
@@ -36,8 +38,54 @@ class ProductsTable extends Component {
   state = {
     selectedProducts: [],
     rowsPerPage: 10,
-    page: 0
+    page: 0,
+    listCell: [
+      {
+        id: "service_name",
+        name: " Nama Jenis Layanan",
+        active: true,
+        direction: "desc",
+      },
+      {
+        id: "description",
+        name: "Deskripsi",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "price",
+        name: "Harga",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "is_show",
+        name: "Status",
+        active: false,
+        direction: "desc",
+      },
+    ],
   };
+
+  sortHandler = (id) => {
+    const listCell = this.state.listCell.map((e) => {
+      if (id === e.id) {
+        if (e.active) {
+          return {
+            ...e,
+            direction: e.direction === "desc" ? "asc" : "desc"
+          }
+        } else {
+          return {
+            ...e,
+            active: true,
+          }
+        }
+      }
+      return { ...e, active: false }
+    })
+    this.setState({ listCell })
+  }
 
   handleSelectAll = event => {
     const { products, onSelect } = this.props;
@@ -93,9 +141,19 @@ class ProductsTable extends Component {
   };
 
   render() {
-    const { classes, className, products } = this.props;
-    const { selectedProducts, rowsPerPage, page } = this.state;
+    const { classes, className } = this.props;
+    const { selectedProducts, rowsPerPage, page, listCell } = this.state;
     const role = localStorage.getItem("role") === "admin";
+
+    const sortData = listCell.find(order => order.active)
+    const { id, direction } = sortData;
+
+    let products = [];
+    if (id === "created") {
+      products = this.props.products.sort((a, b) => (new Date(a[id]).getTime() > new Date(b[id]).getTime()) ? direction === "asc" ? 1 : -1 : ((new Date(b[id]).getTime() > new Date(a[id]).getTime()) ? direction === "asc" ? -1 : 1 : 0))
+    } else {
+      products = this.props.products.sort((a, b) => (a[id] > b[id]) ? direction === "asc" ? 1 : -1 : ((b[id] > a[id]) ? direction === "asc" ? -1 : 1 : 0))
+    }
 
     const rootClassName = classNames(classes.root, className);
 
@@ -118,11 +176,26 @@ class ProductsTable extends Component {
                         onChange={this.handleSelectAll}
                       />
                     )}
-                    Nama Jenis Layanan
                   </TableCell>
-                  <TableCell align="left">Deskripsi</TableCell>
-                  <TableCell align="left">Harga</TableCell>
-                  <TableCell align="left">Status</TableCell>
+                  {listCell.map((e) =>
+                    <TableCell
+                      align="left"
+                      sortDirection={e.direction}
+                      onClick={() => this.sortHandler(e.id)}
+                    >
+                      <Tooltip
+                        enterDelay={300}
+                        title="Sort"
+                      >
+                        <TableSortLabel
+                          active={e.active}
+                          direction={e.direction}
+                        >
+                          {e.name}
+                        </TableSortLabel>
+                      </Tooltip>
+                    </TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -134,7 +207,7 @@ class ProductsTable extends Component {
                       key={product?.service_id}
                       selected={selectedProducts.indexOf(product?.service_id) !== -1}
                     >
-                      <TableCell className={classes.tableCell}>
+                      <TableCell className={classes.tableCell} colSpan={2}>
                         <div className={classes.tableCellInner}>
                           {role && (
                             <Checkbox

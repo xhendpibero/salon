@@ -19,6 +19,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Tooltip,
+  TableSortLabel,
   TablePagination
 } from '@material-ui/core';
 
@@ -35,8 +37,66 @@ class UsersTable extends Component {
   state = {
     selectedUsers: [],
     rowsPerPage: 10,
-    page: 0
+    page: 0,
+    listCell: [
+      {
+        id: "employee_id",
+        name: "ID",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "fullname",
+        name: "Nama Pemesan",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "address",
+        name: "Alamat",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "phone_number",
+        name: "Nomor HP",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "created",
+        name: "Tanggal Daftar",
+        active: true,
+        direction: "desc",
+      },
+      {
+        id: "is_show",
+        name: "Status",
+        active: false,
+        direction: "desc",
+      },
+    ],
   };
+
+  sortHandler = (id) => {
+    const listCell = this.state.listCell.map((e) => {
+      if (id === e.id) {
+        if (e.active) {
+          return {
+            ...e,
+            direction: e.direction === "desc" ? "asc" : "desc"
+          }
+        } else {
+          return {
+            ...e,
+            active: true,
+          }
+        }
+      }
+      return { ...e, active: false }
+    })
+    this.setState({ listCell })
+  }
 
   handleSelectAll = event => {
     const { users, onSelect } = this.props;
@@ -92,8 +152,18 @@ class UsersTable extends Component {
   };
 
   render() {
-    const { classes, className, users } = this.props;
-    const { selectedUsers, rowsPerPage, page } = this.state;
+    const { classes, className } = this.props;
+    const { selectedUsers, rowsPerPage, page, listCell } = this.state;
+
+    const sortData = listCell.find(order => order.active)
+    const { id, direction } = sortData;
+
+    let users = [];
+    if (id === "created") {
+      users = this.props.users.sort((a, b) => (new Date(a[id]).getTime() > new Date(b[id]).getTime()) ? direction === "asc" ? 1 : -1 : ((new Date(b[id]).getTime() > new Date(a[id]).getTime()) ? direction === "asc" ? -1 : 1 : 0))
+    } else {
+      users = this.props.users.sort((a, b) => (a[id] > b[id]) ? direction === "asc" ? 1 : -1 : ((b[id] > a[id]) ? direction === "asc" ? -1 : 1 : 0))
+    }
 
     const rootClassName = classNames(classes.root, className);
 
@@ -116,12 +186,25 @@ class UsersTable extends Component {
                     />
                     Foto
                   </TableCell>
-                  <TableCell align="left">Id</TableCell>
-                  <TableCell align="left">Nama</TableCell>
-                  <TableCell align="left">Alamat</TableCell>
-                  <TableCell align="left">No HP</TableCell>
-                  <TableCell align="left">Tanggal Daftar</TableCell>
-                  <TableCell align="left">Status</TableCell>
+                  {listCell.map((e) =>
+                    <TableCell
+                      align="left"
+                      direction={e.direction}
+                      onClick={() => this.sortHandler(e.id)}
+                    >
+                      <Tooltip
+                        enterDelay={300}
+                        title="Sort"
+                      >
+                        <TableSortLabel
+                          active={e.active}
+                          direction={e.direction}
+                        >
+                          {e.name}
+                        </TableSortLabel>
+                      </Tooltip>
+                    </TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>

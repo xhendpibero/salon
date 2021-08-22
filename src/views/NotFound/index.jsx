@@ -44,11 +44,11 @@ class NotFound extends Component {
           >
             <div className={classes.content} style={{ marginTop: -20 }}>
               <Typography variant="h1">
-                404: The page you are looking for isn’t here
+                404: Halaman yang Anda cari tidak ada di sini
               </Typography>
               <Typography variant="subtitle2">
-                You either tried some shady route or you came here by mistake.
-                Whichever it is, try using the navigation
+                Anda mencoba beberapa rute yang teduh atau Anda datang ke sini karena kesalahan.
+                Apapun itu, coba gunakan navigasi
               </Typography>
               <img
                 alt="Under development"

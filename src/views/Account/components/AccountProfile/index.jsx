@@ -53,7 +53,7 @@ class AccountProfile extends Component {
             <Avatar
               variant="square"
               className={classes.avatar}
-              src={profile_image || "/images/products/noimage.png"}
+              src={profile_image || localStorage.getItem("image")}
             />
           </div>
         </PortletContent>

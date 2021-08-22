@@ -835,7 +835,7 @@ class Account extends Component {
 
         <div className={classes.field}>
           <Typography variant="h6" className={classes.title}>
-            Nama Pelanggan
+            Nama Pemesan
           </Typography>
           <Typography variant="body1" className={classes.title}>
             {customer_account_name}

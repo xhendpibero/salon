@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import PropTypes from 'prop-types';
 
 // Material helpers
 import { withStyles } from '@material-ui/core';
@@ -21,6 +20,8 @@ import {
     TableRow,
     Typography,
     IconButton,
+    Tooltip,
+    TableSortLabel,
     TablePagination
 } from '@material-ui/core';
 
@@ -60,8 +61,54 @@ const statusText = {
 class OrdersTable extends Component {
     state = {
         rowsPerPage: 10,
-        page: 0
+        page: 0,
+        listCell: [
+            {
+                id: "order_id",
+                name: "ID",
+                active: false,
+                direction: "desc",
+            },
+            {
+                id: "customer_account_name",
+                name: "Nama Pelanggan",
+                active: false,
+                direction: "desc",
+            },
+            {
+                id: "created",
+                name: "Tanggal Pemesanan",
+                active: false,
+                direction: "desc",
+            },
+            {
+                id: "status",
+                name: "Status",
+                active: false,
+                direction: "desc",
+            },
+        ],
     };
+
+    sortHandler = (id) => {
+        const listCell = this.state.listCell.map((e) => {
+            if (id === e.id) {
+                if (e.active) {
+                    return {
+                        ...e,
+                        direction: e.direction === "desc" ? "asc" : "desc"
+                    }
+                } else {
+                    return {
+                        ...e,
+                        active: true,
+                    }
+                }
+            }
+            return { ...e, active: false }
+        })
+        this.setState({ listCell })
+    }
 
     handleChangePage = (event, page) => {
         const { onSelect } = this.props;
@@ -76,8 +123,20 @@ class OrdersTable extends Component {
     };
 
     render() {
-        const { classes, className, isLoading, orders, handleSubmit } = this.props;
-        const { rowsPerPage, page } = this.state;
+        const { classes, className, isLoading, handleSubmit } = this.props;
+        const { rowsPerPage, page, listCell } = this.state;
+
+        const sortData = listCell.find(order => order.active)
+        const id = sortData?.id;
+        const direction = sortData?.direction;
+
+        let orders = [];
+        if (id === "created") {
+            orders = this.props.orders.sort((a, b) => (new Date(a[id]).getTime() > new Date(b[id]).getTime()) ? direction === "asc" ? 1 : -1 : ((new Date(b[id]).getTime() > new Date(a[id]).getTime()) ? direction === "asc" ? -1 : 1 : 0))
+        } else {
+            orders = this.props.orders.sort((a, b) => (a[id] > b[id]) ? direction === "asc" ? 1 : -1 : ((b[id] > a[id]) ? direction === "asc" ? -1 : 1 : 0))
+        }
+
         const role = localStorage.getItem("role") === "admin";
         const rootClassName = classNames(classes.root, className);
         const showOrders = !isLoading && orders.length > 0;
@@ -97,10 +156,25 @@ class OrdersTable extends Component {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>ID</TableCell>
-                                        <TableCell align="left">Nama Pemesan</TableCell>
-                                        <TableCell align="left">Tanggal Pemesanan</TableCell>
-                                        <TableCell align="left">Status</TableCell>
+                                        {listCell.map((e) =>
+                                            <TableCell
+                                                align={e.id === "order_id" ? "" : "left"}
+                                                direction={e.direction}
+                                                onClick={() => this.sortHandler(e.id)}
+                                            >
+                                                <Tooltip
+                                                    enterDelay={300}
+                                                    title="Sort"
+                                                >
+                                                    <TableSortLabel
+                                                        active={e.active}
+                                                        direction={e.direction}
+                                                    >
+                                                        {e.name}
+                                                    </TableSortLabel>
+                                                </Tooltip>
+                                            </TableCell>
+                                        )}
                                         {role && (
                                             <TableCell align="left">Aksi</TableCell>
                                         )}
