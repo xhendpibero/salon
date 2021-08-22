@@ -154,7 +154,6 @@ class UsersTable extends Component {
                       <TableCell className={classes.tableCell}>
                         <Link to={"users/employee?id=" + user.employee_id}>
                           <Typography
-                            className={classes.nameText}
                             variant="body1"
                           >
                             {user.employee_id}
@@ -164,7 +163,6 @@ class UsersTable extends Component {
                       <TableCell className={classes.tableCell}>
                         <Link to={"users/employee?id=" + user.employee_id}>
                           <Typography
-                            className={classes.nameText}
                             variant="body1"
                           >
                             {user.fullname}

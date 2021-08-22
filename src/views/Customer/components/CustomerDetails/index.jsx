@@ -96,7 +96,6 @@ class Customer extends Component {
                 onChange={e => this.handleChange(e, "email")}
                 label="Email"
                 margin="dense"
-                required
                 value={email}
                 type="email"
                 variant="outlined"
@@ -108,7 +107,6 @@ class Customer extends Component {
                 value={address}
                 margin="dense"
                 type="text"
-                required
                 variant="outlined"
               />
             </div>

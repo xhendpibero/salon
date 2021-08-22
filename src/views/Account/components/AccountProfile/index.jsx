@@ -17,9 +17,26 @@ import { Portlet, PortletContent, PortletFooter } from 'components';
 import styles from './styles';
 
 class AccountProfile extends Component {
-  render() {
-    const { classes, className, ...rest } = this.props;
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+  }
 
+  pickedHandler(event, changeImage) {
+    let pickedFile;
+    if (event.target.files && event.target.files.length === 1) {
+      pickedFile = event.target.files[0];
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        console.log({ dileee: fileReader.result })
+        changeImage(fileReader.result);
+      };
+      fileReader.readAsDataURL(pickedFile);
+    }
+  };
+
+  render() {
+    const { classes, className, profile_image, changeImage, ...rest } = this.props;
     const rootClassName = classNames(classes.root, className);
 
     return (
@@ -30,36 +47,41 @@ class AccountProfile extends Component {
         <PortletContent>
           <div className={classes.details}>
             <div className={classes.info}>
-              <Typography variant="h2">Developer</Typography>
-              <Typography variant="h6">Admin</Typography>
-              <Typography
-                className={classes.locationText}
-                variant="body1"
-              >
-                Jl. Haji Ocen, Bekasi
-              </Typography>
-              <Typography
-                className={classes.dateText}
-                variant="body1"
-              >
-                089602582832
-              </Typography>
+              <Typography variant="h2">{localStorage.getItem("email")}</Typography>
+              <Typography variant="h6">{localStorage.getItem("role")}</Typography>
             </div>
             <Avatar
+              variant="square"
               className={classes.avatar}
-              src="/images/avatars/avatar_1.png"
+              src={profile_image || "/images/products/noimage.png"}
             />
           </div>
         </PortletContent>
         <PortletFooter>
+          <input
+            ref={this.myRef}
+            style={{ display: 'none' }}
+            type="file"
+            accept=".jpg,.png,.jpeg"
+            onChange={e => this.pickedHandler(e, changeImage)}
+          />
           <Button
             className={classes.uploadButton}
             color="primary"
             variant="text"
+            onClick={() => {
+              this.myRef.current.click();
+            }}
           >
             Unggah Foto
           </Button>
-          <Button variant="text">Hapus Foto</Button>
+          <Button variant="text"
+            onClick={() => {
+              changeImage(null);
+            }}
+          >
+            Hapus Foto
+          </Button>
         </PortletFooter>
       </Portlet>
     );

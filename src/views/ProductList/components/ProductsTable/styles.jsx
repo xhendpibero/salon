@@ -23,5 +23,12 @@ export default theme => ({
     marginLeft: theme.spacing.unit * 2,
     fontWeight: 500,
     cursor: 'pointer'
+  },
+  statusWrapper: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  status: {
+    marginRight: theme.spacing.unit
   }
 });

@@ -96,7 +96,6 @@ class Employee extends Component {
                 className={classes.textField}
                 label="Alamat"
                 margin="dense"
-                required
                 onChange={e => this.handleChange(e, "address")}
                 value={address}
                 variant="outlined"

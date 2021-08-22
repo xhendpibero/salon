@@ -21,6 +21,8 @@ import {
   Typography
 } from '@material-ui/core';
 
+import { getInitials } from 'helpers';
+
 // Material icons
 import {
   DashboardOutlined as DashboardIcon,
@@ -72,8 +74,10 @@ class Sidebar extends Component {
             <Avatar
               alt="Admin"
               className={classes.avatar}
-              src="/images/avatars/avatar_1.png"
-            />
+              src={localStorage.getItem("image")}
+            >
+              {getInitials(localStorage.getItem("email"))}
+            </Avatar>
           </Link>
           <Typography
             className={classes.nameText}

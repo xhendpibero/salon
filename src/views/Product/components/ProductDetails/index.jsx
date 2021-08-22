@@ -11,6 +11,9 @@ import { withStyles } from '@material-ui/core';
 import {
   Button, TextField,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@material-ui/core';
 
 // Shared components
@@ -30,6 +33,7 @@ class Account extends Component {
     service_name: '',
     price: '',
     description: '',
+    is_show: true,
   };
 
   handleChange = (e, name) => {
@@ -46,7 +50,7 @@ class Account extends Component {
 
   render() {
     const { classes, onSubmit, isLoading, className, ...rest } = this.props;
-    const { service_name, price, description } = this.state;
+    const { service_name, price, description, is_show } = this.state;
 
     const rootClassName = classNames(classes.root, className);
 
@@ -96,6 +100,25 @@ class Account extends Component {
                 variant="outlined"
                 type="number"
               />
+            </div>
+            <div className={classes.field}>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-controlled-open-select-label">Status</InputLabel>
+                <Select
+                  labelId="demo-controlled-open-select-label"
+                  id="demo-controlled-open-select"
+                  value={is_show}
+                  onChange={e => this.handleChange(e, "is_show")}
+                  inputProps={{
+                    name: 'is_show',
+                    id: 'is_show-simple',
+                  }}
+                  native
+                >
+                  <option value={true}>Tersedia</option>
+                  <option value={false}>Tidak Tersedia</option>
+                </Select>
+              </FormControl>
             </div>
           </form>
         </PortletContent>

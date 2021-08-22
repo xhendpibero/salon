@@ -27,7 +27,7 @@ import {
 import { getInitials } from 'helpers';
 
 // Shared components
-import { Portlet, PortletContent } from 'components';
+import { Portlet, PortletContent, Status } from 'components';
 
 // Component styles
 import styles from './styles';
@@ -122,6 +122,7 @@ class ProductsTable extends Component {
                   </TableCell>
                   <TableCell align="left">Deskripsi</TableCell>
                   <TableCell align="left">Harga</TableCell>
+                  <TableCell align="left">Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -166,6 +167,16 @@ class ProductsTable extends Component {
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {product.price}
+                      </TableCell>
+                      <TableCell>
+                        <div className={classes.statusWrapper}>
+                          <Status
+                            className={classes.status}
+                            color={product.is_show ? 'success' : 'danger'}
+                            size="sm"
+                          />
+                          {product.is_show ? "Tersedia" : "Tidak Tersedia"}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -16,7 +16,7 @@ import { Grid } from '@material-ui/core';
 import { Dashboard as DashboardLayout } from 'layouts';
 
 // Custom components
-import { AccountDetails } from './components';
+import { AccountProfile, AccountDetails } from './components';
 
 // Shared components
 import {
@@ -37,11 +37,12 @@ class Account extends Component {
     isLoading: false,
     payload: {},
     data: {},
+    profile_image: "",
     http: { ...useHttpClient() },
   };
 
-  changeImage = (thumbnail) => {
-    this.setState({ thumbnail })
+  changeImage = (profile_image) => {
+    this.setState({ profile_image })
   }
 
   handleClose = () => {
@@ -55,7 +56,7 @@ class Account extends Component {
     const response = await post("/me", {},
       token);
     if (response?.status === 200) {
-      this.setState({ isLoading: false, data: response });
+      this.setState({ isLoading: false, data: response, profile_image: response?.image ?? "" });
     } else {
       this.props.enqueueSnackbar('Gagal mendapatkan profil.')
     }
@@ -92,7 +93,7 @@ class Account extends Component {
 
   render() {
     const { classes } = this.props;
-    const { openEdit, data, isLoading } = this.state;
+    const { openEdit, data, isLoading, profile_image } = this.state;
 
     return (
       <DashboardLayout title="Akun">
@@ -103,6 +104,18 @@ class Account extends Component {
           >
             <Grid
               item
+              lg={4}
+              md={6}
+              xl={4}
+              xs={12}
+            >
+              <AccountProfile changeImage={(data) => this.changeImage(data)} profile_image={profile_image} />
+            </Grid>
+            <Grid
+              item
+              lg={8}
+              md={6}
+              xl={8}
               xs={12}
             >
               <AccountDetails onSubmit={(data) => this.setState({ openEdit: true, payload: data })} data={data} isLoading={isLoading} />

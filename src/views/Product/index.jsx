@@ -80,7 +80,6 @@ class Product extends Component {
     const response = await post("/services", {
       ...payload,
       thumbnail: thumbnail ?? "",
-      is_show: true,
       created_by: user
     },
       token);
