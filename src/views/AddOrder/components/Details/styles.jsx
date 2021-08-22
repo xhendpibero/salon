@@ -18,4 +18,8 @@ export default theme => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
+  progressWrapper: {
+    marginTop: theme.spacing.unit * 2,
+    textAlign: "center",
+  },
 });

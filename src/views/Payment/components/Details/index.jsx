@@ -216,7 +216,7 @@ class Account extends Component {
 
   handleChange = (e, name) => {
     this.setState({
-      [name]: e && e.target && e.target.value ? e.target.value : e
+      [name]: e && e.target && e.target.value ? e.target.value : e || ""
     });
   };
 

@@ -101,10 +101,10 @@ class OrdersList extends Component {
       return {
         id: r.order_id,
         nama: r.customer_account_name,
-        karyawan: r.employee_id,
+        karyawan: r.employee_name,
         nominalPembayaran: r.is_down_payment ? "DP" : "Penuh",
         nomorRekening: r.customer_account_number,
-        layanan: r.schedule_id,
+        layanan: r.service_names,
         harga: r.total_payment,
         metodePembayaran: r.celine_bank_name,
         status: statusText[r.status],
@@ -137,7 +137,7 @@ class OrdersList extends Component {
 
   handleChange = (e, name) => {
     this.setState({
-      [name]: e && e.target && e.target.value ? e.target.value : e
+      [name]: e && e.target && e.target.value ? e.target.value : e || ""
     });
     this.get();
   };
@@ -155,7 +155,7 @@ class OrdersList extends Component {
             filterValue={this.state.filterValue}
             filters={[
               {
-                value: "today",
+                value: "daily",
                 text: "Hari ini"
               },
               {
@@ -165,6 +165,10 @@ class OrdersList extends Component {
               {
                 value: "monthly",
                 text: "Bulan ini"
+              },
+              {
+                value: "yearly",
+                text: "Tahun ini"
               },
             ]}
             onChangeFilter={this.handleChange}

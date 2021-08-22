@@ -24,6 +24,7 @@ import {
   PortletContent,
   PortletFooter,
   ProductCard,
+  Map,
 } from 'components';
 
 // Component styles
@@ -66,12 +67,23 @@ class Password extends Component {
         </PortletHeader>
         <PortletContent>
 
-          <ProductCard
+
+          <div style={{
+            height: "15rem",
+            width: "100%",
+          }}>
+            <Map center={{
+              lat: 3.5148483,
+              lng: 98.6122879,
+            }} zoom={16} />
+          </div>
+
+          {/* <ProductCard
             image={"images/maps.png"}
             title={""}
             description={""}
             secondary={""}
-          />
+          /> */}
 
         </PortletContent>
         <PortletFooter className={classes.portletFooter}>
@@ -92,10 +104,5 @@ class Password extends Component {
     );
   }
 }
-
-Password.propTypes = {
-  className: PropTypes.string,
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(Password);

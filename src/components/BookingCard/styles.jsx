@@ -31,7 +31,6 @@ export default theme => ({
     lineHeight: '16px',
     height: theme.spacing.unit * 4,
     overflow: 'hidden',
-    whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     color: theme.palette.text.secondary,
     textAlign: 'center',

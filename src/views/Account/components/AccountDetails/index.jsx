@@ -34,7 +34,7 @@ class Employee extends Component {
 
   handleChange = (e, name) => {
     this.setState({
-      [name]: e.target.value
+      [name]: e.target.value || ""
     });
   };
 

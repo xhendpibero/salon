@@ -70,7 +70,7 @@ class UsersToolbar extends Component {
         <div className={classes.row}>
           <SearchInput
             className={classes.searchInput}
-            placeholder="Cari pegawai"
+            placeholder="Cari Pegawai"
             onChange={onChange}
           />
           <span className={classes.spacer} />

@@ -38,7 +38,7 @@ class Customer extends Component {
 
   handleChange = (e, name) => {
     this.setState({
-      [name]: e.target.value
+      [name]: e.target.value || ""
     });
   };
 
@@ -62,7 +62,7 @@ class Customer extends Component {
         <PortletHeader>
           <PortletLabel
             subtitle="Silahkan isi informasi dibawah ini"
-            title="Tambah Pelanggan"
+            title="Profil Pelanggan"
           />
         </PortletHeader>
         <PortletContent noPadding>

@@ -116,7 +116,7 @@ class Customer extends Component {
   render() {
     const { classes, location, history } = this.props;
     const { isLoading, data, openAdd, openEdit } = this.state;
-    const title = location.search ? "Edit" : "Tambah";
+    const title = location.search ? "Ubah" : "Tambah";
 
     return (
       <DashboardLayout title={title + " Pelanggan"}>

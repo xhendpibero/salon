@@ -14,3 +14,4 @@ export { default as ReportTable } from './Table/ReportTable';
 export { default as ProductCard } from './ProductCard';
 export { default as BookingCard } from './BookingCard';
 export { default as Popup } from './Popup';
+export { default as Map } from './Map/Map.js';

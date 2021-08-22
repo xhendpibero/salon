@@ -42,6 +42,10 @@ import {
 import styles from './styles';
 
 class Account extends Component {
+  constructor(props) {
+    super(props);
+    this.time = React.createRef();
+  }
 
   state = {
     bank: 1,
@@ -73,7 +77,7 @@ class Account extends Component {
 
   handleChange = (e, name) => {
     this.setState({
-      [name]: e && e.target && e.target.value ? e.target.value : e
+      [name]: e && e.target && e.target.value ? e.target.value : e || ""
     });
   };
 
@@ -95,39 +99,69 @@ class Account extends Component {
   };
 
   componentDidMount() {
-    setInterval(() => {
-      var seconds = 0
-      var startDate = new Date(this.props.data?.booking_date || new Date());
-      var endDate = new Date();
-      seconds = parseInt(((endDate.getTime() - startDate.getTime()) / 1000) || 0);
-      if (seconds > 0 && !this.state.seconds) {
-        this.setState({
-          seconds
-        });
-      }
-      const timer = () => {
-        const seconds = this.state.seconds;
-        var days = Math.floor(seconds / 24 / 60 / 60);
-        var hoursLeft = Math.floor((seconds) - (days * 86400));
-        var hours = Math.floor(hoursLeft / 3600);
-        var minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
-        var minutes = Math.floor(minutesLeft / 60);
-        var remainingSeconds = seconds % 60;
-        const pad = (n) => {
-          return (n < 10 ? "0" + n : n);
-        }
-        if (seconds <= 0) {
-          return "Telat transfer meebihi batas waktu";
-        } else {
-          return pad(days) + " Hari : " + pad(hours) + " Jam : " + pad(minutes) + " Menit : " + pad(remainingSeconds) + " Detik";
-        }
-      }
 
-      this.setState({
-        countdown: timer(),
-        seconds: this.state.seconds - 1
-      });
-    }, 1000);
+    // // Set the date we're counting down to
+    // var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();
+
+    //     setInterval(() => {
+    //       // Get today's date and time
+    //       var now = new Date().getTime();
+
+    //       // Find the distance between now and the count down date
+    //       var distance = countDownDate - now;
+
+    //       // Time calculations for days, hours, minutes and seconds
+    //       var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    //       var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    //       var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    //       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    //       const pad = (n) => {
+    //         return (n < 10 ? "0" + n : n);
+    //       }
+
+    //       // Output the result in an element with id="demo"
+    //       this.time = pad(days) + " Hari : " + pad(hours) + " Jam : " + pad(minutes) + " Menit : " + pad(seconds) + " Detik"
+
+    //       // If the count down is over, write some text 
+    //       if (distance < 0) {
+    //         clearInterval(x);
+    //         this.time = "Telat transfer melebihi batas waktu";
+    //       }
+    //     }, 1000)
+
+    // setInterval(() => {
+    //   var seconds = 0
+    //   var startDate = new Date(this.props.data?.booking_date || new Date());
+    //   var endDate = new Date();
+    //   seconds = parseInt(((endDate.getTime() - startDate.getTime()) / 1000) || 0);
+    //   if (seconds > 0 && !this.state.seconds) {
+    //     this.setState({
+    //       seconds
+    //     });
+    //   }
+    //   const timer = () => {
+    //     const seconds = this.state.seconds;
+    //     var days = Math.floor(seconds / 24 / 60 / 60);
+    //     var hoursLeft = Math.floor((seconds) - (days * 86400));
+    //     var hours = Math.floor(hoursLeft / 3600);
+    //     var minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
+    //     var minutes = Math.floor(minutesLeft / 60);
+    //     var remainingSeconds = seconds % 60;
+    //     const pad = (n) => {
+    //       return (n < 10 ? "0" + n : n);
+    //     }
+    //     if (seconds <= 0) {
+    //       return "Telat transfer melebihi batas waktu";
+    //     } else {
+    //       return pad(days) + " Hari : " + pad(hours) + " Jam : " + pad(minutes) + " Menit : " + pad(remainingSeconds) + " Detik";
+    //     }
+    //   }
+
+    //   this.setState({
+    //     countdown: timer(),
+    //     seconds: this.state.seconds - 1
+    //   });
+    // }, 1000);
   }
 
   render() {
@@ -194,9 +228,9 @@ class Account extends Component {
     }
 
     const dataDate = dd + " " + monthNames[today.getMonth()] + " " + yyyy;
-    let dataTime = schedule_id;
-    if (schedule_id - 0 < 10) {
-      dataTime = '0' + schedule_id;
+    let dataTime = new Date(booking_date).getHours();
+    if (dataTime - 0 < 10) {
+      dataTime = '0' + dataTime;
     }
     const bankDetail = bankList.find(e => e.value === bank)
 
@@ -240,7 +274,7 @@ class Account extends Component {
 
                 <div className={classes.field}>
                   <Typography variant="h6" className={classes.title}>
-                    status
+                    Status
                   </Typography>
                   <div className={classes.statusWrapper}>
                     <Status
@@ -289,67 +323,67 @@ class Account extends Component {
                     Bank Tujuan
                   </Typography>
                 </div>
-                {!transfer_evidence ? (
-                  <>
-                    <div className={classes.field}>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
-                        <Select
-                          labelId="demo-controlled-open-select-label"
-                          id="demo-controlled-open-select"
-                          value={bank}
-                          onChange={e => this.handleChange(e, "bank")}
-                          inputProps={{
-                            name: 'bank',
-                            id: 'bank-simple',
-                          }}
-                          native
-                        >
-                          {bankList.map((e) =>
-                            <option value={e.value}>{e.name}</option>
-                          )}
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <div className={classes.field}>
+                {/* {!transfer_evidence ? ( */}
+                {/* <>
+                  <div className={classes.field}>
+                    <FormControl className={classes.formControl}>
+                      <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
+                      <Select
+                        labelId="demo-controlled-open-select-label"
+                        id="demo-controlled-open-select"
+                        value={bank}
+                        onChange={e => this.handleChange(e, "bank")}
+                        inputProps={{
+                          name: 'bank',
+                          id: 'bank-simple',
+                        }}
+                        native
+                      >
+                        {bankList.map((e) =>
+                          <option value={e.value}>{e.name}</option>
+                        )}
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className={classes.field}>
+                    <Grid
+                      container
+                      spacing={3}
+                    >
                       <Grid
-                        container
-                        spacing={3}
+                        item
+                        md={12}
                       >
-                        <Grid
-                          item
-                          md={12}
-                        >
-                          <BookingCard noWrap={true} title={bankDetail.name} status={"Kirim jumlah uang ke nomor Rek " + bankDetail.rek + " atas nama " + bankDetail.user} />
-                        </Grid>
+                        <BookingCard noWrap={true} title={bankDetail.name} status={"Kirim jumlah uang ke nomor Rek " + bankDetail.rek + " atas nama " + bankDetail.user} />
                       </Grid>
-                    </div>
+                    </Grid>
+                  </div>
 
+                  <div className={classes.field}>
+                    <Typography
+                      className={classes.title}
+                      variant="h5"
+                    >
+                      Total Nominal Pembayaran {is_down_payment ? "Down Payment" : "Keseluruhan"}
+                    </Typography>
                     <div className={classes.field}>
                       <Typography
                         className={classes.title}
-                        variant="h5"
+                        variant="h4"
+                        style={{ textAlign: "center" }}
                       >
-                        Total Nominal Pembayaran {is_down_payment ? "Down Payment" : "Keseluruhan"}
-                      </Typography>
-                      <div className={classes.field}>
-                        <Typography
-                          className={classes.title}
-                          variant="h4"
-                          style={{ textAlign: "center" }}
-                        >
-                          {new Number(total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
-                        </Typography>
-                      </div>
-                      <Typography
-                        className={classes.title}
-                        variant="body2"
-                        style={{ marginTop: 4, textAlign: "center" }}
-                      >
-                        Pastikan nominal sesuai hingga 3 digit terakhir
+                        {new Number(total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
                       </Typography>
                     </div>
-
+                    <Typography
+                      className={classes.title}
+                      variant="body2"
+                      style={{ marginTop: 4, textAlign: "center" }}
+                    >
+                      Pastikan nominal sesuai hingga 3 digit terakhir
+                    </Typography>
+                  </div>
+                  {this.state.countdown > 0 && (
                     <div className={classes.field}>
                       <Typography
                         className={classes.title}
@@ -359,132 +393,134 @@ class Account extends Component {
                         {this.state.countdown}
                       </Typography>
                     </div>
+                  )}
 
-                    <div className={classes.field}>
-                      <Typography
-                        className={classes.title}
-                        variant="h4"
-                      >
-                        Bukti Pembayaran
-                      </Typography>
-                    </div>
-                    <div className={classes.field}>
-                      {
-                        selectedFile && (
-                          <img
-                            src={selectedFile ? selectedFile : "/images/logos/logo.png"}
-                            style={{ maxWidth: "100%" }}
-                          />
-                        )
-                      }
+                  <div className={classes.field}>
+                    <Typography
+                      className={classes.title}
+                      variant="h4"
+                    >
+                      Bukti Pembayaran
+                    </Typography>
+                  </div>
+                  <div className={classes.field}>
+                    {
+                      selectedFile && (
+                        <img
+                          src={selectedFile ? selectedFile : "/images/logos/logo.png"}
+                          style={{ maxWidth: "100%" }}
+                        />
+                      )
+                    }
 
-                      <input
-                        accept="image/*"
-                        className={classes.input}
-                        id="contained-button-file"
-                        multiple
-                        type="file"
-                        onChange={this.handleUploadClick}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className={classes.field}>
-                      <Typography variant="h6" className={classes.title}>
-                        Bank
-                      </Typography>
-                      <Typography variant="body1" className={classes.title}>
-                        {celine_bank_name}
-                      </Typography>
-                    </div>
+                    <input
+                      accept="image/*"
+                      className={classes.input}
+                      id="contained-button-file"
+                      multiple
+                      type="file"
+                      onChange={this.handleUploadClick}
+                    />
+                  </div>
+                </> */}
+                {/* // ) : ( */}
+                <>
+                  <div className={classes.field}>
+                    <Typography variant="h6" className={classes.title}>
+                      Bank
+                    </Typography>
+                    <Typography variant="body1" className={classes.title}>
+                      {celine_bank_name}
+                    </Typography>
+                  </div>
 
-                    <div className={classes.field}>
+                  <div className={classes.field}>
+                    <Grid
+                      container
+                      spacing={3}
+                    >
                       <Grid
-                        container
-                        spacing={3}
+                        item
+                        md={12}
                       >
-                        <Grid
-                          item
-                          md={12}
-                        >
-                          <BookingCard noWrap={true} title={celine_bank_name} status={"Kirim jumlah uang ke nomor Rek " + celine_account_number + " atas nama " + celine_account_name} />
-                        </Grid>
+                        <BookingCard noWrap={false} title={celine_bank_name} status={"Kirim jumlah uang ke nomor Rek " + celine_account_number + " atas nama " + celine_account_name} />
                       </Grid>
-                    </div>
-                    <div className={classes.field}>
-                      <Typography variant="h6" className={classes.title}>
-                        Nominal Pembayaran
-                      </Typography>
-                      <Typography variant="body1" className={classes.title}>
-                        {new Number(customer_payment_nominal).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
-                      </Typography>
-                    </div>
-                    <div className={classes.field}>
-                      <Typography
-                        className={classes.title}
-                        variant="h4"
-                      >
-                        Bukti Pembayaran
-                      </Typography>
-                    </div>
-                    <div className={classes.field}>
-                      <img
-                        src={transfer_evidence}
-                        style={{ maxWidth: "100%" }}
-                      />
-                    </div>
-                  </>
-                )}
+                    </Grid>
+                  </div>
+                  <div className={classes.field}>
+                    <Typography variant="h6" className={classes.title}>
+                      Nominal Pembayaran
+                    </Typography>
+                    <Typography variant="body1" className={classes.title}>
+                      {new Number(customer_payment_nominal).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+                    </Typography>
+                  </div>
+                  <div className={classes.field}>
+                    <Typography
+                      className={classes.title}
+                      variant="h4"
+                    >
+                      Bukti Pembayaran
+                    </Typography>
+                  </div>
+                  <div className={classes.field}>
+                    <img
+                      src={transfer_evidence && transfer_evidence.substring(0, 1) === `{` ? transfer_evidence.substring(2, transfer_evidence.length - 2) : transfer_evidence}
+                      style={{ maxWidth: "100%" }}
+                    />
+                  </div>
+                </>
+                {/* // )} */}
               </form>
             </PortletContent>
             <PortletFooter className={classes.portletFooter}>
 
               {(!transfer_evidence) && (
-                <Button
-                  color="primary"
-                  variant="contained"
-                  disabled={!selectedFile}
-                  onClick={() => {
-                    const {
-                      order_id,
-                      customer_id,
-                      employee_id,
-                      schedule_id,
-                      booking_date,
-                      booking_time,
-                      is_down_payment,
-                      customer_account_name,
-                      customer_account_number,
-                      customer_payment_nominal,
-                      total_payment,
-                      status,
-                      detail_order,
-                    } = this.props.data
-                    // console.log(this.props.data, "asdasds")
-                    editOrders({
-                      order_id,
-                      customer_id,
-                      employee_id,
-                      schedule_id,
-                      booking_date,
-                      booking_time,
-                      is_down_payment,
-                      customer_account_name,
-                      customer_account_number,
-                      customer_payment_nominal,
-                      total_payment,
-                      status,
-                      detail_order,
-                      celine_bank_name: bankDetail.name,
-                      celine_account_name: bankDetail.user,
-                      celine_account_number: bankDetail.rek,
-                      transfer_evidence: selectedFile,
-                    })
-                  }}
-                >
-                  Bayar
-                </Button>
+                <></>
+                // <Button
+                //   color="primary"
+                //   variant="contained"
+                //   disabled={!selectedFile}
+                //   onClick={() => {
+                //     const {
+                //       order_id,
+                //       customer_id,
+                //       employee_id,
+                //       schedule_id,
+                //       booking_date,
+                //       booking_time,
+                //       is_down_payment,
+                //       customer_account_name,
+                //       customer_account_number,
+                //       customer_payment_nominal,
+                //       total_payment,
+                //       status,
+                //       detail_order,
+                //     } = this.props.data
+                //     // console.log(this.props.data, "asdasds")
+                //     editOrders({
+                //       order_id,
+                //       customer_id,
+                //       employee_id,
+                //       schedule_id,
+                //       booking_date,
+                //       booking_time,
+                //       is_down_payment,
+                //       customer_account_name,
+                //       customer_account_number,
+                //       customer_payment_nominal,
+                //       total_payment,
+                //       status,
+                //       detail_order,
+                //       celine_bank_name: bankDetail.name,
+                //       celine_account_name: bankDetail.user,
+                //       celine_account_number: bankDetail.rek,
+                //       transfer_evidence: selectedFile,
+                //     })
+                //   }}
+                // >
+                //   Bayar
+                // </Button>
               )}
 
               {(status === "unconfirmed" && role && transfer_evidence) && (
@@ -551,7 +587,7 @@ class Account extends Component {
                 </Typography>
                 <div className={classes.demo}>
                   <List dense={true}>
-                    {services.map((product, index) =>
+                    {services?.map((product, index) =>
                       <ListItem key={product.service_id}>
                         <ListItemAvatar>
                           <Avatar

@@ -36,7 +36,7 @@ class Progress extends Component {
               className={classes.title}
               variant="body2"
             >
-              TOTAL KARYAWAN
+              TOTAL KARYAWAN AKTIF
             </Typography>
             <Typography
               className={classes.value}

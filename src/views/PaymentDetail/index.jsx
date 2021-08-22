@@ -38,7 +38,9 @@ const styles = theme => ({
     paddingTop: '48px',
     paddingBottom: '24px',
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    textAlign: "center",
+    width: "100%"
   },
 });
 

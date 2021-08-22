@@ -70,7 +70,7 @@ class ProductsToolbar extends Component {
         <div className={classes.row}>
           <SearchInput
             className={classes.searchInput}
-            placeholder="Cari Jenis layanan"
+            placeholder="Cari Jenis Layanan"
             onChange={onChange}
           />
           <span className={classes.spacer} />

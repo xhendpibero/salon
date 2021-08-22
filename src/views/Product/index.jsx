@@ -126,7 +126,7 @@ class Product extends Component {
   render() {
     const { classes, location, history } = this.props;
     const { thumbnail, isLoading, data, openAdd, openEdit } = this.state;
-    const title = location.search ? "Edit" : "Tambah";
+    const title = location.search ? "Ubah " : "Tambah";
 
     return (
       <DashboardLayout title={title + " Jenis Layanan"}>

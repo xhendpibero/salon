@@ -51,12 +51,12 @@ class OrdersList extends Component {
       const role = localStorage.getItem("role");
       const username = localStorage.getItem("username");
 
-      const orders = role === "admin" ? await get("/orders", token) : await get("/customers/" + username + "/orders", token);
+      const orders = await get("/orders", token);
 
       if (this.signal) {
         this.setState({
           isLoading: false,
-          orders: orders?.data,
+          orders: role == "admin" ? orders?.data : orders?.data?.filter((e) => e.created_by == username),
           ordersTemp: orders?.data,
         });
       }
@@ -186,7 +186,7 @@ class OrdersList extends Component {
       <DashboardLayout title="Pemesanan">
         <div className={classes.root}>
           <Toolbar
-            placeholder="Cari pemesanan"
+            placeholder="Cari Pemesanan"
             buttonAdd={role ? "" : "Buat Pemesanan"}
             data={[]}
             onChange={this.onChange}

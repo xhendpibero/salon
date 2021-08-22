@@ -8,7 +8,7 @@ export default theme => ({
   },
   imageWrapper: {
     width: '100%',
-    height: '100%',
+    height: '200px',
     maxWidth: "100%",
     margin: '0 auto',
     border: '1px solid #EDF0F2',

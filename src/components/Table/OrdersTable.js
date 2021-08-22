@@ -226,22 +226,22 @@ class OrdersTable extends Component {
                                                         size="sm"
                                                     />
                                                     <Typography variant="h6" component="h2">
-                                                        {order.status}
+                                                        {statusText[order.status]}
                                                     </Typography>
                                                 </div>
                                             </div>
                                             <hr style={{ marginBottom: 10 }} />
                                             <Typography variant="h5" component="h2">
-                                                Id Pemesanan
+                                                Nama Pegawai
                                             </Typography>
                                             <Typography style={{ marginBottom: 10 }} variant="body2" component="p">
-                                                {order.order_id}
+                                                {order.employee_name}
                                             </Typography>
                                             <Typography variant="h5" component="h2">
-                                                Id Pegawai
+                                                Jenis Layanan
                                             </Typography>
                                             <Typography style={{ marginBottom: 10 }} variant="body2" component="p">
-                                                {order.employee_id}
+                                                {order.detail_order.map(e => e.service_name).toString().replace(",", ", ")}
                                             </Typography>
                                             <Typography variant="h5" component="h2">
                                                 Pembayaran : {(order.is_down_payment) ? "DP" : "Penuh"}
@@ -261,22 +261,23 @@ class OrdersTable extends Component {
                             </>
                         )}
                     </PerfectScrollbar>
-
-                    <TablePagination
-                        backIconButtonProps={{
-                            'aria-label': 'Previous Page'
-                        }}
-                        component="div"
-                        count={this.props?.count || 10}
-                        nextIconButtonProps={{
-                            'aria-label': 'Next Page'
-                        }}
-                        onChangePage={this.handleChangePage}
-                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                        page={page}
-                        rowsPerPage={rowsPerPage}
-                        rowsPerPageOptions={[5, 10, 25]}
-                    />
+                    {showOrders && role && (
+                        <TablePagination
+                            backIconButtonProps={{
+                                'aria-label': 'Previous Page'
+                            }}
+                            component="div"
+                            count={this.props?.count || 10}
+                            nextIconButtonProps={{
+                                'aria-label': 'Next Page'
+                            }}
+                            onChangePage={this.handleChangePage}
+                            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            rowsPerPageOptions={[5, 10, 25]}
+                        />
+                    )}
                 </PortletContent>
             </Portlet >
         );

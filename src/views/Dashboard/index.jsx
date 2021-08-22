@@ -54,7 +54,7 @@ class Dashboard extends Component {
     const response = await get("/employees",
       token);
     if (response?.status === 200) {
-      this.setState({ employee: response?.data?.length });
+      this.setState({ employee: response?.data?.filter((e) => e.is_show).length });
     }
   }
 
@@ -62,7 +62,7 @@ class Dashboard extends Component {
     const { http: { get } } = this.state
     this.setState({ isLoading: true });
     const token = localStorage.getItem("token");
-    const response = await get("/employees",
+    const response = await get("/customers",
       token);
     if (response?.status === 200) {
       this.setState({ customer: response?.data?.length });

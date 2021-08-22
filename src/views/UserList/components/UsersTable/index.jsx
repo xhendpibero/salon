@@ -114,8 +114,9 @@ class UsersTable extends Component {
                       }
                       onChange={this.handleSelectAll}
                     />
-                    ID
+                    Foto
                   </TableCell>
+                  <TableCell align="left">Id</TableCell>
                   <TableCell align="left">Nama</TableCell>
                   <TableCell align="left">Alamat</TableCell>
                   <TableCell align="left">No HP</TableCell>
@@ -148,18 +149,27 @@ class UsersTable extends Component {
                           >
                             {getInitials(user.fullname)}
                           </Avatar>
-                          <Link to={"users/employee?id=" + user.employee_id}>
-                            <Typography
-                              className={classes.nameText}
-                              variant="body1"
-                            >
-                              {user.employee_id}
-                            </Typography>
-                          </Link>
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {user.fullname}
+                        <Link to={"users/employee?id=" + user.employee_id}>
+                          <Typography
+                            className={classes.nameText}
+                            variant="body1"
+                          >
+                            {user.employee_id}
+                          </Typography>
+                        </Link>
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        <Link to={"users/employee?id=" + user.employee_id}>
+                          <Typography
+                            className={classes.nameText}
+                            variant="body1"
+                          >
+                            {user.fullname}
+                          </Typography>
+                        </Link>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {user.address}

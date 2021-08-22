@@ -56,6 +56,11 @@ import {
 import styles from './styles';
 
 class Account extends Component {
+  constructor(props) {
+    super(props);
+    this.countdown = React.createRef();
+  }
+
   state = {
     //list
     products: [],
@@ -85,9 +90,8 @@ class Account extends Component {
 
     date: "",
     name: "",
-    checkedB: false,
+    checkedB: true,
     tab: 1,
-    bank: 0,
 
     celine_bank_name: "",
     celine_account_name: "",
@@ -103,23 +107,32 @@ class Account extends Component {
       price: ""
     }],
     isLoadingProduct: true,
+    selectedFile: "",
+    bank: "BCA",
+    countdown: 0,
+    seconds: 0,
     bankList: [
       {
         name: "BCA",
         value: "BCA",
-        rek: "0913 2012 001"
+        rek: "0913 2012 001",
+        user: "Celine",
       },
       {
         name: "BRI",
         value: "BRI",
-        rek: "0913 2012 002"
+        rek: "0913 2012 002",
+        user: "Celine",
       },
       {
         name: "BTPN",
         value: "BTPN",
-        rek: "0913 2012 003"
+        rek: "0913 2012 003",
+        user: "Celine",
       },
     ],
+    renderCountdown: 0,
+    paymentUser: 0,
     is_down_payment: false,
     is_down_paymentList: [
       {
@@ -144,7 +157,7 @@ class Account extends Component {
       token);
     console.log({ response })
     if (response?.status === 200) {
-      this.setState({ employees: response?.data });
+      this.setState({ employees: response?.data.filter(e => e.is_show) });
       return true
     }
   }
@@ -161,6 +174,7 @@ class Account extends Component {
       this.setState({
         customers: response?.data,
         customer_id: response?.data?.[0]?.customer_id ?? "",
+        checkedB: response?.data?.[0]?.customer_id ? false : true,
         customer_account_name: response?.data?.[0]?.fullname ?? "",
         customer_account_number: response?.data?.[0]?.phone_number ?? "",
       });
@@ -189,6 +203,7 @@ class Account extends Component {
   };
 
   addOrders = async (payload) => {
+    console.log({ payload })
     this.setState({ isLoading: true });
     const { history } = this.props;
     const { http: { post } } = this.state;
@@ -201,7 +216,7 @@ class Account extends Component {
       token);
     if (response?.status === 200) {
       this.props.enqueueSnackbar('Berhasil menambah pemesanan.');
-      history.push({ pathname: '/orders/payment/proof' });
+      history.push({ pathname: '/orders' });
     } else {
       this.props.enqueueSnackbar('Gagal menambah pemesanan.');
     }
@@ -211,6 +226,39 @@ class Account extends Component {
   componentWillMount() {
     this.getCustomer();
     this.getEmployee();
+
+    this.countdown = setInterval(() => {
+      const { date, selectedTimes } = this.state
+      if (date && selectedTimes) {
+        var countDownDate = new Date(date).getTime();
+        // new Date(countDownDate).setHours(selectedTimes).getTime()
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        const pad = (n) => {
+          return (n < 10 ? "0" + n : n);
+        }
+
+        // Output the result in an element with id="demo"
+        this.setState({ renderCountdown: pad(days) + " Hari : " + pad(hours) + " Jam : " + pad(minutes) + " Menit : " + pad(seconds) + " Detik" })
+
+        // If the count down is over, write some text 
+        if (distance < 0) {
+          clearInterval(this.countdown);
+          this.setState({ renderCountdown: "Telat transfer melebihi batas waktu" })
+        }
+      }
+    }, 1000)
+
   }
 
   handleSelectOne = (id, name) => {
@@ -236,7 +284,7 @@ class Account extends Component {
 
   handleChange = (e, name) => {
     this.setState({
-      [name]: e && e.target && e.target.value ? e.target.value : e
+      [name]: e?.target?.value ?? (e || "")
     });
   };
 
@@ -260,12 +308,27 @@ class Account extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log({ nextProps })
     if (this.props?.isLoadingProduct !== nextProps?.isLoadingProduct) {
-      console.log({ nextProps2: nextProps })
       this.setState({ isLoadingProduct: nextProps?.isLoadingProduct, products: nextProps?.products });
     }
   }
+
+  handleUploadClick = event => {
+    var file = event.target.files[0];
+    const reader = new FileReader();
+    var url = reader.readAsDataURL(file);
+
+    reader.onloadend = function (e) {
+      this.setState({
+        selectedFile: [reader.result]
+      });
+    }.bind(this);
+    console.log(url); // Would see a path?
+
+    this.setState({
+      selectedFile: event.target.files[0],
+    });
+  };
 
   handleSubmit = () => {
     const {
@@ -278,6 +341,11 @@ class Account extends Component {
       selectedProducts,
       products,
       date,
+      bankList,
+      bank,
+      total_payment,
+      paymentUser,
+      selectedFile
     } = this.state
 
     var today = new Date(date);
@@ -287,11 +355,7 @@ class Account extends Component {
     if (dd < 10) dd = '0' + dd;
     if (mm < 10) mm = '0' + mm;
 
-    const totalPayment = products.filter((product) =>
-      selectedProducts
-        .indexOf(product.service_id) !== -1)
-      .map(e => e.price.replace(".", "") - 0)
-      .reduce((a, b) => a + b, 0)
+    const bankDetail = bankList.find(e => e.value === bank)
 
     const payload = {
       customer_id: customer_id,
@@ -299,14 +363,14 @@ class Account extends Component {
       booking_date: `${yyyy}-${mm}-${dd}`,
       booking_time: ((selectedTimes < 10) ? "0" + selectedTimes : selectedTimes) + ":00:00",
       is_down_payment: is_down_payment,
-      celine_bank_name: "",
-      celine_account_name: "",
-      celine_account_number: "",
+      celine_bank_name: bankDetail.name,
+      celine_account_name: bankDetail.user,
+      celine_account_number: bankDetail.rek,
+      transfer_evidence: selectedFile[0],
       customer_account_name: customer_account_name,
       customer_account_number: customer_account_number,
-      customer_payment_nominal: String(totalPayment),
-      // total_payment: totalPayment,
-      transfer_evidence: "",
+      customer_payment_nominal: String(paymentUser),
+      total_payment: total_payment,
       detail_order: selectedProducts.map((e) => {
         const data = products.find(r => r.service_id === e);
         return {
@@ -349,6 +413,9 @@ class Account extends Component {
       tab,
       is_down_payment,
       is_down_paymentList,
+
+      bank, bankList, selectedFile,
+      total_payment
     } = this.state;
 
     var today = new Date(date);
@@ -361,22 +428,43 @@ class Account extends Component {
       "July", "August", "September", "October", "November", "December"
     ]
 
-    const isNextTab = tab < 4
+    const isNextTab = tab < 5
     const isBackTab = tab > 1
-    const isSubmitTab = tab === 4
+    const isSubmitTab = tab === 5
 
-    const totalPayment = products.filter((product) =>
+
+    const bankDetail = bankList.find(e => e.value === bank);
+    const paymentUser = products.filter((product) =>
       selectedProducts
         .indexOf(product.service_id) !== -1)
       .map(e => e.price.replace(".", "") - 0)
       .reduce((a, b) => a + b, 0)
-      .toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]
     const dataDate = dd + " " + monthNames[today.getMonth()] + " " + yyyy;
     let dataTime = selectedTimes;
     if (selectedTimes - 0 < 10) {
       dataTime = '0' + selectedTimes;
     }
 
+    if (isSubmitTab && total_payment === 0) {
+      let total_payment = 0
+      if (is_down_payment) {
+        total_payment = (products.filter((product) =>
+          selectedProducts
+            .indexOf(product.service_id) !== -1)
+          .map(e => e.price.replace(".", "") - 0)
+          .reduce((a, b) => a + b, 0) * 0.1 + Math.floor(Math.random() * 1000) + 101);
+        if (total_payment < 20001) {
+          total_payment = total_payment + Math.floor(Math.random() * 1000) + 101
+        }
+      } else {
+        total_payment = (products.filter((product) =>
+          selectedProducts
+            .indexOf(product.service_id) !== -1)
+          .map(e => e.price.replace(".", "") - 0)
+          .reduce((a, b) => a + b, 0) + Math.floor(Math.random() * 1000) + 101)
+      }
+      this.setState({ total_payment, paymentUser })
+    }
     const rootClassName = classNames(classes.root, className);
 
     const mainTab = [
@@ -408,7 +496,7 @@ class Account extends Component {
                   <ProductCard
                     image={product.thumbnail}
                     title={product.service_name}
-                    description={product.description}
+                    // description={product.description}
                     secondary={"Harga " + new Number(product.price).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
                     checked={selectedProducts.indexOf(product.service_id) !== -1}
                   />
@@ -423,6 +511,7 @@ class Account extends Component {
           </div>
         )}
       </>),
+
       (<>
         <div className={classes.field}>
           <Typography
@@ -562,6 +651,7 @@ class Account extends Component {
         </div>
         <div className={classes.field}>
           <DayPicker
+            disabledDays={day => day < (new Date())}
             onDayClick={this.handleDayClick}
             selectedDays={[
               dataDate ? new Date(dataDate) : null,
@@ -611,6 +701,7 @@ class Account extends Component {
           </Grid>
         </div>
       </>),
+
       (<>
 
         <div className={classes.field}>
@@ -649,6 +740,7 @@ class Account extends Component {
           </Grid>
         </div>
       </>),
+
       (<>
         <div className={classes.field}>
           <Typography
@@ -722,7 +814,6 @@ class Account extends Component {
               }}
               native
             >
-              <option aria-label="None" value="" />
               {
                 is_down_paymentList.map(e =>
                   <option value={e.value}>{e.name}</option>
@@ -731,12 +822,40 @@ class Account extends Component {
             </Select>
           </FormControl>
         </div>
+      </>),
+      (<>
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Informasi Rekening Pengirim
+          </Typography>
+        </div>
+
+        <div className={classes.field}>
+          <Typography variant="h6" className={classes.title}>
+            Nama Pelanggan
+          </Typography>
+          <Typography variant="body1" className={classes.title}>
+            {customer_account_name}
+          </Typography>
+        </div>
+
+        <div className={classes.field}>
+          <Typography variant="h6" className={classes.title}>
+            Nomor Rekening
+          </Typography>
+          <Typography variant="body1" className={classes.title}>
+            {customer_account_number}
+          </Typography>
+        </div>
         {/* <div className={classes.field}>
           <Typography
             className={classes.title}
             variant="h5"
           >
-            Total Nominal Pembayaran {is_down_payment == true ? "Down Payment" : "Keseluruhan"}
+            Total Nominal Pembayaran {is_down_payment ? "Down Payment" : "Keseluruhan"}
           </Typography>
           <div className={classes.field}>
             <Typography
@@ -744,12 +863,6 @@ class Account extends Component {
               variant="h4"
               style={{ textAlign: "center" }}
             >
-              {is_down_payment == true ? transfer.split(",")[0] : (products.filter((product) =>
-                selectedProducts
-                  .indexOf(product.service_id) !== -1)
-                .map(e => e.price.replace(".", "") - 0)
-                .reduce((a, b) => a + b, 0) + 300)
-                .toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
             </Typography>
           </div>
           <Typography
@@ -759,7 +872,111 @@ class Account extends Component {
           >
             Pastikan nominal sesuai hingga 3 digit terakhir
           </Typography>
+        </div>
+
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+            style={{ textAlign: "center" }}
+          >
+            0 Hari : 01 Jam : 30 Menit : 29 Detik
+          </Typography>
         </div> */}
+
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Bank Tujuan
+          </Typography>
+        </div>
+
+        <div className={classes.field}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-controlled-open-select-label">Bank</InputLabel>
+            <Select
+              labelId="demo-controlled-open-select-label"
+              id="demo-controlled-open-select"
+              value={bank}
+              onChange={e => this.handleChange(e, "bank")}
+              inputProps={{
+                name: 'bank',
+                id: 'bank-simple',
+              }}
+              native
+            >
+              {bankList.map((e) =>
+                <option value={e.value}>{e.name}</option>
+              )}
+            </Select>
+          </FormControl>
+        </div>
+        <div className={classes.field}>
+          <BookingCard noWrap={false} title={bankDetail.name} status={"Kirim jumlah uang ke nomor Rek " + bankDetail.rek + " atas nama " + bankDetail.user} />
+        </div>
+
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h5"
+          >
+            Total Nominal Pembayaran {is_down_payment ? "Down Payment" : "Keseluruhan"}
+          </Typography>
+          <div className={classes.field}>
+            <Typography
+              className={classes.title}
+              variant="h4"
+              style={{ textAlign: "center" }}
+            >
+              {new Number(total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+            </Typography>
+          </div>
+          <Typography
+            className={classes.title}
+            variant="body2"
+            style={{ marginTop: 4, textAlign: "center" }}
+          >
+            Pastikan nominal sesuai hingga 3 digit terakhir
+          </Typography>
+        </div>
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+            style={{ textAlign: "center" }}
+          >
+            {this.state.renderCountdown}
+          </Typography>
+        </div>
+        <div className={classes.field}>
+          <Typography
+            className={classes.title}
+            variant="h4"
+          >
+            Bukti Pembayaran
+          </Typography>
+        </div>
+        <div className={classes.field}>
+          {
+            selectedFile && (
+              <img
+                src={selectedFile ? selectedFile : "/images/logos/logo.png"}
+                style={{ maxWidth: "100%" }}
+              />
+            )
+          }
+
+          <input
+            accept="image/*"
+            className={classes.input}
+            id="contained-button-file"
+            multiple
+            type="file"
+            onChange={this.handleUploadClick}
+          />
+        </div>
       </>),
     ];
 
@@ -810,10 +1027,10 @@ class Account extends Component {
                     <Button
                       color="primary"
                       variant="contained"
-                      disabled={(!selectedTimes || !selectedEmployee || !selectedProducts.length)}
+                      disabled={(!selectedTimes || !selectedEmployee || !selectedProducts.length || !selectedFile)}
                       onClick={() => this.handleSubmit()}
                     >
-                      Lanjut
+                      Bayar
                     </Button>
                   </>
                 ) : (
@@ -830,7 +1047,13 @@ class Account extends Component {
                     <Button
                       color="primary"
                       variant="contained"
-                      disabled={!isNextTab}
+                      disabled={(
+                        (tab == 2 && !selectedTimes && !customer_id)
+                        || (tab == 3 && !selectedEmployee)
+                        || (tab == 1 && !selectedProducts.length)
+                        || (tab == 4 && !customer_account_number && !customer_account_name)
+                        || !isNextTab
+                      )}
                       onClick={() => this.handleTab(tab, true)}
                     >
                       Lanjut
@@ -879,15 +1102,17 @@ class Account extends Component {
                             primary={product.service_name}
                             secondary={new Number(product.price).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
                           />
-                          <ListItemSecondaryAction>
-                            <IconButton
-                              edge="end"
-                              aria-label="delete"
-                              onClick={() => this.handleSelectOne(product.service_id, "selectedProducts")}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
+                          {!isSubmitTab && (
+                            <ListItemSecondaryAction>
+                              <IconButton
+                                edge="end"
+                                aria-label="delete"
+                                onClick={() => this.handleSelectOne(product.service_id, "selectedProducts")}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </ListItemSecondaryAction>
+                          )}
                         </ListItem>
                       ))}
                     </List>
@@ -937,7 +1162,10 @@ class Account extends Component {
                   Total
                 </Typography>
 
-                <Typography variant="body1">{totalPayment}</Typography>
+                <Typography variant="body1">
+                  {paymentUser
+                    .toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]
+                  }</Typography>
               </div>
 
             </PortletContent>
