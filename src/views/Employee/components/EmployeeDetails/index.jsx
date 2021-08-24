@@ -86,6 +86,7 @@ class Employee extends Component {
                 label="Nomor Hp"
                 margin="dense"
                 type="number"
+                required
                 onChange={e => this.handleChange(e, "phone_number")}
                 value={phone_number}
                 variant="outlined"
@@ -96,6 +97,7 @@ class Employee extends Component {
                 className={classes.textField}
                 label="Alamat"
                 margin="dense"
+                required
                 onChange={e => this.handleChange(e, "address")}
                 value={address}
                 variant="outlined"
@@ -129,6 +131,7 @@ class Employee extends Component {
             <Button
               color="primary"
               variant="contained"
+              disabled={!(fullname && phone_number && address)}
               onClick={() => onSubmit({ username, fullname, phone_number, is_show, address })}
             >
               Simpan

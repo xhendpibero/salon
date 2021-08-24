@@ -86,6 +86,7 @@ class Account extends Component {
                 label="Deskripsi"
                 margin="dense"
                 multiline
+                required
                 rows={4}
                 value={description}
                 variant="outlined"
@@ -129,6 +130,7 @@ class Account extends Component {
             <Button
               color="primary"
               variant="contained"
+              disabled={!(service_name && price && description)}
               onClick={() => onSubmit({ service_name, price, description })}
             >
               Simpan

@@ -85,6 +85,7 @@ class Customer extends Component {
                 label="Nomor Hp"
                 margin="dense"
                 type="number"
+                required
                 onChange={e => this.handleChange(e, "phone_number")}
                 value={phone_number}
                 variant="outlined"
@@ -96,6 +97,7 @@ class Customer extends Component {
                 onChange={e => this.handleChange(e, "email")}
                 label="Email"
                 margin="dense"
+                required
                 value={email}
                 type="email"
                 variant="outlined"
@@ -135,6 +137,7 @@ class Customer extends Component {
           <Button
             color="primary"
             variant="contained"
+            disabled={!(email && fullname && phone_number)}
             onClick={() => onSubmit({ fullname, phone_number, address, username, gender, email })}
           >
             Simpan

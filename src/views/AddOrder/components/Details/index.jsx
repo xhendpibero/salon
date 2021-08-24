@@ -148,16 +148,28 @@ class Account extends Component {
     http: { ...useHttpClient() }
   };
 
-  getEmployee = async () => {
-    console.log({ response: "lalalalalalala" })
+  getEmployee = async (date) => {
     this.setState({ isLoading: true });
-    const { http: { get } } = this.state
+    var today = date ? new Date(date) : new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const { http: { post }, selectedTimes } = this.state
     const token = localStorage.getItem("token");
-    const response = await get("/employees",
+    const response = await post("/schedules/available",
+      {
+        booking_date: `${yyyy}-${mm}-${dd}`,
+        booking_time: ((selectedTimes < 10) ? "0" + selectedTimes : selectedTimes) + ":00:00"
+      },
       token);
-    console.log({ response })
     if (response?.status === 200) {
-      this.setState({ employees: response?.data.filter(e => e.is_show) });
+      this.setState({
+        employees: response?.data.filter(e => e.is_show),
+        isLoading: false,
+      });
       return true
     }
   }
@@ -406,6 +418,7 @@ class Account extends Component {
       email,
       address,
       gender,
+      isLoading,
 
       customer_account_name,
       customer_account_number,
@@ -432,6 +445,12 @@ class Account extends Component {
     const isBackTab = tab > 1
     const isSubmitTab = tab === 5
 
+    if (tab === 2 && selectedTimes && !isLoading) {
+      this.getEmployee(date);
+      this.handleTab(tab, true)
+    }
+
+
 
     const bankDetail = bankList.find(e => e.value === bank);
     const paymentUser = products.filter((product) =>
@@ -444,6 +463,7 @@ class Account extends Component {
     if (selectedTimes - 0 < 10) {
       dataTime = '0' + selectedTimes;
     }
+
 
     if (isSubmitTab && total_payment === 0) {
       let total_payment = 0
@@ -712,33 +732,40 @@ class Account extends Component {
             Pilih Pegawai
           </Typography>
         </div>
-        <div className={classes.field}>
-          <Grid
-            container
-            spacing={3}
-          >
-            {employees.map((employee, index) => (
-              <Grid
-                item
-                key={employee.employee_id}
-                lg={3}
-                md={6}
-                sm={6}
-                xs={12}
-                onClick={() => this.handleChange(employee.employee_id, "selectedEmployee")}
-              >
-                <ProductCard
-                  image={employee.profile_image}
-                  title={employee.fullname}
-                  description={""}
-                  secondary={""}
-                  checked={selectedEmployee === employee.employee_id}
-                />
-              </Grid>
-            ))
-            }
-          </Grid>
-        </div>
+
+        {!isLoading ? (
+          <div className={classes.field}>
+            <Grid
+              container
+              spacing={3}
+            >
+              {employees.map((employee, index) => (
+                <Grid
+                  item
+                  key={employee.employee_id}
+                  lg={3}
+                  md={6}
+                  sm={6}
+                  xs={12}
+                  onClick={() => this.handleChange(employee.employee_id, "selectedEmployee")}
+                >
+                  <ProductCard
+                    image={employee.profile_image}
+                    title={employee.fullname}
+                    description={""}
+                    secondary={""}
+                    checked={selectedEmployee === employee.employee_id}
+                  />
+                </Grid>
+              ))
+              }
+            </Grid>
+          </div>
+        ) : (
+          <div className={classes.progressWrapper}>
+            <CircularProgress />
+          </div>
+        )}
       </>),
 
       (<>
@@ -1048,11 +1075,11 @@ class Account extends Component {
                       color="primary"
                       variant="contained"
                       disabled={(
-                        (tab == 2 && !selectedTimes && !customer_id)
+                        (tab == 2 && (!selectedTimes || !date || !customer_id))
                         || (tab == 3 && !selectedEmployee)
                         || (tab == 1 && !selectedProducts.length)
-                        || (tab == 4 && !customer_account_number && !customer_account_name)
-                        || !isNextTab
+                        || (tab == 4 && (!customer_account_number || !customer_account_name))
+                        || !isNextTab || (isLoadingProduct || isLoading)
                       )}
                       onClick={() => this.handleTab(tab, true)}
                     >

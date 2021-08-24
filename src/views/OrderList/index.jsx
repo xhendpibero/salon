@@ -45,7 +45,7 @@ class OrdersList extends Component {
 
   get = async () => {
     try {
-      this.setState({ isLoading: true });
+      this.setState({ isLoading: true, orders: [], ordersTemp: [] });
       const { get } = useHttpClient();
       const token = localStorage.getItem("token");
       const role = localStorage.getItem("role");
@@ -80,11 +80,12 @@ class OrdersList extends Component {
       token);
     if (response?.status === 200) {
       this.props.enqueueSnackbar('Berhasil ubah status.')
+      this.setState({ isLoading: true, payload: {} });
       this.get();
     } else {
       this.props.enqueueSnackbar('Gagal ubah status.')
+      this.setState({ isLoading: false, payload: {} });
     }
-    this.setState({ isLoading: false, payload: {} });
   };
 
   componentWillMount() {
