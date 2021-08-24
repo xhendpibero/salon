@@ -104,21 +104,27 @@ class SignUp extends Component {
   handleSignUp = async () => {
     const { post } = useHttpClient();
     try {
-      const { history } = this.props;
       const { values } = this.state;
 
       this.setState({ isLoading: true });
-
       const data = await post("/register", {
         "username": values.email,
         "password": values.password,
         "email": values.email,
         "role": "user"
       })
-      console.log({ data })
 
       if (data?.status === 200) {
-        history.push('/sign-in');
+        this.addCustomers({
+          "username": values.email,
+          "fullname": values.firstName + " " + values.lastName,
+          "phone_number": "",
+          "email": "",
+          "id_number": "",
+          "gender": "",
+          "address": "",
+          "created_by": values.email,
+        })
       } else {
         this.setState({
           isLoading: false,
@@ -131,6 +137,26 @@ class SignUp extends Component {
         serviceError: error
       });
     }
+  };
+
+
+  addCustomers = async (payload) => {
+    this.setState({ isLoading: true });
+    const { post } = useHttpClient();
+    const { history } = this.props;
+    const response = await post("/customers", {
+      ...payload
+    },
+      "");
+    if (response?.status === 200) {
+      history.push('/sign-in');
+    } else {
+      this.setState({
+        isLoading: false,
+        serviceError: 'Gagal buat akun baru.'
+      });
+    }
+    this.setState({ isLoading: false });
   };
 
   render() {

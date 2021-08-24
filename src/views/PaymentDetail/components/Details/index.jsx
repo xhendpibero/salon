@@ -449,7 +449,15 @@ class Account extends Component {
                   </div>
                   <div className={classes.field}>
                     <Typography variant="h6" className={classes.title}>
-                      Nominal Pembayaran
+                      Pembayaran yang telah dilakukan ({is_down_payment ? "DP" : "Penuh"})
+                    </Typography>
+                    <Typography variant="body1" className={classes.title}>
+                      {new Number(total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
+                    </Typography>
+                  </div>
+                  <div className={classes.field}>
+                    <Typography variant="h6" className={classes.title}>
+                      Total Pembayaran
                     </Typography>
                     <Typography variant="body1" className={classes.title}>
                       {new Number(customer_payment_nominal).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}

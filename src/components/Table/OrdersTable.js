@@ -78,7 +78,7 @@ class OrdersTable extends Component {
             {
                 id: "created",
                 name: "Tanggal Pemesanan",
-                active: false,
+                active: true,
                 direction: "desc",
             },
             {
@@ -176,7 +176,7 @@ class OrdersTable extends Component {
                                             </TableCell>
                                         )}
                                         {role && (
-                                            <TableCell align="left">Aksi</TableCell>
+                                            <TableCell align="left" style={{ minWidth: 300 }}>Aksi</TableCell>
                                         )}
                                     </TableRow>
                                 </TableHead>
@@ -321,13 +321,13 @@ class OrdersTable extends Component {
                                                 Pembayaran : {(order.is_down_payment) ? "DP" : "Penuh"}
                                             </Typography>
                                             <Typography style={{ marginBottom: 10 }} variant="body2" component="p">
-                                                {new Number(order.total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                                {new Number(order.total_payment).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
                                             </Typography>
                                             <Typography variant="h5" component="h2">
                                                 Total Pemesanan
                                             </Typography>
                                             <Typography variant="h6" component="h2" style={{ color: "#45B880" }}>
-                                                {new Number(order.customer_payment_nominal).toLocaleString('id', { style: 'currency', currency: 'IDR' })}
+                                                {new Number(order.customer_payment_nominal).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
                                             </Typography>
                                         </CardContent>
                                     </Card>

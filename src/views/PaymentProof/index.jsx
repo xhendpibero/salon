@@ -94,7 +94,7 @@ class Order extends Component {
     let order = [];
     const token = localStorage.getItem("token");
     await serviceList.map(async (e) => {
-      const response = await get("/services/" + e.service_id, token)
+      const response = await get("/services?show_status=show_only/" + e.service_id, token)
       order.push(response)
       if (order.length === serviceList.length) {
         if (order.filter(e => e?.status === 200).length) {

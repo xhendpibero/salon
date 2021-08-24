@@ -43,7 +43,7 @@ class UserList extends Component {
       if (this.signal) {
         this.setState({
           isLoading: false,
-          users: products?.data,
+          users: products?.data.slice(0, 10),
           usersTemp: products?.data,
         });
       }

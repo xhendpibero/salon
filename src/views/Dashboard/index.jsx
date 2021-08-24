@@ -73,7 +73,7 @@ class Dashboard extends Component {
     this.setState({ isLoading: true });
     const { get } = useHttpClient();
     const token = localStorage.getItem("token");
-    const products = await get("/services", token)
+    const products = await get("/services?show_status=show_only", token)
     if (products?.status === 200) {
       this.setState({
         isLoading: false,

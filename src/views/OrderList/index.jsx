@@ -51,13 +51,14 @@ class OrdersList extends Component {
       const role = localStorage.getItem("role");
       const username = localStorage.getItem("username");
 
-      const orders = await get("/orders", token);
+      const endpoint = role == "admin" ? "/orders" : "/customers/" + username + "/orders"
+      const orders = await get(endpoint, token);
 
       if (this.signal) {
         this.setState({
           isLoading: false,
-          orders: role == "admin" ? orders?.data : orders?.data?.filter((e) => e.created_by == username),
-          ordersTemp: orders?.data,
+          orders: role == "admin" ? orders?.data.slice(0, 10) : orders?.data?.filter((e) => e.created_by == username),
+          ordersTemp: role == "admin" ? orders?.data : orders?.data?.filter((e) => e.created_by == username),
         });
       }
     } catch (error) {
@@ -124,7 +125,7 @@ class OrdersList extends Component {
 
   renders() {
     const { classes } = this.props;
-    const { isLoading, orders, ordersTotal } = this.state;
+    const { isLoading, orders, ordersTemp } = this.state;
 
     if (isLoading) {
       return (
@@ -147,7 +148,7 @@ class OrdersList extends Component {
           isLoading={isLoading}
           orders={orders}
           onSelect={this.handleSelect}
-          ordersTotal={ordersTotal}
+          ordersTotal={ordersTemp.length}
           handleSubmit={this.handleSubmit}
         />
         {[

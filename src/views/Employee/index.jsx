@@ -80,7 +80,6 @@ class Employee extends Component {
     const response = await post("/employees", {
       ...payload,
       profile_image: profile_image ?? "",
-      is_show: true,
       created_by: user
     },
       token);

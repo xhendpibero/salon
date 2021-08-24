@@ -239,7 +239,7 @@ class ProductsTable extends Component {
                         {product.description.slice(0, 20)}...
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {product.price}
+                        {new Number(product.price).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}
                       </TableCell>
                       <TableCell>
                         <div className={classes.statusWrapper}>

@@ -47,7 +47,7 @@ class ProductList extends Component {
       if (this.signal) {
         this.setState({
           isLoading: false,
-          customers: customers?.data,
+          customers: customers?.data.slice(0, 10),
           customersTemp: customers?.data,
         });
       }

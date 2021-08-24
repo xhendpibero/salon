@@ -189,6 +189,7 @@ class Account extends Component {
         checkedB: response?.data?.[0]?.customer_id ? false : true,
         customer_account_name: response?.data?.[0]?.fullname ?? "",
         customer_account_number: response?.data?.[0]?.phone_number ?? "",
+        isLoading: false,
       });
       return true
     }
@@ -237,7 +238,7 @@ class Account extends Component {
 
   componentWillMount() {
     this.getCustomer();
-    this.getEmployee();
+    // this.getEmployee();
 
     this.countdown = setInterval(() => {
       const { date, selectedTimes } = this.state
@@ -450,8 +451,6 @@ class Account extends Component {
       this.handleTab(tab, true)
     }
 
-
-
     const bankDetail = bankList.find(e => e.value === bank);
     const paymentUser = products.filter((product) =>
       selectedProducts
@@ -463,7 +462,6 @@ class Account extends Component {
     if (selectedTimes - 0 < 10) {
       dataTime = '0' + selectedTimes;
     }
-
 
     if (isSubmitTab && total_payment === 0) {
       let total_payment = 0
@@ -485,6 +483,14 @@ class Account extends Component {
       }
       this.setState({ total_payment, paymentUser })
     }
+
+    var today2 = new Date();
+    var dd2 = today2.getDate();
+    var mm2 = today2.getMonth() + 1;
+    var yyyy2 = today2.getFullYear();
+    if (dd2 < 10) dd2 = '0' + dd2;
+    if (mm2 < 10) mm2 = '0' + mm2;
+
     const rootClassName = classNames(classes.root, className);
 
     const mainTab = [
@@ -671,7 +677,7 @@ class Account extends Component {
         </div>
         <div className={classes.field}>
           <DayPicker
-            disabledDays={day => day < (new Date())}
+            disabledDays={day => day < (new Date(`${yyyy2}-${mm2}-${dd2}`))}
             onDayClick={this.handleDayClick}
             selectedDays={[
               dataDate ? new Date(dataDate) : null,
@@ -704,6 +710,11 @@ class Account extends Component {
           >
             {Array(12).fill().map((x, i) => i + 8).map((data, index) => {
               const time = data + 1;
+              let MyTime = true;
+              if (`${yyyy}-${mm}-${dd}` === `${yyyy2}-${mm2}-${dd2}`) {
+                MyTime = data - 0 > new Date().getHours() - 0 ? true : false
+              }
+
               return (
                 <Grid
                   item
@@ -711,9 +722,9 @@ class Account extends Component {
                   lg={3}
                   md={4}
                   xs={6}
-                  onClick={() => date ? this.handleChange(time, "selectedTimes") : null}
+                  onClick={() => date && MyTime ? this.handleChange(time, "selectedTimes") : null}
                 >
-                  <BookingCard checked={selectedTimes == time} title={"Jam " + time} status={"Tersedia"} />
+                  <BookingCard checked={selectedTimes == time} title={"Jam " + time} status={MyTime ? "Tersedia" : "Tidak Tersedia"} />
                 </Grid>
               )
             })
@@ -1071,6 +1082,13 @@ class Account extends Component {
                     >
                       Kembali
                     </Button>
+                    {console.log({
+                      tab,
+                      selectedProducts,
+                      isLoadingProduct,
+                      isLoading,
+                      isNextTab,
+                    })}
                     <Button
                       color="primary"
                       variant="contained"

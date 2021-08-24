@@ -42,13 +42,13 @@ class ProductList extends Component {
       const { get } = useHttpClient();
       this.setState({ isLoading: true });
       const token = localStorage.getItem("token");
-      const products = await get("/services", token)
+      const products = await get("/services?show_status=show_only", token)
       console.log({ products })
 
       if (this.signal) {
         this.setState({
           isLoading: false,
-          products: products?.data,
+          products: products?.data.slice(0, 10),
           productsTotal: products?.data.length,
           productsTemp: products?.data,
           limit: products?.data.length
