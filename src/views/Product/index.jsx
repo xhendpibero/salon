@@ -62,7 +62,7 @@ class Product extends Component {
     const { http: { get } } = this.state
     this.setState({ isLoading: true });
     const token = localStorage.getItem("token");
-    const response = await get("/services?show_status=show_only/" + id,
+    const response = await get("/services/" + id,
       token);
     if (response?.status === 200) {
       this.setState({ isLoading: false, thumbnail: response?.data?.thumbnail, data: response?.data });

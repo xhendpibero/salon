@@ -60,7 +60,7 @@ class Account extends Component {
         localStorage.removeItem(key)
         localStorage.setItem(key, response.data[key]);
       });
-      this.setState({ isLoading: false, data: response.data, profile_image: response?.image ?? "" });
+      this.setState({ isLoading: false, data: response.data, profile_image: response?.image ?? localStorage.getItem("image") });
     } else {
       this.props.enqueueSnackbar('Gagal mendapatkan profil.')
     }

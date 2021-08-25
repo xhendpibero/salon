@@ -62,7 +62,8 @@ class Order extends Component {
         {
           payload: {
             order: response?.data?.order_id,
-            employee: response?.data?.employee_id
+            employee: response?.data?.employee_id,
+            customer_id: response?.data?.customer_id,
           },
           response: {
             data: response?.data
@@ -79,8 +80,11 @@ class Order extends Component {
 
     const responseEmployee = await get("/employees/" + id.employee,
       token);
+    const responseCustomer = await get("/customers/" + id.customer_id,
+      token);
     const response = await get("/orders/" + id.order + "/details",
       token);
+
     if (response?.status === 200 && responseEmployee?.status === 200) {
       this.loadingSequence(3,
         {
@@ -89,7 +93,8 @@ class Order extends Component {
             data: {
               ...data,
               services: response?.data,
-              employee: responseEmployee?.data
+              employee: responseEmployee?.data,
+              phone_number: responseCustomer?.data?.phone_number
             }
           }
         });
@@ -103,7 +108,7 @@ class Order extends Component {
     let order = [];
     const token = localStorage.getItem("token");
     await serviceList.map(async (e) => {
-      const response = await get("/services?show_status=show_only/" + e.service_id, token)
+      const response = await get("/services/" + e.service_id, token)
       order.push(response)
       if (order.length === serviceList.length) {
         if (order.filter(e => e?.status === 200).length) {

@@ -182,6 +182,7 @@ class Account extends Component {
       created_by,
       updated,
       updated_bys,
+      phone_number,
       celine_bank_name,
       celine_account_name,
       celine_account_number,
@@ -192,6 +193,7 @@ class Account extends Component {
       employee,
     } = this.props.data
     const { bank, bankList, selectedFile } = this.state
+    console.log({ phone_number })
 
     const role = localStorage.getItem("role") === "admin";
 
@@ -308,10 +310,10 @@ class Account extends Component {
 
                 <div className={classes.field}>
                   <Typography variant="h6" className={classes.title}>
-                    Nama Pemesan
+                    Nomor HP
                   </Typography>
                   <Typography variant="body1" className={classes.title}>
-                    {customer_account_name}
+                    {phone_number}
                   </Typography>
                 </div>
 

@@ -49,7 +49,7 @@ class AccountProfile extends Component {
             <Avatar
               variant="square"
               className={classes.avatar}
-              src={profile_image || localStorage.getItem("image")}
+              src={profile_image}
             />
             <div className={classes.info}>
               <Typography variant="h5">{localStorage.getItem("email")}</Typography>
