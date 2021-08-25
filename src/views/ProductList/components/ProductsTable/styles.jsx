@@ -20,7 +20,6 @@ export default theme => ({
   },
   nameText: {
     display: 'inline-block',
-    marginLeft: theme.spacing.unit * 2,
     fontWeight: 500,
     cursor: 'pointer'
   },

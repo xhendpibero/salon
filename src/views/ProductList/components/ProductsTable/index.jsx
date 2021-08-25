@@ -176,6 +176,7 @@ class ProductsTable extends Component {
                         onChange={this.handleSelectAll}
                       />
                     )}
+                    Foto
                   </TableCell>
                   {listCell.map((e) =>
                     <TableCell
@@ -207,7 +208,7 @@ class ProductsTable extends Component {
                       key={product?.service_id}
                       selected={selectedProducts.indexOf(product?.service_id) !== -1}
                     >
-                      <TableCell className={classes.tableCell} colSpan={2}>
+                      <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
                           {role && (
                             <Checkbox
@@ -225,18 +226,20 @@ class ProductsTable extends Component {
                           >
                             {getInitials(product.service_name)}
                           </Avatar>
-                          <Link to={"products/service?id=" + product?.service_id}>
-                            <Typography
-                              className={classes.nameText}
-                              variant="body1"
-                            >
-                              {product.service_name}
-                            </Typography>
-                          </Link>
                         </div>
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {product.description.slice(0, 20)}...
+                        <Link to={"products/service?id=" + product?.service_id}>
+                          <Typography
+                            className={classes.nameText}
+                            variant="body1"
+                          >
+                            {product.service_name}
+                          </Typography>
+                        </Link>
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {product.description.slice(0, 20)}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         {new Number(product.price).toLocaleString('id', { style: 'currency', currency: 'IDR' }).split(",")[0]}

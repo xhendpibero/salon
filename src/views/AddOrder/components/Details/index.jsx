@@ -446,9 +446,17 @@ class Account extends Component {
     const isBackTab = tab > 1
     const isSubmitTab = tab === 5
 
-    if (tab === 2 && selectedTimes && !isLoading) {
+
+    if (tab === 2 && !isLoading && employees.length) {
+      this.setState({ employees: [], selectedEmployee: "" })
+    }
+
+    if (tab === 3 && !isLoading && !employees.length) {
       this.getEmployee(date);
-      this.handleTab(tab, true)
+    }
+
+    if (tab === 4 && !isLoading && employees.length && !selectedEmployee) {
+      this.handleChange(employees?.[Math.floor(Math.random() * employees.length) + 1].employee_id, "selectedEmployee")
     }
 
     const bankDetail = bankList.find(e => e.value === bank);
@@ -1094,7 +1102,7 @@ class Account extends Component {
                       variant="contained"
                       disabled={(
                         (tab == 2 && (!selectedTimes || !date || !customer_id))
-                        || (tab == 3 && !selectedEmployee)
+                        // || (tab == 3 && !selectedEmployee)
                         || (tab == 1 && !selectedProducts.length)
                         || (tab == 4 && (!customer_account_number || !customer_account_name))
                         || !isNextTab || (isLoadingProduct || isLoading)
