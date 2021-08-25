@@ -42,7 +42,7 @@ class ProductList extends Component {
       const { get } = useHttpClient();
       this.setState({ isLoading: true });
       const token = localStorage.getItem("token");
-      const products = await get("/services?show_status=show_only", token)
+      const products = await get("/services", token)
       console.log({ products })
 
       if (this.signal) {
@@ -154,7 +154,7 @@ class ProductList extends Component {
 
     if (products.length === 0) {
       return (
-        <Typography variant="h6">Tidak ada jenis layanan yang tersedia</Typography>
+        <Typography variant="h6" style={{ textAlign: "center" }}>Tidak ada jenis layanan yang tersedia</Typography>
       );
     }
 

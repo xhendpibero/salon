@@ -46,15 +46,15 @@ class AccountProfile extends Component {
       >
         <PortletContent>
           <div className={classes.details}>
-            <div className={classes.info}>
-              <Typography variant="h2">{localStorage.getItem("email")}</Typography>
-              <Typography variant="h6">{localStorage.getItem("role")}</Typography>
-            </div>
             <Avatar
               variant="square"
               className={classes.avatar}
               src={profile_image || localStorage.getItem("image")}
             />
+            <div className={classes.info}>
+              <Typography variant="h5">{localStorage.getItem("email")}</Typography>
+              <Typography variant="h6">{localStorage.getItem("role")}</Typography>
+            </div>
           </div>
         </PortletContent>
         <PortletFooter>

@@ -57,7 +57,7 @@ class OrdersList extends Component {
       if (this.signal) {
         this.setState({
           isLoading: false,
-          orders: role == "admin" ? orders?.data.slice(0, 10) : orders?.data?.filter((e) => e.created_by == username),
+          orders: role == "admin" ? orders?.data.sort((a, b) => (new Date(a["created"]).getTime() > new Date(b["created"]).getTime()) ? -1 : ((new Date(b["created"]).getTime() > new Date(a["created"]).getTime()) ? 1 : 0)).slice(0, 10) : orders?.data?.filter((e) => e.created_by == username),
           ordersTemp: role == "admin" ? orders?.data : orders?.data?.filter((e) => e.created_by == username),
         });
       }
@@ -137,7 +137,7 @@ class OrdersList extends Component {
 
     if (orders.length === 0) {
       return (
-        <Typography variant="h6">Tidak ada pemesanan yang tersedia</Typography>
+        <Typography variant="h6" style={{ textAlign: "center" }}>Tidak ada pemesanan yang tersedia</Typography>
       );
     }
 

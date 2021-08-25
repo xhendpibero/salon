@@ -3,7 +3,9 @@ export default theme => ({
   details: {
     display: 'flex'
   },
-  info: {},
+  info: {
+    marginLeft: 12,
+  },
   locationText: {
     marginTop: theme.spacing.unit,
     color: theme.palette.text.secondary
@@ -12,7 +14,6 @@ export default theme => ({
     color: theme.palette.text.secondary
   },
   avatar: {
-    marginLeft: 'auto',
     height: '110px',
     width: '110px',
     flexShrink: 0,

@@ -42,11 +42,11 @@ class OrdersList extends Component {
     http: { ...useHttpClient() },
   };
 
-  get = async () => {
+  get = async (filterValue) => {
     this.setState({ isLoading: true });
     const { http: { get } } = this.state
     const token = localStorage.getItem("token");
-    const response = await get("/report?type=" + this.state.filterValue,
+    const response = await get("/report?type=" + filterValue,
       token);
     if (response?.status === 200) {
       this.setState({
@@ -66,7 +66,7 @@ class OrdersList extends Component {
   componentDidMount() {
     this.signal = true;
 
-    this.get();
+    this.get("weekly");
   }
 
   componentWillUnmount() {
@@ -87,7 +87,7 @@ class OrdersList extends Component {
 
     if (orders.length === 0) {
       return (
-        <Typography variant="h6">Tidak ada pemesanan yang tersedia</Typography>
+        <Typography variant="h6" style={{ textAlign: "center" }}>Tidak ada laporan yang tersedia</Typography>
       );
     }
 
@@ -139,7 +139,7 @@ class OrdersList extends Component {
     this.setState({
       [name]: e && e.target && e.target.value ? e.target.value : e || ""
     });
-    this.get();
+    this.get(e && e.target && e.target.value ? e.target.value : e || "");
   };
 
   render() {

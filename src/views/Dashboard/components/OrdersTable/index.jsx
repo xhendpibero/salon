@@ -20,6 +20,9 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
+  TableSortLabel,
+  TablePagination
 } from '@material-ui/core';
 
 // Shared components
@@ -51,8 +54,68 @@ const statusText = {
   "canceled": 'Pemesanan batal'
 };
 class OrdersTable extends Component {
+  state = {
+    listCell: [
+      {
+        id: "order_id",
+        name: "ID",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "customer_account_name",
+        name: "Nama Pelanggan",
+        active: false,
+        direction: "desc",
+      },
+      {
+        id: "created",
+        name: "Tanggal Pemesanan",
+        active: true,
+        direction: "desc",
+      },
+      {
+        id: "status",
+        name: "Status",
+        active: false,
+        direction: "desc",
+      },
+    ],
+  };
+
+  sortHandler = (id) => {
+    const listCell = this.state.listCell.map((e) => {
+      if (id === e.id) {
+        if (e.active) {
+          return {
+            ...e,
+            direction: e.direction === "desc" ? "asc" : "desc"
+          }
+        } else {
+          return {
+            ...e,
+            active: true,
+          }
+        }
+      }
+      return { ...e, active: false }
+    })
+    this.setState({ listCell })
+  }
+
   render() {
-    const { classes, className, isLoading, orders } = this.props;
+    const { classes, className, isLoading } = this.props;
+    const { listCell } = this.state;
+
+    const sortData = listCell.find(order => order.active)
+    const { id, direction } = sortData;
+
+    let orders = [];
+    if (id === "created") {
+      orders = this.props.orders.sort((a, b) => (new Date(a[id]).getTime() > new Date(b[id]).getTime()) ? direction === "asc" ? 1 : -1 : ((new Date(b[id]).getTime() > new Date(a[id]).getTime()) ? direction === "asc" ? -1 : 1 : 0))
+    } else {
+      orders = this.props.orders.sort((a, b) => (a[id] > b[id]) ? direction === "asc" ? 1 : -1 : ((b[id] > a[id]) ? direction === "asc" ? -1 : 1 : 0))
+    }
 
     const role = localStorage.getItem("role") === "admin";
     const rootClassName = classNames(classes.root, className);
@@ -92,10 +155,25 @@ class OrdersTable extends Component {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell align="left">Nama Pemesan</TableCell>
-                    <TableCell align="left">Tanggal Pemesanan</TableCell>
-                    <TableCell align="left">Status</TableCell>
+                    {listCell.map((e) =>
+                      <TableCell
+                        align={e.id === "order_id" ? "" : "left"}
+                        direction={e.direction}
+                        onClick={() => this.sortHandler(e.id)}
+                      >
+                        <Tooltip
+                          enterDelay={300}
+                          title="Sort"
+                        >
+                          <TableSortLabel
+                            active={e.active}
+                            direction={e.direction}
+                          >
+                            {e.name}
+                          </TableSortLabel>
+                        </Tooltip>
+                      </TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>

@@ -40,14 +40,13 @@ class Employee extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props?.data?.username !== nextProps?.data?.username) {
-      this.setState({ ...nextProps?.data, email: this.props?.data?.email });
+      this.setState({ ...nextProps?.data });
     }
   }
 
   render() {
     const { classes, className, isLoading, onSubmit, ...rest } = this.props;
     const { username, password, email } = this.state;
-    console.log({ username, password, email })
     const rootClassName = classNames(classes.root, className);
 
     return (

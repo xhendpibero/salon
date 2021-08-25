@@ -150,7 +150,7 @@ class UserList extends Component {
     }
 
     if (users.length === 0) {
-      return <Typography variant="h6">Tidak ada pegawai</Typography>;
+      return <Typography variant="h6" style={{ textAlign: "center" }}>Tidak ada pegawai</Typography>;
     }
 
     return (

@@ -341,7 +341,7 @@ class OrdersTable extends Component {
                                 'aria-label': 'Previous Page'
                             }}
                             component="div"
-                            count={this.props?.count || 10}
+                            count={this.props.ordersTotal}
                             nextIconButtonProps={{
                                 'aria-label': 'Next Page'
                             }}

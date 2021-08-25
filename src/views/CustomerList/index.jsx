@@ -101,7 +101,7 @@ class ProductList extends Component {
 
     if (customers.length === 0) {
       return (
-        <Typography variant="h6">Tidak ada pelanggan yang tersedia</Typography>
+        <Typography variant="h6" style={{ textAlign: "center" }}>Tidak ada pelanggan yang tersedia</Typography>
       );
     }
 

@@ -179,7 +179,7 @@ class Dashboard extends Component {
                 </Grid>
               ))
               }
-            </Grid> : "Mohon tunggu sebentar..."
+            </Grid> : <div style={{ width: "100%", textAlign: "center" }}> Mohon tunggu sebentar... </div>
           }
         </div>
       </DashboardLayout>
