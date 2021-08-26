@@ -40,7 +40,7 @@ class Employee extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props?.data?.username !== nextProps?.data?.username) {
-      this.setState({ ...nextProps?.data });
+      this.setState({ ...nextProps?.data, password: '' });
     }
   }
 
@@ -86,7 +86,7 @@ class Employee extends Component {
                 variant="outlined"
               />
             </div>
-            {/* <div className={classes.field}>
+            <div className={classes.field}>
               <TextField
                 className={classes.textField}
                 onChange={e => this.handleChange(e, "password")}
@@ -96,7 +96,7 @@ class Employee extends Component {
                 type="password"
                 variant="outlined"
               />
-            </div> */}
+            </div>
           </form>
         </PortletContent>
         <PortletFooter className={classes.portletFooter}>
@@ -106,7 +106,8 @@ class Employee extends Component {
             <Button
               color="primary"
               variant="contained"
-              onClick={() => onSubmit({ username, email })}
+              disabled={!password}
+              onClick={() => onSubmit({ username, email, password })}
             >
               Simpan
             </Button>
