@@ -131,7 +131,7 @@ class Account extends Component {
               color="primary"
               variant="contained"
               disabled={!(service_name && price && description)}
-              onClick={() => onSubmit({ service_name, price, description })}
+              onClick={() => onSubmit({ service_name, price, description, is_show })}
             >
               Simpan
             </Button>
